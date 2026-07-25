@@ -52,7 +52,7 @@ function showSection(id){
 }
 navItems.forEach(x=>x.addEventListener('click',()=>showSection(x.dataset.section)));
 document.querySelectorAll('[data-jump]').forEach(x=>x.addEventListener('click',()=>showSection(x.dataset.jump)));
-$('menuBtn').addEventListener('click',()=>$('sidebar').classList.toggle('open'));
+
 
 $('todayDate').textContent = new Intl.DateTimeFormat('zh-Hant-CA',{year:'numeric',month:'long',day:'numeric'}).format(new Date());
 
@@ -164,3 +164,142 @@ $('saveSnapshotBtn').addEventListener('click',()=>{
   const a=document.createElement('a');a.href=url;a.download='wais-snapshot.json';a.click();
   URL.revokeObjectURL(url);
 });
+
+
+// ===== WAIS INVEST v2: mobile menu =====
+const sidebarOverlay = $('sidebarOverlay');
+
+function closeMobileMenu(){
+  $('sidebar').classList.remove('open');
+  sidebarOverlay?.classList.remove('show');
+  document.body.classList.remove('menu-open');
+}
+
+function toggleMobileMenu(){
+  const willOpen = !$('sidebar').classList.contains('open');
+  $('sidebar').classList.toggle('open', willOpen);
+  sidebarOverlay?.classList.toggle('show', willOpen);
+  document.body.classList.toggle('menu-open', willOpen);
+}
+
+$('menuBtn').onclick = toggleMobileMenu;
+sidebarOverlay?.addEventListener('click', closeMobileMenu);
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') closeMobileMenu();
+});
+
+// Replace the original menu closing behaviour with overlay-aware closing.
+navItems.forEach(item => item.addEventListener('click', closeMobileMenu));
+document.querySelectorAll('[data-jump]').forEach(item => item.addEventListener('click', closeMobileMenu));
+
+
+// ===== WAIS INVEST v2: watchlist =====
+let watchlist = JSON.parse(localStorage.getItem('waisWatchlist') || '[]');
+
+const escapeHTML = (value='') => String(value)
+  .replaceAll('&','&amp;')
+  .replaceAll('<','&lt;')
+  .replaceAll('>','&gt;')
+  .replaceAll('"','&quot;')
+  .replaceAll("'","&#039;");
+
+function saveWatchlist(){
+  localStorage.setItem('waisWatchlist', JSON.stringify(watchlist));
+}
+
+function renderWatchlist(){
+  const target = $('watchlistCards');
+  if(!target) return;
+
+  $('watchTotal').textContent = watchlist.length;
+  $('watchReady').textContent = watchlist.filter(
+    item => item.status === 'Near Entry' || item.status === 'Ready'
+  ).length;
+  $('watchHighRisk').textContent = watchlist.filter(
+    item => item.risk === 'High' || item.risk === 'Very High'
+  ).length;
+
+  if(!watchlist.length){
+    target.innerHTML = '<div class="watch-empty">暫時未有觀察股票。</div>';
+    return;
+  }
+
+  target.innerHTML = watchlist.map((item,index) => `
+    <article class="watch-card">
+      <div class="watch-card-head">
+        <div>
+          <h4>${escapeHTML(item.ticker)}</h4>
+          <span class="watch-status">${escapeHTML(item.status)}</span>
+        </div>
+        <span class="tag">${escapeHTML(item.risk)} Risk</span>
+      </div>
+
+      <div class="watch-prices">
+        <div>
+          <span>Entry</span>
+          <strong>${fmt(item.entry)}</strong>
+        </div>
+        <div>
+          <span>Target</span>
+          <strong>${fmt(item.target)}</strong>
+        </div>
+      </div>
+
+      <div class="watch-meta">
+        <span>Upside</span>
+        <strong>${item.entry > 0 ? (((item.target-item.entry)/item.entry)*100).toFixed(1) : '0.0'}%</strong>
+      </div>
+
+      ${item.note ? `<p class="watch-note">${escapeHTML(item.note)}</p>` : ''}
+
+      <div class="watch-actions">
+        <button class="danger-btn" type="button" onclick="removeWatchItem(${index})">Remove</button>
+      </div>
+    </article>
+  `).join('');
+}
+
+window.removeWatchItem = index => {
+  watchlist.splice(index,1);
+  saveWatchlist();
+  renderWatchlist();
+};
+
+$('watchlistForm')?.addEventListener('submit', event => {
+  event.preventDefault();
+
+  const ticker = $('watchTicker').value.trim().toUpperCase();
+  const entry = Number($('watchEntry').value);
+  const target = Number($('watchTarget').value);
+
+  if(!ticker || entry <= 0 || target <= 0){
+    alert('請輸入有效股票代號、買入價及目標價。');
+    return;
+  }
+
+  watchlist.unshift({
+    ticker,
+    entry,
+    target,
+    risk:$('watchRisk').value,
+    status:$('watchStatus').value,
+    note:$('watchNote').value.trim()
+  });
+
+  saveWatchlist();
+  event.target.reset();
+  $('watchRisk').value = 'Medium';
+  $('watchStatus').value = 'Wait';
+  renderWatchlist();
+});
+
+$('clearWatchlist')?.addEventListener('click', () => {
+  if(!watchlist.length) return;
+  if(confirm('確定清除全部 Watchlist？')){
+    watchlist = [];
+    saveWatchlist();
+    renderWatchlist();
+  }
+});
+
+renderWatchlist();
