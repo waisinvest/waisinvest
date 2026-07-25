@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WAIS INVEST</title>
+  <meta name="description" content="WAIS INVEST — Wisdom, Analysis, Intelligence, Strategy. Think Clearly. Invest Wisely.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-block">
+        <div class="brand-mark">W</div>
+        <div>
+          <div class="brand-name">WAIS <span>INVEST</span></div>
+          <div class="brand-sub">Wisdom • Analysis • Intelligence • Strategy</div>
+        </div>
+      </div>
+
+      <nav class="nav-list">
+        <button class="nav-item active" data-section="dashboard">Dashboard</button>
+        <button class="nav-item" data-section="portfolio">Portfolio</button>
+        <button class="nav-item" data-section="top-picks">Top Picks</button>
+        <button class="nav-item" data-section="hidden-gems">Hidden Gems</button>
+        <button class="nav-item" data-section="research">Research Library</button>
+        <button class="nav-item" data-section="risk">Risk Engine</button>
+        <button class="nav-item" data-section="journal">Decision Journal</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="system-card">
+          <span>System</span>
+          <strong>WAIS INVEST v1.0</strong>
+          <small>Think Clearly. Invest Wisely.</small>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <div>
+          <div class="page-kicker">PRIVATE INVESTMENT INTELLIGENCE</div>
+          <h1 id="pageTitle">Dashboard</h1>
+        </div>
+        <div class="top-actions">
+          <div class="date-chip" id="todayDate"></div>
+          <button class="primary-btn" id="saveSnapshotBtn">Save Snapshot</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="page-section active" id="dashboard">
+          <div class="hero">
+            <div>
+              <div class="hero-label">WAIS MARKET VIEW</div>
+              <h2>Think Clearly.<br><span>Invest Wisely.</span></h2>
+              <p>一個以證據、風險管理與紀律為核心嘅私人投資研究平台。</p>
+            </div>
+            <div class="hero-status">
+              <span class="status-dot yellow"></span>
+              <div>
+                <small>CURRENT MODE</small>
+                <strong id="marketMode">WAIT</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="metrics-grid">
+            <article class="metric-card">
+              <span>Market Risk Score</span>
+              <strong><span id="riskScoreMetric">38</span><small>/100</small></strong>
+              <div class="progress"><div id="riskProgress" style="width:38%"></div></div>
+              <p id="riskLabel">Normal / Cautious</p>
+            </article>
+            <article class="metric-card">
+              <span>Recommended Cash</span>
+              <strong><span id="cashMetric">25</span><small>%</small></strong>
+              <p>根據市場風險調整</p>
+            </article>
+            <article class="metric-card">
+              <span>Portfolio Invested</span>
+              <strong><span id="investedMetric">0</span><small>%</small></strong>
+              <p id="holdingsCountLabel">0 個持倉</p>
+            </article>
+            <article class="metric-card">
+              <span>Defense Status</span>
+              <strong class="good" id="defenseStatus">NORMAL</strong>
+              <p>多重訊號確認先切換</p>
+            </article>
+          </div>
+
+          <div class="content-grid two-one">
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="panel-kicker">MONDAY ACTION PLAN</span>
+                  <h3>星期一作戰計劃</h3>
+                </div>
+                <span class="pill yellow-pill" id="actionPill">WAIT</span>
+              </div>
+              <div class="action-list" id="mondayPlan">
+                <div><b>01</b><span>唔追高，等更好買入位置。</span></div>
+                <div><b>02</b><span>重點觀察 MRVL、MU、TSM。</span></div>
+                <div><b>03</b><span>如回調但基本面不變，可準備第一注。</span></div>
+                <div><b>04</b><span>風險分數升至 60 以上，暫停新買入。</span></div>
+              </div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="panel-kicker">PORTFOLIO SUMMARY</span>
+                  <h3>組合概況</h3>
+                </div>
+              </div>
+              <div class="summary-row"><span>Cash</span><strong id="summaryCash">100%</strong></div>
+              <div class="summary-row"><span>Invested</span><strong id="summaryInvested">0%</strong></div>
+              <div class="summary-row"><span>Holdings</span><strong id="summaryHoldings">0</strong></div>
+              <div class="summary-row"><span>Unrealized P/L</span><strong id="summaryPL">C$0.00</strong></div>
+            </article>
+          </div>
+
+          <div class="content-grid equal">
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="panel-kicker">WAIS TOP PICKS</span>
+                  <h3>核心研究名單</h3>
+                </div>
+                <button class="text-btn" data-jump="top-picks">View all</button>
+              </div>
+              <div class="compact-list">
+                <div><span class="rank">1</span><b>NVDA</b><em>Wait</em></div>
+                <div><span class="rank">2</span><b>TSM</b><em>Wait</em></div>
+                <div><span class="rank">3</span><b>AVGO</b><em>Wait</em></div>
+                <div><span class="rank">4</span><b>MRVL</b><em class="positive">Near Entry</em></div>
+                <div><span class="rank">5</span><b>MU</b><em class="positive">Near Entry</em></div>
+              </div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="panel-kicker">HIDDEN GEMS</span>
+                  <h3>潛力股雷達</h3>
+                </div>
+                <button class="text-btn" data-jump="hidden-gems">View all</button>
+              </div>
+              <div class="gem-grid">
+                <div class="mini-card"><b>AXTI</b><span>AI Materials</span><small>High Research Priority</small></div>
+                <div class="mini-card"><b>TSEM</b><span>Specialty Foundry</span><small>Watch</small></div>
+                <div class="mini-card"><b>POET</b><span>Photonics</span><small>Speculative</small></div>
+                <div class="mini-card"><b>IQE</b><span>Compound Semi</span><small>Watch</small></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="page-section" id="portfolio">
+          <div class="section-banner">
+            <div>
+              <span class="panel-kicker">WAIS PORTFOLIO MANAGER</span>
+              <h2>Portfolio</h2>
+              <p>輸入持倉後，自動計算平均成本、市值及未實現盈虧。</p>
+            </div>
+          </div>
+
+          <div class="content-grid two-one">
+            <article class="panel">
+              <div class="panel-head"><h3>新增持倉</h3></div>
+              <form id="holdingForm" class="form-grid">
+                <label>股票代號<input id="tickerInput" required placeholder="例如 NVDA"></label>
+                <label>股數<input id="sharesInput" required type="number" min="0" step="0.01" placeholder="10"></label>
+                <label>平均成本 (C$ / US$)<input id="costInput" required type="number" min="0" step="0.01" placeholder="120.00"></label>
+                <label>現價<input id="priceInput" required type="number" min="0" step="0.01" placeholder="125.00"></label>
+                <button class="primary-btn full" type="submit">Add Holding</button>
+              </form>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head"><h3>Portfolio Totals</h3></div>
+              <div class="summary-row"><span>Total Cost</span><strong id="totalCost">C$0.00</strong></div>
+              <div class="summary-row"><span>Market Value</span><strong id="marketValue">C$0.00</strong></div>
+              <div class="summary-row"><span>Unrealized P/L</span><strong id="portfolioPL">C$0.00</strong></div>
+              <div class="summary-row"><span>Return</span><strong id="portfolioReturn">0.00%</strong></div>
+            </article>
+          </div>
+
+          <article class="panel">
+            <div class="panel-head">
+              <h3>Holdings</h3>
+              <button class="danger-btn" id="clearHoldings">Clear All</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Ticker</th><th>Shares</th><th>Avg Cost</th><th>Current</th><th>Value</th><th>P/L</th><th></th></tr></thead>
+                <tbody id="holdingsTable"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <section class="page-section" id="top-picks">
+          <div class="section-banner">
+            <div>
+              <span class="panel-kicker">WAIS CORE WATCHLIST</span>
+              <h2>Top Picks</h2>
+              <p>每隻股票以供應鏈角色、風險及入市狀態分類。</p>
+            </div>
+          </div>
+          <div class="cards-grid" id="topPicksGrid"></div>
+        </section>
+
+        <section class="page-section" id="hidden-gems">
+          <div class="section-banner">
+            <div>
+              <span class="panel-kicker">EARLY OPPORTUNITY RADAR</span>
+              <h2>Hidden Gems</h2>
+              <p>高潛力同時高風險，必須分開「事實、論點、推測」。</p>
+            </div>
+          </div>
+          <div class="cards-grid" id="hiddenGemsGrid"></div>
+        </section>
+
+        <section class="page-section" id="research">
+          <div class="section-banner">
+            <div>
+              <span class="panel-kicker">WAIS KNOWLEDGE BASE</span>
+              <h2>Research Library</h2>
+              <p>將每間公司研究變成可累積、可比較、可追蹤嘅資料庫。</p>
+            </div>
+          </div>
+          <div class="research-board">
+            <article class="research-card">
+              <span>AI COMPUTE</span><h3>GPU & Accelerators</h3><p>NVDA、AMD、custom silicon、生態系統與估值。</p>
+            </article>
+            <article class="research-card">
+              <span>NETWORKING</span><h3>AI Networking</h3><p>AVGO、MRVL、Ethernet、switching 與 interconnect。</p>
+            </article>
+            <article class="research-card">
+              <span>OPTICAL</span><h3>Photonics</h3><p>COHR、LITE、POET、光模組與元件供應鏈。</p>
+            </article>
+            <article class="research-card">
+              <span>MEMORY</span><h3>HBM & Memory</h3><p>MU、SK Hynix、Samsung 與供需週期。</p>
+            </article>
+            <article class="research-card">
+              <span>FOUNDRY</span><h3>Manufacturing</h3><p>TSM、TSEM、先進製程、成熟製程與封裝。</p>
+            </article>
+            <article class="research-card">
+              <span>INFRASTRUCTURE</span><h3>Power & Cooling</h3><p>資料中心電力、冷卻、核能與電網升級。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="page-section" id="risk">
+          <div class="section-banner">
+            <div>
+              <span class="panel-kicker">WAIS DEFENSE SYSTEM</span>
+              <h2>Risk Engine</h2>
+              <p>使用多重訊號管理現金與風險，避免單一指標誤導。</p>
+            </div>
+          </div>
+
+          <div class="content-grid equal">
+            <article class="panel">
+              <div class="panel-head"><h3>Market Risk Score</h3></div>
+              <input type="range" min="0" max="100" value="38" id="riskSlider">
+              <div class="risk-scale">
+                <span>0 Aggressive</span><span>50 Cautious</span><span>100 Cash</span>
+              </div>
+              <div class="risk-result">
+                <strong id="riskResultScore">38 / 100</strong>
+                <span id="riskResultMode">Normal</span>
+              </div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head"><h3>Cash Recommendation</h3></div>
+              <div class="cash-ring" id="cashRing"><span id="cashRecommendation">25%</span></div>
+              <p class="center-note">按風險分數自動建議，唔代表必須機械式執行。</p>
+            </article>
+          </div>
+
+          <article class="panel">
+            <div class="panel-head"><h3>Defense Levels</h3></div>
+            <div class="defense-grid">
+              <div><span class="green-dot"></span><b>0–20 Aggressive</b><p>可較積極分段建倉。</p></div>
+              <div><span class="blue-dot"></span><b>21–40 Normal</b><p>正常配置，保留現金。</p></div>
+              <div><span class="yellow-dot"></span><b>41–60 Cautious</b><p>減慢買入，增加驗證。</p></div>
+              <div><span class="orange-dot"></span><b>61–80 Defensive</b><p>提高現金，減少高風險持倉。</p></div>
+              <div><span class="red-dot"></span><b>81–100 Mostly Cash</b><p>保護資金為先。</p></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="page-section" id="journal">
+          <div class="section-banner">
+            <div>
+              <span class="panel-kicker">WAIS DECISION JOURNAL</span>
+              <h2>Decision Journal</h2>
+              <p>記錄每次買、賣、等待同防守嘅原因，日後檢討決策質素。</p>
+            </div>
+          </div>
+
+          <div class="content-grid two-one">
+            <article class="panel">
+              <div class="panel-head"><h3>新增紀錄</h3></div>
+              <form id="journalForm" class="journal-form">
+                <label>標題<input id="journalTitle" required placeholder="例如：等待 MRVL 第一注"></label>
+                <label>原因<textarea id="journalReason" required rows="5" placeholder="證據、風險、下一步..."></textarea></label>
+                <button class="primary-btn" type="submit">Save Entry</button>
+              </form>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head"><h3>Journal Summary</h3></div>
+              <div class="summary-row"><span>Entries</span><strong id="journalCount">0</strong></div>
+              <div class="summary-row"><span>Latest</span><strong id="latestJournal">—</strong></div>
+            </article>
+          </div>
+
+          <div id="journalEntries" class="journal-list"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
