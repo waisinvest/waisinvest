@@ -26,6 +26,7 @@
       <nav class="nav-list">
         <button class="nav-item active" data-section="dashboard">Dashboard</button>
         <button class="nav-item" data-section="portfolio">Portfolio</button>
+        <button class="nav-item" data-section="watchlist">Watchlist</button>
         <button class="nav-item" data-section="top-picks">Top Picks</button>
         <button class="nav-item" data-section="hidden-gems">Hidden Gems</button>
         <button class="nav-item" data-section="research">Research Library</button>
@@ -36,11 +37,12 @@
       <div class="sidebar-footer">
         <div class="system-card">
           <span>System</span>
-          <strong>WAIS INVEST v1.0</strong>
+          <strong>WAIS INVEST v2.0</strong>
           <small>Think Clearly. Invest Wisely.</small>
         </div>
       </div>
     </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="main-area">
       <header class="topbar">
@@ -204,6 +206,70 @@
                 <tbody id="holdingsTable"></tbody>
               </table>
             </div>
+          </article>
+        </section>
+
+
+        <section class="page-section" id="watchlist">
+          <div class="section-banner">
+            <div>
+              <span class="panel-kicker">WAIS ACTIVE WATCHLIST</span>
+              <h2>Watchlist</h2>
+              <p>記錄理想買入價、目標價、風險及目前行動狀態。</p>
+            </div>
+          </div>
+
+          <div class="content-grid two-one">
+            <article class="panel">
+              <div class="panel-head"><h3>新增觀察股票</h3></div>
+              <form id="watchlistForm" class="form-grid">
+                <label>股票代號
+                  <input id="watchTicker" required maxlength="12" placeholder="例如 MRVL">
+                </label>
+                <label>理想買入價
+                  <input id="watchEntry" type="number" min="0" step="0.01" required placeholder="例如 62.50">
+                </label>
+                <label>目標價
+                  <input id="watchTarget" type="number" min="0" step="0.01" required placeholder="例如 80.00">
+                </label>
+                <label>風險
+                  <select id="watchRisk" required>
+                    <option value="Low">Low</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="High">High</option>
+                    <option value="Very High">Very High</option>
+                  </select>
+                </label>
+                <label>狀態
+                  <select id="watchStatus" required>
+                    <option value="Research">Research</option>
+                    <option value="Wait" selected>Wait</option>
+                    <option value="Near Entry">Near Entry</option>
+                    <option value="Ready">Ready</option>
+                    <option value="Avoid">Avoid</option>
+                  </select>
+                </label>
+                <label>備註
+                  <input id="watchNote" placeholder="催化劑、風險或下一步">
+                </label>
+                <button class="primary-btn full" type="submit">Add to Watchlist</button>
+              </form>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head"><h3>Watchlist Summary</h3></div>
+              <div class="summary-row"><span>Total</span><strong id="watchTotal">0</strong></div>
+              <div class="summary-row"><span>Near Entry / Ready</span><strong id="watchReady">0</strong></div>
+              <div class="summary-row"><span>High Risk</span><strong id="watchHighRisk">0</strong></div>
+            </article>
+          </div>
+
+          <article class="panel">
+            <div class="panel-head">
+              <h3>Active Watchlist</h3>
+              <button class="danger-btn" id="clearWatchlist">Clear All</button>
+            </div>
+            <div id="watchlistCards" class="watchlist-grid"></div>
           </article>
         </section>
 
