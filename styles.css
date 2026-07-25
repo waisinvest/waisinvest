@@ -19,8 +19,8 @@ button,input,textarea{font:inherit}
 button{cursor:pointer}
 .app-shell{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
 .sidebar{background:rgba(7,15,29,.94);border-right:1px solid var(--line);padding:26px 20px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;backdrop-filter:blur(14px)}
-.brand-mark{width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:none;}
-.brand-mark img{width:48px;height:48px;object-fit:contain;display:block;}
+.brand-mark{width:60px;height:60px;display:flex;align-items:center;justify-content:center;background:none;}
+.brand-mark img{width:60px;height:60px;object-fit:contain;display:block;}
 .brand-sub{font-size:10px;line-height:1.5;color:var(--muted);max-width:170px;margin-top:3px}
 .nav-list{display:flex;flex-direction:column;gap:7px;margin-top:34px}
 .nav-item{background:transparent;border:0;color:#9ca9c0;text-align:left;padding:13px 14px;border-radius:12px;font-weight:600}
