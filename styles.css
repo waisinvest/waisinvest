@@ -330,7 +330,7 @@ border-top: 1px solid var(--line);
 }
 .economic-calendar-panel{
   width 100%;
-  max-width 760px;
+  max-width 980px;
   margin:0 auto 24px;
 }
 .calendar-embed{
@@ -341,7 +341,7 @@ border-top: 1px solid var(--line);
 
 .calendar-embed iframe{
   display:block;
-  width:650px;
+  width:900px;
   max-width:100%
   min-height:467px;
   margin: 0 auto;
