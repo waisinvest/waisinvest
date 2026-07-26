@@ -25,10 +25,10 @@ button{cursor:pointer}
 .brand-name{font-size:28px;font-weight:800;letter-spacing:-1px;color:#fff;white-space:nowrap}
 .brand-sub{font-size:13px;line-height:1.3;color:var(--muted);margin-top:4px}
 .nav-list{display:flex;flex-direction:column;gap:7px;margin-top:34px}
+.nav-item{background:transparent;border:0;color:#9ca9c0;text-align:left;padding:13px 14px;border-radius:12px;font-weight:600}
 .nav-item:hover,.nav-item.active{background:linear-gradient(90deg,rgba(131,164,255,.16),rgba(131,164,255,.03));color:#fff}
 .sidebar-footer{margin-top:auto}
-.system-card{border:1px solid var(--line);background:#0b1628;border-radius:14px;padding:14px}
-.system-card span,.system-card small{display:block;color:var(--muted);font-size:11px}.system-card strong{display:block;margin:5px 0;font-size:14px}
+.system-card{border:1px solid var(--line);background:#0b1628;border-radius:14px;padding:14px}.system-card span,.system-card small{display:block;color:var(--muted);font-size:11px}.system-card strong{display:block;margin:5px 0;font-size:14px}
 .main-area{min-width:0}
 .topbar{height:92px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;background:rgba(7,16,31,.86);backdrop-filter:blur(16px);z-index:10}
 .page-kicker,.panel-kicker,.hero-label{font-size:10px;letter-spacing:1.7px;color:#7184a8;font-weight:700}
