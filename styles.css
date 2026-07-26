@@ -21,10 +21,10 @@ button{cursor:pointer}
 .sidebar{background:rgba(7,15,29,.94);border-right:1px solid var(--line);padding:26px 20px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;backdrop-filter:blur(14px)}
 .brand-block{display:flex;align-items:center;gap:12px}
 .brand-mark{width:72px;height:72px;display:flex;align-items:center;justify-content:center;background:none;border:0;box-shadow:none;overflow:visible;flex-shrink:0}
-.brand-mark img{width:72px;height:72px;object-fit:contain;display:block;transform:none}
-.brand-name{font-size:18px;font-weight:700;letter-spacing:.2px;color:#fff;white-space:nowrap}.brand-name span{color:#fff}
+.brand-mark img{width:72px;height:72px;object-fit:contain;display:block;transform:scale(1.35)}
+.brand-name{font-size:18px;font-weight:700;letter-spacing:-2px;color:#fff;white-space:nowrap}.brand-name span{color:#fff}
+.brand-sub{font-size:10px;line-height:1.5;color:var(--muted);max-width:170px;margin-top:3px}
 .nav-list{display:flex;flex-direction:column;gap:7px;margin-top:34px}
-.nav-item{background:transparent;border:0;color:#9ca9c0;text-align:left;padding:13px 14px;border-radius:12px;font-weight:600}
 .nav-item:hover,.nav-item.active{background:linear-gradient(90deg,rgba(131,164,255,.16),rgba(131,164,255,.03));color:#fff}
 .sidebar-footer{margin-top:auto}
 .system-card{border:1px solid var(--line);background:#0b1628;border-radius:14px;padding:14px}
