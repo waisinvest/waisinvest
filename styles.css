@@ -367,3 +367,72 @@ border-top: 1px solid var(--line);
     min-height:560px;
   }
 }
+.market-tools-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);
+  gap:18px;
+  align-items:stretch;
+  margin-bottom:24px;
+}
+
+.market-tools-grid .economic-calendar-panel{
+  width:100%;
+  max-width:none;
+  margin:0;
+}
+
+.market-tools-grid .calendar-embed iframe{
+  width:100%;
+  max-width:100%;
+  min-height:467px;
+}
+
+.weekly-market-notes{
+  display:flex;
+  flex-direction:column;
+}
+
+.weekly-note-list{
+  display:grid;
+  gap:10px;
+  margin-top:12px;
+}
+
+.weekly-note-list > div{
+  display:grid;
+  grid-template-columns:34px 1fr;
+  gap:10px;
+  align-items:start;
+  padding:10px 0;
+  border-bottom:1px solid var(--line);
+}
+
+.weekly-note-list span{
+  font-size:11px;
+  font-weight:700;
+  color:var(--accent);
+}
+
+.weekly-note-list p{
+  margin:0;
+  font-size:12px;
+  line-height:1.55;
+  color:rgba(255,255,255,.82);
+}
+
+.weekly-risk-note{
+  margin-top:auto;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  font-size:10px;
+  line-height:1.5;
+  color:var(--muted);
+  background:rgba(255,255,255,.025);
+}
+
+@media(max-width:900px){
+  .market-tools-grid{
+    grid-template-columns:1fr;
+  }
+}
