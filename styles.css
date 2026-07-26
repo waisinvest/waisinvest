@@ -431,7 +431,7 @@ border-top: 1px solid var(--line);
   background:rgba(255,255,255,.025);
 }
 
-@media(max-width:900px){
+@media(max-width:700px){
   .market-tools-grid{
     grid-template-columns:1fr;
   }
