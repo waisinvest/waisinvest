@@ -413,12 +413,12 @@
 
     const availableWidth = wrapper.clientWidth;
     const scale = Math.min(1, availableWidth / baseWidth);
-
+const scaledWidth = baseWidth * scale;
     frame.style.width = baseWidth + "px";
     frame.style.height = baseHeight + "px";
-    frame.style.left = "50%";
-    frame.style.transformOrigin = "top center";
-    frame.style.transform = "translateX(-50%) scale(" + scale + ")";
+    frame.style.left = (availableWidth - scaledWidth) / 2 + "px";
+    frame.style.transformOrigin = "top left";
+   frame.style.transform = "scale(" + scale + ")";
 
     wrapper.style.height = baseHeight * scale + "px";
   }
