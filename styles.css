@@ -342,7 +342,7 @@ border-top: 1px solid var(--line);
 
 .calendar-embed iframe{
   display:block;
-  width:900px;
+  width:calc(100% - 4px);
   max-width:100%
   min-height:467px;
   margin: 0 auto;
