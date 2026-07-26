@@ -205,3 +205,11 @@ input[type=range]{width:100%;accent-color:#87a7ff}.risk-scale{display:flex;justi
   .nav-item{padding:12px}
   .watchlist-grid{grid-template-columns:1fr}
 }
+.site-footer{
+padding: 24px 30px 30px;
+margin-top: 24px;
+color:var(--muted);
+font-size: 12px;
+line-height: 1.7;
+border-top: 1px solid var(--line);
+}
