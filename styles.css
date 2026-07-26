@@ -328,3 +328,39 @@ border-top: 1px solid var(--line);
     justify-self:stretch;
   }
 }
+.economic-calendar-panel{
+  margin-bottom:24px;
+}
+
+.calendar-embed{
+  margin-top:12px;
+  overflow:hidden;
+  border-radius:12px;
+}
+
+.calendar-embed iframe{
+  display:block;
+  width:100%;
+  min-height:467px;
+  border:0;
+  border-radius:12px;
+  background:#221a80;
+}
+
+.calendar-powered{
+  margin-top:8px;
+  font-size:11px;
+  color:var(--muted);
+}
+
+.calendar-powered a{
+  color:var(--accent);
+  text-decoration:none;
+  font-weight:700;
+}
+
+@media(max-width:720px){
+  .calendar-embed iframe{
+    min-height:560px;
+  }
+}
