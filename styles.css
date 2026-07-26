@@ -538,3 +538,17 @@ border-top: 1px solid var(--line);
   letter-spacing:.4px;
   color:var(--muted);
 }
+/* Economic Calendar mobile scaling */
+.economic-calendar-scale {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+#economicCalendarFrame {
+  display: block;
+  width: 650px;
+  height: 467px;
+  border: 0;
+  transform-origin: top left;
+}
