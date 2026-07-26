@@ -436,3 +436,38 @@ border-top: 1px solid var(--line);
     grid-template-columns:1fr;
   }
 }
+.technical-summary-panel{
+  width:100%;
+  margin-bottom:24px;
+}
+
+.technical-summary-embed{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  margin-top:12px;
+}
+
+.technical-summary-embed iframe{
+  display:block;
+  width:690px;
+  max-width:100%;
+  height:274px;
+  border:0;
+  border-radius:12px;
+  background:#ffffff;
+}
+
+.technical-powered{
+  width:690px;
+  max-width:100%;
+  font-size:11px;
+  color:var(--muted);
+}
+
+.technical-powered a{
+  color:var(--accent);
+  text-decoration:none;
+  font-weight:700;
+}
