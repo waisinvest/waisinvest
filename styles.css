@@ -73,10 +73,10 @@ input[type=range]{width:100%;accent-color:#87a7ff}.risk-scale{display:flex;justi
 /* ===== WAIS INVEST v2 ===== */
 .brand-mark,
 .brand-mark img{
-  width:58px;
-  height:58px;
+  width:82px;
+  height:82px;
 }
-.brand-mark img{transform:none}
+.brand-mark img{transform:scale(1.35)}
 .brand-name{font-size:18px;font-weight:700;white-space:nowrap}
 .brand-name span{color:var(--accent)}
 .sidebar-overlay{display:none}
