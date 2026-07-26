@@ -472,3 +472,55 @@ border-top: 1px solid var(--line);
   text-decoration:none;
   font-weight:700;
 }
+.daily-thought-archive{
+  width:100%;
+  margin-bottom:24px;
+  padding:20px;
+}
+
+.thought-entry{
+  margin-top:14px;
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:rgba(255,255,255,.025);
+}
+
+.thought-date{
+  margin-bottom:12px;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.7px;
+  color:var(--accent);
+}
+
+.thought-entry .thought-zh{
+  margin:0;
+  font-size:17px;
+  line-height:1.55;
+  font-weight:700;
+  color:rgba(255,255,255,.94);
+}
+
+.thought-entry .thought-en{
+  margin:6px 0 0;
+  font-size:14px;
+  line-height:1.55;
+  font-style:italic;
+  color:rgba(255,255,255,.70);
+}
+
+.thought-reminder{
+  margin-top:16px;
+  padding:12px 14px;
+  border-left:3px solid var(--accent);
+  border-radius:8px;
+  background:rgba(131,164,255,.06);
+  font-size:12px;
+  line-height:1.55;
+  color:var(--muted);
+}
+
+.thought-reminder strong{
+  color:rgba(255,255,255,.90);
+}
