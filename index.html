@@ -404,5 +404,25 @@
   </div>
 
   <script src="app.js"></script>
+  <script>
+  function resizeEconomicCalendar() {
+    const wrapper = document.getElementById("economicCalendarScale");
+    const frame = document.getElementById("economicCalendarFrame");
+
+    if (!wrapper || !frame) return;
+
+    const baseWidth = 650;
+    const baseHeight = 467;
+    const availableWidth = wrapper.clientWidth;
+    const scale = Math.min(1, availableWidth / baseWidth);
+
+    frame.style.transform = `scale(${scale})`;
+    wrapper.style.height = `${baseHeight * scale}px`;
+  }
+
+  window.addEventListener("load", resizeEconomicCalendar);
+  window.addEventListener("resize", resizeEconomicCalendar);
+  window.addEventListener("orientationchange", resizeEconomicCalendar);
+</script>
 </body>
 </html>
