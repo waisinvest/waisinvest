@@ -369,7 +369,7 @@ border-top: 1px solid var(--line);
 }
 .market-tools-grid{
   display:grid;
-  grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);
+  grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);
   gap:18px;
   align-items:stretch;
   margin-bottom:24px;
