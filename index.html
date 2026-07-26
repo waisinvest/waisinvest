@@ -404,25 +404,80 @@
   </div>
 
   <script src="app.js"></script>
-  <script>
-  function resizeEconomicCalendar() {
-    const wrapper = document.getElementById("economicCalendarScale");
-    const frame = document.getElementById("economicCalendarFrame");
+ <script>
+  function resizeInvestingWidget(wrapperId, frameId, baseWidth, baseHeight) {
+    const wrapper = document.getElementById(wrapperId);
+    const frame = document.getElementById(frameId);
 
     if (!wrapper || !frame) return;
 
-    const baseWidth = 650;
-    const baseHeight = 467;
     const availableWidth = wrapper.clientWidth;
     const scale = Math.min(1, availableWidth / baseWidth);
 
-    frame.style.transform = `scale(${scale})`;
-    wrapper.style.height = `${baseHeight * scale}px`;
+    frame.style.width = baseWidth + "px";
+    frame.style.height = baseHeight + "px";
+    frame.style.left = "50%";
+    frame.style.transformOrigin = "top center";
+    frame.style.transform = "translateX(-50%) scale(" + scale + ")";
+
+    wrapper.style.height = baseHeight * scale + "px";
   }
 
-  window.addEventListener("load", resizeEconomicCalendar);
-  window.addEventListener("resize", resizeEconomicCalendar);
-  window.addEventListener("orientationchange", resizeEconomicCalendar);
+  function resizeAllInvestingWidgets() {
+    resizeInvestingWidget(
+      "economicCalendarScale",
+      "economicCalendarFrame",
+      650,
+      467
+    );
+
+    resizeInvestingWidget(
+      "technicalSummaryScale",
+      "technicalSummaryFrame",
+      345,
+      274
+    );
+  }
+
+  function refreshTechnicalSummary() {
+    const frame = document.getElementById("technicalSummaryFrame");
+
+    if (!frame) return;
+
+    const baseUrl =
+      "https://ssltools.investing.com/technical_summary.php" +
+      "?pairs=8830,8849,166,170,178,179" +
+      "&curr-name-color=%230059B0" +
+      "&fields=1h,1d" +
+      "&force_lang=1";
+
+    frame.src = baseUrl + "&wais_refresh=" + Date.now();
+  }
+
+  window.addEventListener("load", function () {
+    resizeAllInvestingWidgets();
+    refreshTechnicalSummary();
+
+    setTimeout(resizeAllInvestingWidgets, 500);
+    setTimeout(resizeAllInvestingWidgets, 1500);
+  });
+
+  window.addEventListener("resize", resizeAllInvestingWidgets);
+
+  window.addEventListener("orientationchange", function () {
+    setTimeout(resizeAllInvestingWidgets, 300);
+  });
+
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) {
+      refreshTechnicalSummary();
+      setTimeout(resizeAllInvestingWidgets, 500);
+    }
+  });
+
+  setInterval(function () {
+    refreshTechnicalSummary();
+  }, 900000);
 </script>
 </body>
 </html>
