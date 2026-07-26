@@ -335,7 +335,7 @@ border-top: 1px solid var(--line);
 }
 .calendar-embed{
   margin-top:12px;
-  padding: 0 12px 12px;
+  padding: 0 20px 14px;
   overflow:hidden;
   border-radius:12px;
 }
