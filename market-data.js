@@ -26,6 +26,8 @@ window.WAIS_MARKET_DATA = {
       stance: "WAIT",
       evidenceConfidence: 88,
       risk: "Medium",
+      entry: 185,
+      target: 235,
       note: "長期AI核心，但高估值及市場波動下不宜追高。"
     },
     {
@@ -34,6 +36,8 @@ window.WAIS_MARKET_DATA = {
       stance: "WAIT",
       evidenceConfidence: 90,
       risk: "Medium",
+      entry: 360,
+      target: 460,
       note: "AI先進製程核心，等待更理想估值及市場確認。"
     },
     {
@@ -42,6 +46,8 @@ window.WAIS_MARKET_DATA = {
       stance: "WAIT",
       evidenceConfidence: 87,
       risk: "Medium",
+      entry: 340,
+      target: 440,
       note: "ASIC及網絡需求強，但估值及AI資本開支風險需監察。"
     },
     {
@@ -50,6 +56,8 @@ window.WAIS_MARKET_DATA = {
       stance: "READY 1",
       evidenceConfidence: 78,
       risk: "Medium High",
+      entry: 175,
+      target: 220,
       note: "接近第一注觀察區，但必須等待價格及市場穩定確認。"
     },
     {
@@ -58,6 +66,8 @@ window.WAIS_MARKET_DATA = {
       stance: "READY 1",
       evidenceConfidence: 82,
       risk: "Medium High",
+      entry: 830,
+      target: 1050,
       note: "HBM及記憶體周期仍有支持，等待回調分段部署。"
     },
     {
@@ -66,6 +76,8 @@ window.WAIS_MARKET_DATA = {
       stance: "WAIT",
       evidenceConfidence: 76,
       risk: "High",
+      entry: 180,
+      target: 240,
       note: "光通訊受惠AI需求，但波動高，暫不追價。"
     },
     {
@@ -74,6 +86,8 @@ window.WAIS_MARKET_DATA = {
       stance: "WAIT",
       evidenceConfidence: 74,
       risk: "High",
+      entry: 670,
+      target: 900,
       note: "光學供應鏈有催化，但價格及競爭風險仍高。"
     },
     {
@@ -82,6 +96,8 @@ window.WAIS_MARKET_DATA = {
       stance: "WATCH",
       evidenceConfidence: 62,
       risk: "Very High",
+      entry: 40,
+      target: 58,
       note: "Serenity重點供應鏈概念，但屬高投機，需驗證收入及訂單。"
     },
     {
@@ -90,6 +106,8 @@ window.WAIS_MARKET_DATA = {
       stance: "WATCH",
       evidenceConfidence: 70,
       risk: "High",
+      entry: 205,
+      target: 275,
       note: "特色製程具潛力，但需要更明確增長催化。"
     },
     {
@@ -98,6 +116,8 @@ window.WAIS_MARKET_DATA = {
       stance: "WATCH",
       evidenceConfidence: 52,
       risk: "Very High",
+      entry: 5.8,
+      target: 9,
       note: "潛在高回報亦高失敗風險，只適合極小注研究倉。"
     }
   ],
