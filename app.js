@@ -287,9 +287,7 @@ function renderWatchlist(){
 
       ${item.note ? `<p class="watch-note">${escapeHTML(item.note)}</p>` : ''}
 
-      <div class="watch-actions">
-        <button class="danger-btn" type="button" onclick="removeWatchItem(${index})">Remove</button>
-      </div>
+    ${autoWatchlist.some(autoItem => autoItem.ticker.toUpperCase() === String(item.ticker).toUpperCase()) ? "" : '<div class="watch-actions"><button class="danger-btn" type="button" onclick="removeWatchItem(' + index + ')">Remove</button></div>'}
     </article>
   `).join('');
 }
