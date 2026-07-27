@@ -7,12 +7,12 @@ let livePricesUpdatedAt = null;
 async function loadLivePrices() {
   try {
     const response = await fetch(
-      stock-prices.json?t=${Date.now()},
+    `stock-prices.json?t=${Date.now()}`,
       { cache: "no-store" }
     );
 
     if (!response.ok) {
-      throw new Error(HTTP ${response.status});
+      throw new Error(`HTTP ${response.status}`);
     }
 
     const data = await response.json();
