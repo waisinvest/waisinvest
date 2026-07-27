@@ -213,8 +213,8 @@ const autoWatchlist = (window.WAIS_MARKET_DATA?.focusStocks || [])
       ticker: stock.ticker,
       status: stock.stance === "READY 1" ? "Ready" : "Watch",
       risk: stock.risk,
-      entry: Number(savedItem?.entry) || 0,
-      target: Number(savedItem?.target) || 0,
+     entry: Number(savedItem?.entry ?? stock.entry) || 0,
+target: Number(savedItem?.target ?? stock.target) || 0,
       note: stock.note
     };
   });
