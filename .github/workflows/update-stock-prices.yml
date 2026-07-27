@@ -53,23 +53,23 @@ jobs:
              "US10Y": "^TNX",
     }
 
-    market_output_path = Path("market-indicators.json")
-    output_path = Path("stock-prices.json")
-          if output_path.exists():
-              with output_path.open("r", encoding="utf-8") as file:
-                  existing_data = json.load(file)
-          else:
-              existing_data = {
-                  "lastUpdated": None,
-                  "marketStatus": "pending",
-                  "currency": "USD",
-                  "prices": {},
-              }
+        market_output_path = Path("market-indicators.json")
+        output_path = Path("stock-prices.json")
 
-          prices = existing_data.get("prices", {})
-          successful_updates = 0
+        if output_path.exists():
+          with output_path.open("r", encoding="utf-8") as file:
+                existing_data = json.load(file)
+        else:
+            existing_data = {
+                "lastUpdated": None,
+                "marketStatus": "pending",
+                "currency": "USD",
+                "prices": {},
+            }
+        prices = existing_data.get("prices", {})
+        successful_updates = 0
 
-          for symbol in symbols:
+        for symbol in symbols:
               try:
                   stock = yf.Ticker(symbol)
                   history = stock.history(
