@@ -335,16 +335,16 @@ border-top: 1px solid var(--line);
 }
 .calendar-embed{
   margin-top:12px;
-  padding: 0 20px 14px;
+  padding: 0 0px 14px;
   overflow:hidden;
   border-radius:12px;
 }
 
 .calendar-embed iframe{
   display:block;
-  width:calc(100% - 4px);
-  max-width:100%
-  min-height:467px;
+  width:100%;
+  max-width:100%;
+  height:467px;
   margin: 0 auto;
   border:0;
   border-radius:12px;
@@ -365,7 +365,7 @@ border-top: 1px solid var(--line);
 
 @media(max-width:720px){
   .calendar-embed iframe{
-    min-height:560px;
+    min-height:0;
   }
 }
 .market-tools-grid{
@@ -385,7 +385,7 @@ border-top: 1px solid var(--line);
 .market-tools-grid .calendar-embed iframe{
   width:100%;
   max-width:100%;
-  min-height:467px;
+  height:467px;
 }
 
 .weekly-market-notes{
