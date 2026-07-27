@@ -350,15 +350,6 @@ $('watchlistForm')?.addEventListener('submit', event => {
   renderWatchlist();
 });
 
-$('clearWatchlist')?.addEventListener('click', () => {
-  if(!watchlist.length) return;
-  if(confirm('確定清除全部 Watchlist？')){
-    watchlist = [];
-    saveWatchlist();
-    renderWatchlist();
-  }
-});
-
 async function initializeApp() {
   await loadLivePrices();
   renderCards(topPicks, "topPicksGrid");
