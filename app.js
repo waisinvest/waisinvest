@@ -349,12 +349,168 @@ $('watchlistForm')?.addEventListener('submit', event => {
   $('watchStatus').value = 'Wait';
   renderWatchlist();
 });
+function formatMarketValue(value, indicatorName) {
+  const number = Number(value);
 
+  if (!Number.isFinite(number)) {
+    return "--";
+  }
+
+  if (indicatorName === "US10Y") {
+    return `${number.toFixed(2)}%`;
+  }
+
+  return number.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+function showMarketChange(elementId, change, changePercent) {
+  const element = $(elementId);
+  if (!element) return;
+
+  const pointChange = Number(change);
+  const percentChange = Number(changePercent);
+
+  element.classList.remove(
+    "market-change-up",
+    "market-change-down",
+    "market-change-flat"
+  );
+
+  if (!Number.isFinite(pointChange) && !Number.isFinite(percentChange)) {
+    element.textContent = "--";
+    element.classList.add("market-change-flat");
+    return;
+  }
+
+  const directionValue = Number.isFinite(percentChange)
+    ? percentChange
+    : pointChange;
+
+  const sign = directionValue > 0 ? "+" : "";
+
+  if (Number.isFinite(pointChange) && Number.isFinite(percentChange)) {
+    element.textContent =
+      `${sign}${pointChange.toFixed(2)} ` +
+      `(${sign}${percentChange.toFixed(2)}%)`;
+  } else if (Number.isFinite(percentChange)) {
+    element.textContent = `${sign}${percentChange.toFixed(2)}%`;
+  } else {
+    element.textContent = `${sign}${pointChange.toFixed(2)}`;
+  }
+
+  if (directionValue > 0) {
+    element.classList.add("market-change-up");
+  } else if (directionValue < 0) {
+    element.classList.add("market-change-down");
+  } else {
+    element.classList.add("market-change-flat");
+  }
+}
+
+async function loadMarketIndicators() {
+  const updatedElement = $("marketIndicatorsUpdated");
+
+  try {
+    const response = await fetch(
+      `market-indicators.json?v=${Date.now()}`,
+      { cache: "no-store" }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Market data request failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const indicators = data.indicators || data;
+
+    const indicatorMap = {
+      SP500: {
+        valueId: "sp500Value",
+        changeId: "sp500Change"
+      },
+      NASDAQ100: {
+        valueId: "nasdaq100Value",
+        changeId: "nasdaq100Change"
+      },
+      SOX: {
+        valueId: "soxValue",
+        changeId: "soxChange"
+      },
+      VIX: {
+        valueId: "vixValue",
+        changeId: "vixChange"
+      },
+      US10Y: {
+        valueId: "us10yValue",
+        changeId: "us10yChange"
+      }
+    };
+
+    Object.entries(indicatorMap).forEach(([name, elementIds]) => {
+      const indicator = indicators[name] || {};
+
+      const value =
+        indicator.value ??
+        indicator.price ??
+        indicator.current ??
+        indicator.close;
+
+      const change =
+        indicator.change ??
+        indicator.pointChange ??
+        indicator.dailyChange;
+
+      const changePercent =
+        indicator.changePercent ??
+        indicator.percentChange ??
+        indicator.changePct;
+
+      const valueElement = $(elementIds.valueId);
+
+      if (valueElement) {
+        valueElement.textContent = formatMarketValue(value, name);
+      }
+
+      showMarketChange(
+        elementIds.changeId,
+        change,
+        changePercent
+      );
+    });
+
+    const updatedTime =
+      data.lastUpdated ||
+      data.updatedAt ||
+      data.timestamp;
+
+    if (updatedElement) {
+      if (updatedTime) {
+        const date = new Date(updatedTime);
+
+        updatedElement.textContent =
+          `更新：${date.toLocaleString("en-CA")}`;
+      } else {
+        updatedElement.textContent = "市場資料已更新";
+      }
+    }
+
+  } catch (error) {
+    console.error("Failed to load market indicators:", error);
+
+    if (updatedElement) {
+      updatedElement.textContent = "市場資料暫時未能載入";
+    }
+  }
+}
 async function initializeApp() {
   await loadLivePrices();
+  await loadMarketIndicators();
+
   renderCards(topPicks, "topPicksGrid");
   renderCards(gems, "hiddenGemsGrid");
   renderWatchlist();
 }
-
 initializeApp();
