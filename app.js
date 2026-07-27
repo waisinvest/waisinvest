@@ -125,7 +125,7 @@ function updateRisk(score){
   $('cashRing').style.background=`conic-gradient(#88a8ff 0 ${s.cash}%,#1d2b45 ${s.cash}% 100%)`;
   localStorage.setItem('waisRiskScore',score);
 }
-const savedRisk=Number(localStorage.getItem('waisRiskScore') || 38);
+const savedRisk=Number(window.WAIS_MARKET_DATA?.riskScore ?? 38);
 $('riskSlider').value=savedRisk;updateRisk(savedRisk);
 $('riskSlider').addEventListener('input',e=>updateRisk(Number(e.target.value)));
 
