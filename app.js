@@ -2,18 +2,18 @@
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD'}).format(n);
 
-const topPicks = [
-  {ticker:'NVDA',company:'NVIDIA',role:'AI Compute',risk:'Medium',rating:'Core',status:'Wait',score:92,note:'AI 加速運算核心，但必須兼顧估值及市場預期。'},
-  {ticker:'TSM',company:'TSMC',role:'Foundry',risk:'Medium',rating:'Core',status:'Wait',score:91,note:'先進製程與先進封裝關鍵供應商。'},
-  {ticker:'AVGO',company:'Broadcom',role:'Networking / ASIC',risk:'Medium',rating:'Core',status:'Wait',score:89,note:'AI networking 與 custom silicon 具長期競爭力。'},
-  {ticker:'MRVL',company:'Marvell',role:'AI Networking',risk:'Medium-High',rating:'Build',status:'Near Entry',score:86,note:'AI interconnect 與 custom silicon 催化劑值得追蹤。'},
-  {ticker:'MU',company:'Micron',role:'HBM / Memory',risk:'High',rating:'Build',status:'Near Entry',score:84,note:'HBM 受惠明顯，但記憶體週期波動大。'},
-  {ticker:'AXTI',company:'AXT',role:'Compound Materials',risk:'High',rating:'Research',status:'Watch',score:73,note:'上游材料潛力高，但財務與客戶集中度需驗證。'},
-  {ticker:'COHR',company:'Coherent',role:'Photonics',risk:'High',rating:'Watch',status:'Wait',score:80,note:'光通訊長期受惠，短期要留意執行與負債。'},
-  {ticker:'LITE',company:'Lumentum',role:'Optical Components',risk:'High',rating:'Watch',status:'Wait',score:78,note:'AI 光通訊相關，但收入波動及客戶週期要留意。'},
-  {ticker:'TSEM',company:'Tower Semiconductor',role:'Specialty Foundry',risk:'Medium',rating:'Watch',status:'Wait',score:76,note:'特色製程穩健，需確認 AI 相關增量。'},
-  {ticker:'AEHR',company:'Aehr Test Systems',role:'Testing',risk:'Very High',rating:'Speculative',status:'Wait',score:68,note:'測試設備具潛力，但收入集中與波動較高。'}
-];
+const topPicks = (window.WAIS_MARKET_DATA?.focusStocks || [])
+  .filter(stock => stock.stance !== "WATCH")
+  .map(stock => ({
+    ticker: stock.ticker,
+    company: stock.ticker,
+    role: stock.category,
+    risk: stock.risk,
+    rating: stock.stance === "READY 1" ? "Build" : "Core",
+    status: stock.stance,
+    score: stock.evidenceConfidence,
+    note: stock.note
+  }));
 
 const gems = [
   {ticker:'AXTI',company:'AXT',role:'AI Materials',risk:'High',rating:'Research',status:'High Priority',score:73,note:'聚焦 InP、GaAs 等化合物半導體材料；需驗證 AI 光通訊需求轉化成盈利嘅速度。'},
