@@ -1,6 +1,30 @@
 
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD'}).format(n);
+let livePrices = {};
+let livePricesUpdatedAt = null;
+
+async function loadLivePrices() {
+  try {
+    const response = await fetch(
+      stock-prices.json?t=${Date.now()},
+      { cache: "no-store" }
+    );
+
+    if (!response.ok) {
+      throw new Error(HTTP ${response.status});
+    }
+
+    const data = await response.json();
+
+    livePrices = data.prices || {};
+    livePricesUpdatedAt = data.lastUpdated || null;
+  } catch (error) {
+    console.error("Unable to load stock prices:", error);
+    livePrices = {};
+    livePricesUpdatedAt = null;
+  }
+}
 
 const topPicks = (window.WAIS_MARKET_DATA?.focusStocks || [])
   .filter(stock => stock.stance !== "WATCH")
@@ -269,16 +293,26 @@ function renderWatchlist(){
         <span class="tag">${escapeHTML(item.risk)} Risk</span>
       </div>
 
-      <div class="watch-prices">
-        <div>
-          <span>Entry</span>
-          <strong>${fmt(item.entry)}</strong>
-        </div>
-        <div>
-          <span>Target</span>
-          <strong>${fmt(item.target)}</strong>
-        </div>
-      </div>
+    <div class="watch-prices">
+  <div>
+    <span>Current Price</span>
+    <strong>${
+      livePrices[String(item.ticker).toUpperCase()]?.price != null
+        ? fmt(livePrices[String(item.ticker).toUpperCase()].price)
+        : "—"
+    }</strong>
+  </div>
+
+  <div>
+    <span>Entry</span>
+    <strong>${fmt(item.entry)}</strong>
+  </div>
+
+  <div>
+    <span>Target</span>
+    <strong>${fmt(item.target)}</strong>
+  </div>
+</div>
 
       <div class="watch-meta">
         <span>Upside</span>
@@ -335,4 +369,9 @@ $('clearWatchlist')?.addEventListener('click', () => {
   }
 });
 
-renderWatchlist();
+async function initializeWatchlist() {
+  await loadLivePrices();
+  renderWatchlist();
+}
+
+initializeWatchlist();
