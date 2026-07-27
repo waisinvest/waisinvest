@@ -411,10 +411,13 @@
 
     if (!wrapper || !frame) return;
 
-  const parentWidth = wrapper.parentElement
-  ? wrapper.parentElement.clientWidth
-  : wrapper.clientWidth;
-const availableWidth = Math.min(parentWidth, baseWidth);
+ const panel = wrapper.closest(
+  ".economic-calendar-panel, .technical-summary-panel"
+);
+const availableWidth = Math.min(
+  panel ? panel.clientWidth - 40 : wrapper.clientWidth,
+  baseWidth
+);
 const scale = availableWidth / baseWidth;
 const scaledWidth = baseWidth * scale;
 wrapper.style.width = availableWidth + "px";
