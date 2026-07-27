@@ -411,9 +411,14 @@
 
     if (!wrapper || !frame) return;
 
-    const availableWidth = wrapper.clientWidth;
-    const scale = Math.min(1, availableWidth / baseWidth);
+  const parentWidth = wrapper.parentElement
+  ? wrapper.parentElement.clientWidth
+  : wrapper.clientWidth;
+const availableWidth = Math.min(parentWidth, baseWidth);
+const scale = availableWidth / baseWidth;
 const scaledWidth = baseWidth * scale;
+wrapper.style.width = availableWidth + "px";
+wrapper.style.margin = "0 auto";
     frame.style.width = baseWidth + "px";
     frame.style.height = baseHeight + "px";
     frame.style.left = (availableWidth - scaledWidth) / 2 + "px";
