@@ -45,9 +45,16 @@ jobs:
               "TSEM",
               "POET",
           ]
+          market_symbols = {
+             "SP500": "^GSPC",
+             "NASDAQ100": "^NDX",
+             "SOX": "^SOX",
+             "VIX": "^VIX",
+             "US10Y": "^TNX",
+    }
 
-          output_path = Path("stock-prices.json")
-
+    market_output_path = Path("market-indicators.json")
+    output_path = Path("stock-prices.json")
           if output_path.exists():
               with output_path.open("r", encoding="utf-8") as file:
                   existing_data = json.load(file)
@@ -95,7 +102,91 @@ jobs:
 
               except Exception as error:
                   print(f"Failed to update {symbol}: {error}")
+market_indicators = {}
+successful_market_updates = 0
 
+    for indicator_name, yahoo_symbol in market_symbols.items():
+        try:
+            indicator = yf.Ticker(yahoo_symbol)
+            history = indicator.history(
+                period="5d",
+                interval="1d",
+                auto_adjust=False,
+                prepost=False,
+            )
+
+            if history.empty:
+                print(f"No market data returned for {indicator_name}")
+                continue
+
+            closes = history["Close"].dropna()
+
+            if closes.empty:
+                print(f"No closing value returned for {indicator_name}")
+                continue
+
+            latest_value = float(closes.iloc[-1])
+            previous_value = (
+                float(closes.iloc[-2])
+                if len(closes) >= 2
+                else latest_value
+            )
+
+            change = latest_value - previous_value
+            change_percent = (
+                (change / previous_value) * 100
+                if previous_value != 0
+                else 0
+            )
+
+            if indicator_name == "US10Y":
+                latest_value = latest_value / 10
+                previous_value = previous_value / 10
+                change = change / 10
+
+            market_indicators[indicator_name] = {
+                "value": round(latest_value, 2),
+                "previousClose": round(previous_value, 2),
+                "change": round(change, 2),
+                "changePercent": round(change_percent, 2),
+            }
+
+            successful_market_updates += 1
+            print(
+                f"{indicator_name}: "
+                f"{latest_value:.2f} "
+                f"({change_percent:+.2f}%)"
+            )
+
+        except Exception as error:
+            print(
+                f"Failed to update market indicator "
+                f"{indicator_name}: {error}"
+            )
+
+    market_output = {
+        "lastUpdated": datetime.now(timezone.utc).isoformat(),
+        "marketStatus": (
+            "updated"
+            if successful_market_updates > 0
+            else "update_failed"
+        ),
+        "currency": "USD",
+        "indicators": market_indicators,
+    }
+
+    with market_output_path.open(
+        "w",
+        encoding="utf-8"
+    ) as file:
+        json.dump(
+            market_output,
+            file,
+            ensure_ascii=False,
+            indent=2
+        )
+        file.write("\n")
+        
           output = {
               "lastUpdated": datetime.now(timezone.utc).isoformat(),
               "marketStatus": (
@@ -117,7 +208,7 @@ jobs:
         run: |
           git config user.name "wais-price-bot"
           git config user.email "wais-price-bot@users.noreply.github.com"
-          git add stock-prices.json
+          git add stock-prices.json market-indicators.json
 
           if git diff --cached --quiet; then
             echo "No price changes to commit."
