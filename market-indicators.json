@@ -1,0 +1,12 @@
+{
+  "lastUpdated": null,
+  "marketStatus": "pending",
+  "currency": "USD",
+  "indicators": {
+    "SP500": null,
+    "NASDAQ100": null,
+    "SOX": null,
+    "VIX": null,
+    "US10Y": null
+  }
+}
