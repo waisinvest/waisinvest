@@ -61,14 +61,17 @@ function renderCards(items, target){
       <div class="stock-meta">
         <div><span>Role</span><b>${x.role}</b></div>
         <div><span>WAIS Score</span><b>${x.score}/100</b></div>
+        <div><span>Current Price</span><b>${
+  livePrices[String(x.ticker).toUpperCase()]?.price != null
+    ? fmt(livePrices[String(x.ticker).toUpperCase()].price)
+    : "—"
+}</b></div>
         <div><span>Risk</span><b>${x.risk}</b></div>
         <div><span>Rating</span><b>${x.rating}</b></div>
       </div>
       <p class="stock-note">${x.note}</p>
     </article>`).join('');
 }
-renderCards(topPicks,'topPicksGrid');
-renderCards(gems,'hiddenGemsGrid');
 
 const navItems = document.querySelectorAll('.nav-item');
 const sections = document.querySelectorAll('.page-section');
@@ -369,9 +372,11 @@ $('clearWatchlist')?.addEventListener('click', () => {
   }
 });
 
-async function initializeWatchlist() {
+async function initializeApp() {
   await loadLivePrices();
+  renderCards(topPicks, "topPicksGrid");
+  renderCards(gems, "hiddenGemsGrid");
   renderWatchlist();
 }
 
-initializeWatchlist();
+initializeApp();
