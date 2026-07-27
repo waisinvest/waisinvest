@@ -15,12 +15,18 @@ const topPicks = (window.WAIS_MARKET_DATA?.focusStocks || [])
     note: stock.note
   }));
 
-const gems = [
-  {ticker:'AXTI',company:'AXT',role:'AI Materials',risk:'High',rating:'Research',status:'High Priority',score:73,note:'聚焦 InP、GaAs 等化合物半導體材料；需驗證 AI 光通訊需求轉化成盈利嘅速度。'},
-  {ticker:'TSEM',company:'Tower Semiconductor',role:'Specialty Foundry',risk:'Medium',rating:'Watch',status:'Watch',score:76,note:'可留意電源管理、射頻及特色製程受惠程度。'},
-  {ticker:'POET',company:'POET Technologies',role:'Photonics',risk:'Very High',rating:'Speculative',status:'Watch',score:62,note:'光子整合平台有想像空間，但商業化與融資風險高。'},
-  {ticker:'IQE',company:'IQE plc',role:'Compound Semiconductor',risk:'Very High',rating:'Speculative',status:'Watch',score:60,note:'材料技術具價值，但要等待財務與需求改善證據。'}
-];
+const gems = (window.WAIS_MARKET_DATA?.focusStocks || [])
+  .filter(stock => stock.stance === "WATCH")
+  .map(stock => ({
+    ticker: stock.ticker,
+    company: stock.ticker,
+    role: stock.category,
+    risk: stock.risk,
+    rating: stock.risk === "Very High" ? "Speculative" : "Research",
+    status: stock.stance,
+    score: stock.evidenceConfidence,
+    note: stock.note
+  }));
 
 function renderCards(items, target){
   $(target).innerHTML = items.map(x => `
