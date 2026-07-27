@@ -1,0 +1,127 @@
+name: Update Stock Prices
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/30 14-22 * * 1-5"
+
+permissions:
+  contents: write
+
+jobs:
+  update-prices:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install yfinance
+        run: pip install yfinance==1.5.1
+
+      - name: Download latest stock prices
+        run: |
+          python - <<'PYTHON'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          import yfinance as yf
+
+          symbols = [
+              "NVDA",
+              "TSM",
+              "AVGO",
+              "MRVL",
+              "MU",
+              "COHR",
+              "LITE",
+              "AXTI",
+              "TSEM",
+              "POET",
+          ]
+
+          output_path = Path("stock-prices.json")
+
+          if output_path.exists():
+              with output_path.open("r", encoding="utf-8") as file:
+                  existing_data = json.load(file)
+          else:
+              existing_data = {
+                  "lastUpdated": None,
+                  "marketStatus": "pending",
+                  "currency": "USD",
+                  "prices": {},
+              }
+
+          prices = existing_data.get("prices", {})
+          successful_updates = 0
+
+          for symbol in symbols:
+              try:
+                  stock = yf.Ticker(symbol)
+                  history = stock.history(
+                      period="1d",
+                      interval="1m",
+                      auto_adjust=False,
+                      prepost=False,
+                  )
+
+                  if history.empty:
+                      history = stock.history(
+                          period="5d",
+                          interval="1d",
+                          auto_adjust=False,
+                      )
+
+                  if history.empty:
+                      print(f"No price returned for {symbol}")
+                      continue
+
+                  latest_price = float(history["Close"].dropna().iloc[-1])
+
+                  prices[symbol] = {
+                      "price": round(latest_price, 2),
+                      "currency": "USD",
+                  }
+
+                  successful_updates += 1
+                  print(f"{symbol}: {latest_price:.2f}")
+
+              except Exception as error:
+                  print(f"Failed to update {symbol}: {error}")
+
+          output = {
+              "lastUpdated": datetime.now(timezone.utc).isoformat(),
+              "marketStatus": (
+                  "updated" if successful_updates > 0 else "update_failed"
+              ),
+              "currency": "USD",
+              "prices": prices,
+          }
+
+          with output_path.open("w", encoding="utf-8") as file:
+              json.dump(output, file, ensure_ascii=False, indent=2)
+              file.write("\n")
+
+          if successful_updates == 0:
+              raise RuntimeError("No stock prices were updated.")
+          PYTHON
+
+      - name: Commit updated prices
+        run: |
+          git config user.name "wais-price-bot"
+          git config user.email "wais-price-bot@users.noreply.github.com"
+          git add stock-prices.json
+
+          if git diff --cached --quiet; then
+            echo "No price changes to commit."
+          else
+            git commit -m "Update stock prices"
+            git push
+          fi
