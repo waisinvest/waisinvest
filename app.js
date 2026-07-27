@@ -200,7 +200,36 @@ document.querySelectorAll('[data-jump]').forEach(item => item.addEventListener('
 
 
 // ===== WAIS INVEST v2: watchlist =====
-let watchlist = JSON.parse(localStorage.getItem('waisWatchlist') || '[]');
+const savedWatchlist = JSON.parse(localStorage.getItem("waisWatchlist") || "[]");
+
+const autoWatchlist = (window.WAIS_MARKET_DATA?.focusStocks || [])
+  .filter(stock => stock.stance === "READY 1" || stock.stance === "WATCH")
+  .map(stock => {
+    const savedItem = savedWatchlist.find(
+      item => String(item.ticker).toUpperCase() === stock.ticker.toUpperCase()
+    );
+
+    return {
+      ticker: stock.ticker,
+      status: stock.stance === "READY 1" ? "Ready" : "Watch",
+      risk: stock.risk,
+      entry: Number(savedItem?.entry) || 0,
+      target: Number(savedItem?.target) || 0,
+      note: stock.note
+    };
+  });
+
+let watchlist = [
+  ...autoWatchlist,
+  ...savedWatchlist.filter(
+    savedItem =>
+      !autoWatchlist.some(
+        autoItem =>
+          autoItem.ticker.toUpperCase() ===
+          String(savedItem.ticker).toUpperCase()
+      )
+  )
+];
 
 const escapeHTML = (value='') => String(value)
   .replaceAll('&','&amp;')
