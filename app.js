@@ -133,7 +133,6 @@ $('holdingForm').addEventListener('submit',e=>{
   localStorage.setItem('waisHoldings',JSON.stringify(holdings));
   e.target.reset(); renderHoldings();
 });
-$('clearHoldings').addEventListener('click',()=>{holdings=[];localStorage.removeItem('waisHoldings');renderHoldings();});
 renderHoldings();
 
 function riskState(score){
