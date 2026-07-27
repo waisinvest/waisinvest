@@ -185,18 +185,6 @@ $('journalForm').addEventListener('submit',e=>{
 });
 renderJournal();
 
-$('saveSnapshotBtn').addEventListener('click',()=>{
-  const snapshot={
-    savedAt:new Date().toISOString(),
-    riskScore:Number(localStorage.getItem('waisRiskScore')||38),
-    holdings,
-    journal
-  };
-  const blob=new Blob([JSON.stringify(snapshot,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='wais-snapshot.json';a.click();
-  URL.revokeObjectURL(url);
-});
 
 
 // ===== WAIS INVEST v2: mobile menu =====
