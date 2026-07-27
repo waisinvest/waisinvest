@@ -1,12 +1,41 @@
 {
-  "lastUpdated": null,
-  "marketStatus": "pending",
-  "currency": "USD",
+  "lastUpdated": "2026-07-27T07:31:09.951034+00:00",
+  "marketStatus": "updated",
   "indicators": {
-    "SP500": null,
-    "NASDAQ100": null,
-    "SOX": null,
-    "VIX": null,
-    "US10Y": null
+    "SP500": {
+      "symbol": "^GSPC",
+      "value": 7411.98,
+      "previousClose": 7408.3,
+      "change": 3.68,
+      "changePercent": 0.05
+    },
+    "NASDAQ100": {
+      "symbol": "^NDX",
+      "value": 28128.34,
+      "previousClose": 28454.81,
+      "change": -326.47,
+      "changePercent": -1.15
+    },
+    "SOX": {
+      "symbol": "^SOX",
+      "value": 11818.88,
+      "previousClose": 12343.84,
+      "change": -524.96,
+      "changePercent": -4.25
+    },
+    "VIX": {
+      "symbol": "^VIX",
+      "value": 17.64,
+      "previousClose": 18.58,
+      "change": -0.94,
+      "changePercent": -5.06
+    },
+    "US10Y": {
+      "symbol": "^TNX",
+      "value": 4.68,
+      "previousClose": 4.7,
+      "change": -0.02,
+      "changePercent": -0.51
+    }
   }
 }
