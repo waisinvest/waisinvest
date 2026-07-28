@@ -1,41 +1,41 @@
 {
-  "lastUpdated": "2026-07-27T22:45:22.599598+00:00",
+  "lastUpdated": "2026-07-28T22:40:34.466781+00:00",
   "marketStatus": "updated",
   "indicators": {
     "SP500": {
       "symbol": "^GSPC",
-      "value": 7413.18,
-      "previousClose": 7411.98,
-      "change": 1.2,
-      "changePercent": 0.02
+      "value": 7428.78,
+      "previousClose": 7413.18,
+      "change": 15.6,
+      "changePercent": 0.21
     },
     "NASDAQ100": {
       "symbol": "^NDX",
-      "value": 28039.21,
-      "previousClose": 28128.34,
-      "change": -89.13,
-      "changePercent": -0.32
+      "value": 27763.13,
+      "previousClose": 28039.21,
+      "change": -276.08,
+      "changePercent": -0.98
     },
     "SOX": {
       "symbol": "^SOX",
-      "value": 11554.88,
-      "previousClose": 11818.88,
-      "change": -264.0,
-      "changePercent": -2.23
+      "value": 11035.68,
+      "previousClose": 11554.88,
+      "change": -519.2,
+      "changePercent": -4.49
     },
     "VIX": {
       "symbol": "^VIX",
-      "value": 18.67,
-      "previousClose": 18.58,
-      "change": 0.09,
-      "changePercent": 0.48
+      "value": 18.21,
+      "previousClose": 18.67,
+      "change": -0.46,
+      "changePercent": -2.46
     },
     "US10Y": {
       "symbol": "^TNX",
-      "value": 4.64,
-      "previousClose": 4.68,
+      "value": 4.6,
+      "previousClose": 4.64,
       "change": -0.04,
-      "changePercent": -0.81
+      "changePercent": -0.8
     }
   }
 }
