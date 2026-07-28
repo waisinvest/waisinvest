@@ -1,46 +1,46 @@
 {
-  "lastUpdated": "2026-07-27T19:01:16.878262+00:00",
+  "lastUpdated": "2026-07-28T18:55:06.661231+00:00",
   "marketStatus": "updated",
   "currency": "USD",
   "prices": {
     "NVDA": {
-      "price": 197.24,
+      "price": 196.96,
       "currency": "USD"
     },
     "TSM": {
-      "price": 395.27,
+      "price": 391.41,
       "currency": "USD"
     },
     "AVGO": {
-      "price": 382.25,
+      "price": 380.63,
       "currency": "USD"
     },
     "MRVL": {
-      "price": 188.39,
+      "price": 174.11,
       "currency": "USD"
     },
     "MU": {
-      "price": 889.5,
+      "price": 819.69,
       "currency": "USD"
     },
     "COHR": {
-      "price": 261.78,
+      "price": 240.99,
       "currency": "USD"
     },
     "LITE": {
-      "price": 712.52,
+      "price": 641.96,
       "currency": "USD"
     },
     "AXTI": {
-      "price": 47.37,
+      "price": 42.05,
       "currency": "USD"
     },
     "TSEM": {
-      "price": 219.99,
+      "price": 202.49,
       "currency": "USD"
     },
     "POET": {
-      "price": 6.93,
+      "price": 6.63,
       "currency": "USD"
     }
   }
