@@ -138,7 +138,7 @@ renderHoldings();
 function riskState(score){
   if(score<=20)return {mode:'AGGRESSIVE',cash:15,label:'Aggressive',def:'NORMAL'};
   if(score<=40)return {mode:'WAIT',cash:25,label:'Normal',def:'NORMAL'};
-  if(score<=60)return {mode:'CAUTIOUS',cash:40,label:'Cautious',def:'WARNING'};
+  if(score<=60)return {mode:'CAUTIOUS',cash:40,label:'Cautious',def:'CAUTIOUS'};
   if(score<=80)return {mode:'DEFENSE',cash:60,label:'Defensive',def:'DEFENSIVE'};
   return {mode:'MOSTLY CASH',cash:85,label:'Crisis',def:'CRISIS'};
 }
