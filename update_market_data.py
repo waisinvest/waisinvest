@@ -7,12 +7,15 @@ import yfinance as yf
 
 MARKET_SYMBOLS = {
     "SP500": "^GSPC",
+    "NASDAQ": "^IXIC",
     "NASDAQ100": "^NDX",
+    "DOW": "^DJI",
     "SOX": "^SOX",
     "VIX": "^VIX",
     "US10Y": "^TNX",
+    "HSI": "^HSI",
+    "HSTECH": "HSTECH.HK",
 }
-
 OUTPUT_PATH = Path("market-indicators.json")
 
 
