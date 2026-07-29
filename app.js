@@ -427,7 +427,7 @@ async function loadMarketIndicators() {
     const indicators = data.indicators || data;
 
     const indicatorMap = {
-      const indicatorMap = {
+    
   SP500: {
     valueId: "sp500Value",
     changeId: "sp500Change"
