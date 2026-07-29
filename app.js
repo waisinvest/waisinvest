@@ -427,27 +427,44 @@ async function loadMarketIndicators() {
     const indicators = data.indicators || data;
 
     const indicatorMap = {
-      SP500: {
-        valueId: "sp500Value",
-        changeId: "sp500Change"
-      },
-      NASDAQ100: {
-        valueId: "nasdaq100Value",
-        changeId: "nasdaq100Change"
-      },
-      SOX: {
-        valueId: "soxValue",
-        changeId: "soxChange"
-      },
-      VIX: {
-        valueId: "vixValue",
-        changeId: "vixChange"
-      },
-      US10Y: {
-        valueId: "us10yValue",
-        changeId: "us10yChange"
-      }
-    };
+      const indicatorMap = {
+  SP500: {
+    valueId: "sp500Value",
+    changeId: "sp500Change"
+  },
+  NASDAQ: {
+    valueId: "nasdaqValue",
+    changeId: "nasdaqChange"
+  },
+  NASDAQ100: {
+    valueId: "nasdaq100Value",
+    changeId: "nasdaq100Change"
+  },
+  DOW: {
+    valueId: "dowValue",
+    changeId: "dowChange"
+  },
+  SOX: {
+    valueId: "soxValue",
+    changeId: "soxChange"
+  },
+  VIX: {
+    valueId: "vixValue",
+    changeId: "vixChange"
+  },
+  US10Y: {
+    valueId: "us10yValue",
+    changeId: "us10yChange"
+  },
+  HSI: {
+    valueId: "hsiValue",
+    changeId: "hsiChange"
+  },
+  HSTECH: {
+    valueId: "hstechValue",
+    changeId: "hstechChange"
+  }
+};
 
     Object.entries(indicatorMap).forEach(([name, elementIds]) => {
       const indicator = indicators[name] || {};
