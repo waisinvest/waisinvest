@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-03T22:44:07.802513+00:00",
+  "lastUpdated": "2026-08-04T03:21:42.290001+00:00",
   "marketStatus": "updated",
   "indicators": {
     "SP500": {
@@ -53,15 +53,15 @@
     },
     "HSI": {
       "symbol": "^HSI",
-      "value": 25884.43,
-      "previousClose": 25858.88,
-      "change": 25.55,
-      "changePercent": 0.1
+      "value": 25875.7,
+      "previousClose": 25884.43,
+      "change": -8.73,
+      "changePercent": -0.03
     },
     "HSTECH": {
       "symbol": "HSTECH.HK",
-      "value": 4875.61,
-      "previousClose": 4875.61,
+      "value": 4850.69,
+      "previousClose": 4850.69,
       "change": 0.0,
       "changePercent": 0.0
     }
