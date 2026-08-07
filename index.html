@@ -489,10 +489,17 @@
  const panel = wrapper.closest(
   ".economic-calendar-panel, .technical-summary-panel"
 );
+const containerWidth = panel ? panel.clientWidth : wrapper.clientWidth;
+
+if (!containerWidth || containerWidth <= 40) {
+  return;
+}
+
 const availableWidth = Math.min(
-  panel ? panel.clientWidth - 40 : wrapper.clientWidth,
+  containerWidth - 40,
   baseWidth
 );
+
 const scale = availableWidth / baseWidth;
 const scaledWidth = baseWidth * scale;
 wrapper.style.width = availableWidth + "px";
