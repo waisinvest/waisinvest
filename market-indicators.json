@@ -1,55 +1,55 @@
 {
-  "lastUpdated": "2026-08-07T16:37:17.524932+00:00",
+  "lastUpdated": "2026-08-07T19:56:08.873413+00:00",
   "marketStatus": "updated",
   "indicators": {
     "SP500": {
       "symbol": "^GSPC",
-      "value": 7743.2,
+      "value": 7753.11,
       "previousClose": 7709.96,
-      "change": 33.24,
-      "changePercent": 0.43
+      "change": 43.15,
+      "changePercent": 0.56
     },
     "NASDAQ100": {
       "symbol": "^NDX",
-      "value": 29619.78,
+      "value": 29708.21,
       "previousClose": 29373.33,
-      "change": 246.45,
-      "changePercent": 0.84
+      "change": 334.88,
+      "changePercent": 1.14
     },
     "SOX": {
       "symbol": "^SOX",
-      "value": 12275.24,
+      "value": 12321.71,
       "previousClose": 12048.69,
-      "change": 226.55,
-      "changePercent": 1.88
+      "change": 273.02,
+      "changePercent": 2.27
     },
     "VIX": {
       "symbol": "^VIX",
-      "value": 14.97,
+      "value": 14.86,
       "previousClose": 15.15,
-      "change": -0.18,
-      "changePercent": -1.19
+      "change": -0.29,
+      "changePercent": -1.91
     },
     "US10Y": {
       "symbol": "^TNX",
-      "value": 4.65,
+      "value": 4.66,
       "previousClose": 4.67,
-      "change": -0.02,
-      "changePercent": -0.39
+      "change": -0.01,
+      "changePercent": -0.21
     },
     "NASDAQ": {
       "symbol": "^IXIC",
-      "value": 26607.69,
+      "value": 26683.4,
       "previousClose": 26348.35,
-      "change": 259.34,
-      "changePercent": 0.98
+      "change": 335.05,
+      "changePercent": 1.27
     },
     "DOW": {
       "symbol": "^DJI",
-      "value": 53939.9,
+      "value": 54006.47,
       "previousClose": 53885.1,
-      "change": 54.8,
-      "changePercent": 0.1
+      "change": 121.37,
+      "changePercent": 0.23
     },
     "HSI": {
       "symbol": "^HSI",
