@@ -1,67 +1,67 @@
 {
-  "lastUpdated": "2026-08-05T19:05:39.390006+00:00",
+  "lastUpdated": "2026-08-07T03:38:38.613828+00:00",
   "marketStatus": "updated",
   "indicators": {
     "SP500": {
       "symbol": "^GSPC",
-      "value": 7740.65,
-      "previousClose": 7736.52,
-      "change": 4.13,
-      "changePercent": 0.05
+      "value": 7709.96,
+      "previousClose": 7723.55,
+      "change": -13.59,
+      "changePercent": -0.18
     },
     "NASDAQ100": {
       "symbol": "^NDX",
-      "value": 29638.48,
-      "previousClose": 29733.16,
-      "change": -94.68,
-      "changePercent": -0.32
+      "value": 29373.33,
+      "previousClose": 29487.79,
+      "change": -114.46,
+      "changePercent": -0.39
     },
     "SOX": {
       "symbol": "^SOX",
-      "value": 12157.49,
-      "previousClose": 12179.26,
-      "change": -21.77,
-      "changePercent": -0.18
+      "value": 12048.69,
+      "previousClose": 12008.88,
+      "change": 39.81,
+      "changePercent": 0.33
     },
     "VIX": {
       "symbol": "^VIX",
-      "value": 15.59,
-      "previousClose": 16.5,
-      "change": -0.91,
-      "changePercent": -5.52
+      "value": 15.15,
+      "previousClose": 15.81,
+      "change": -0.66,
+      "changePercent": -4.17
     },
     "US10Y": {
       "symbol": "^TNX",
-      "value": 4.62,
-      "previousClose": 4.63,
-      "change": -0.01,
-      "changePercent": -0.26
+      "value": 4.67,
+      "previousClose": 4.62,
+      "change": 0.05,
+      "changePercent": 1.15
     },
     "NASDAQ": {
       "symbol": "^IXIC",
-      "value": 26450.42,
-      "previousClose": 26584.99,
-      "change": -134.57,
-      "changePercent": -0.51
+      "value": 26348.35,
+      "previousClose": 26363.44,
+      "change": -15.09,
+      "changePercent": -0.06
     },
     "DOW": {
       "symbol": "^DJI",
-      "value": 54487.79,
-      "previousClose": 54085.88,
-      "change": 401.91,
-      "changePercent": 0.74
+      "value": 53885.1,
+      "previousClose": 54349.12,
+      "change": -464.02,
+      "changePercent": -0.85
     },
     "HSI": {
       "symbol": "^HSI",
-      "value": 25852.92,
-      "previousClose": 26009.4,
-      "change": -156.48,
-      "changePercent": -0.6
+      "value": 25540.59,
+      "previousClose": 25530.28,
+      "change": 10.31,
+      "changePercent": 0.04
     },
     "HSTECH": {
       "symbol": "HSTECH.HK",
-      "value": 4933.07,
-      "previousClose": 4933.07,
+      "value": 4829.32,
+      "previousClose": 4829.32,
       "change": 0.0,
       "changePercent": 0.0
     }
