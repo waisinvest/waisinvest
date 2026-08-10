@@ -442,15 +442,15 @@
               <div class="track-note"><span id="incomeYieldMatchCount">0</span> ETFs符合目前篩選</div>
             </div>
             <div class="income-filter-row">
-              <label for="incomeYieldFilter">最低估算年化現金收入率</label>
+              <label for="incomeYieldFilter">最低年化 Distribution Yield</label>
               <select id="incomeYieldFilter">
-                <option value="0">全部</option>
-                <option value="3">≥ 3% annualized</option>
-                <option value="5" selected>≥ 5% annualized</option>
-                <option value="8">≥ 8% annualized</option>
-                <option value="10">≥ 10% annualized</option>
+                <option value="3" selected>≥ 3%</option>
+                <option value="5">≥ 5%</option>
+                <option value="10">≥ 10%</option>
+                <option value="20">≥ 20%</option>
+                <option value="30">≥ 30%</option>
               </select>
-              <span class="yield-filter-note">篩選按年化 T12M Distribution Yield；不是每星期回報。卡片主顯示會換算成「估算每期現金 Yield」及「每 USD 10,000 約收多少現金」。實際分派會變動，亦可能包含 option income 或 ROC。</span>
+              <span class="yield-filter-note">正式 Income Universe 最低門檻為年化 Distribution Yield ≥3%。Yield 越高不代表越安全；covered-call / option ETF 的分派可能包含 option income 或 ROC。</span>
             </div>
           </article>
 
@@ -589,11 +589,11 @@
           <article class="panel">
             <div class="panel-head"><h3>Defense Levels</h3></div>
             <div class="defense-grid">
-              <div><span class="green-dot"></span><b>0–20 Aggressive</b><p>可較積極分段建倉。</p></div>
-              <div><span class="blue-dot"></span><b>21–40 Normal</b><p>正常配置，保留現金。</p></div>
-              <div><span class="yellow-dot"></span><b>41–60 Cautious</b><p>減慢買入，增加驗證。</p></div>
-              <div><span class="orange-dot"></span><b>61–80 Defensive</b><p>提高現金，減少高風險持倉。</p></div>
-              <div><span class="red-dot"></span><b>81–100 Mostly Cash</b><p>保護資金為先。</p></div>
+              <div class="defense-level level-aggressive"><span class="green-dot"></span><b>0–20 Aggressive</b><p>可較積極分段建倉。</p></div>
+              <div class="defense-level level-normal"><span class="blue-dot"></span><b>21–40 Normal</b><p>正常配置，保留現金。</p></div>
+              <div class="defense-level level-cautious"><span class="yellow-dot"></span><b>41–60 Cautious</b><p>減慢買入，增加驗證。</p></div>
+              <div class="defense-level level-defensive"><span class="orange-dot"></span><b>61–80 Defensive</b><p>提高現金，減少高風險持倉。</p></div>
+              <div class="defense-level level-mostly-cash"><span class="red-dot"></span><b>81–100 Mostly Cash</b><p>保護資金為先。</p></div>
             </div>
           </article>
         </section>
