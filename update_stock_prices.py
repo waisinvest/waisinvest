@@ -33,3 +33,4 @@ def main():
  OUT.write_text(json.dumps({"lastUpdated":datetime.now(timezone.utc).isoformat(),"marketStatus":"updated" if ok else "update_failed","dataStatus":"Completed daily close; NOT REAL-TIME","prices":prices},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
  if not ok:raise RuntimeError('No prices updated')
 if __name__=='__main__':main()
+
