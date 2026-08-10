@@ -59,8 +59,10 @@ def fetch_text(url):
 def update_weekly_events():
     existing = load_json(EVENTS_PATH, {"events": []})
     now_et = datetime.now(timezone.utc)
-    start = now_et.date()
-    end = start + timedelta(days=7)
+    today = now_et.date()
+    # Calendar window = current Monday through end of next Sunday.
+    start = today - timedelta(days=today.weekday())
+    end = start + timedelta(days=13)
     events = []
 
     # BLS official ICS (best effort)
@@ -97,7 +99,7 @@ def update_weekly_events():
         save_json(EVENTS_PATH, {
             "lastUpdated": datetime.now(timezone.utc).isoformat(),
             "window": {"from": start.isoformat(), "to": end.isoformat()},
-            "dataStatus": "Official release schedule; verify again before trading",
+            "dataStatus": "Current week + next week official release schedule; verify again before trading",
             "events": events,
         })
         print(f"weekly-events.json updated with {len(events)} event(s).")
