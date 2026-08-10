@@ -381,20 +381,111 @@
 
 
         <section class="page-section" id="income">
-          <div class="section-banner"><div><span class="panel-kicker">WAIS INCOME SIGNAL ENGINE</span><h2>Income ETFs</h2><p>Weekly + Monthly 收入策略分開管理；價格、分派及日期盡量自動更新，顏色代表今日行動。</p></div></div>
+          <div class="section-banner">
+            <div>
+              <span class="panel-kicker">WAIS INCOME SIGNAL ENGINE</span>
+              <h2>Income ETFs</h2>
+              <p>Weekly + Monthly 收入策略分開管理；價格、分派及日期盡量自動更新，顏色代表今日行動。</p>
+            </div>
+          </div>
+
           <div class="signal-legend panel">
-            <span class="signal-chip signal-green">GREEN · READY INCOME 1</span><span class="signal-chip signal-yellow">YELLOW · WATCH INCOME</span><span class="signal-chip signal-orange">ORANGE · WAIT / CAUTIOUS</span><span class="signal-chip signal-red">RED · DEFENSE / AVOID</span><span class="signal-chip signal-blue">BLUE · RESEARCH</span>
+            <span class="signal-chip signal-green">GREEN · READY INCOME 1</span>
+            <span class="signal-chip signal-yellow">CYAN · WATCH INCOME</span>
+            <span class="signal-chip signal-orange">ORANGE · WAIT / CAUTIOUS</span>
+            <span class="signal-chip signal-red">RED · DEFENSE / AVOID</span>
+            <span class="signal-chip signal-blue">VIOLET · RESEARCH</span>
           </div>
+
           <div class="metrics-grid">
-            <article class="metric-card signal-metric signal-green-soft"><span>Weekly Income Ready</span><strong><span id="weeklyIncomeReadyCount">0</span></strong><p>目前符合 Weekly Income 第一注條件</p></article>
-            <article class="metric-card signal-metric signal-yellow-soft"><span>Monthly Income Ready</span><strong><span id="monthlyIncomeReadyCount">0</span></strong><p>目前符合 Monthly Income 第一注條件</p></article>
-            <article class="metric-card signal-metric signal-orange-soft"><span>Income Defense</span><strong id="incomeDefenseStatus">CAUTIOUS</strong><p>收入策略的整體防守狀態</p></article>
-            <article class="metric-card"><span>Suggested Income Cash</span><strong><span id="incomeCashReserve">30</span><small>%</small></strong><p>等待較佳價格及維持收入策略機動性</p></article>
+            <article class="metric-card signal-metric signal-green-soft">
+              <span>Weekly Income Ready</span>
+              <strong><span id="weeklyIncomeReadyCount">0</span></strong>
+              <p>目前符合 Weekly Income 第一注條件</p>
+            </article>
+            <article class="metric-card signal-metric signal-yellow-soft">
+              <span>Monthly Income Ready</span>
+              <strong><span id="monthlyIncomeReadyCount">0</span></strong>
+              <p>目前符合 Monthly Income 第一注條件</p>
+            </article>
+            <article class="metric-card signal-metric signal-orange-soft">
+              <span>Income Defense</span>
+              <strong id="incomeDefenseStatus">CAUTIOUS</strong>
+              <p>收入策略的整體防守狀態</p>
+            </article>
+            <article class="metric-card">
+              <span>Suggested Income Cash</span>
+              <strong><span id="incomeCashReserve">30</span><small>%</small></strong>
+              <p>等待較佳價格及維持收入策略機動性</p>
+            </article>
           </div>
-          <article class="panel income-master-panel"><div class="panel-head"><div><span class="panel-kicker">WAIS INCOME DATA STATUS</span><h3>Income Signal Board</h3></div><div class="weekly-review-date" id="incomeUpdated">價格及分派資料載入中…</div></div><div class="weekly-risk-note" id="incomeSystemNote">顏色是行動訊號；價格／分派／SMA 由資料檔自動更新。READY 1 仍需符合 WAIS Income 質素與風險條件，不會單靠高 Yield 自動升級。</div></article>
-          <article class="panel income-track-panel"><div class="panel-head"><div><span class="panel-kicker">WEEKLY INCOME</span><h3>Weekly Income｜每週收入</h3></div><div class="track-note">Core + Tactical 分開</div></div><div class="cards-grid" id="weeklyIncomeGrid"></div></article>
-          <article class="panel income-track-panel"><div class="panel-head"><div><span class="panel-kicker">MONTHLY INCOME</span><h3>Monthly Income｜每月收入</h3></div><div class="track-note">Dividend + Covered Call + Equity Premium</div></div><div class="cards-grid" id="monthlyIncomeGrid"></div></article>
-          <article class="panel income-track-panel"><div class="panel-head"><div><span class="panel-kicker">TACTICAL / HIGH INCOME</span><h3>Tactical Income｜高收入策略</h3></div><div class="track-note">較高 NAV / ROC / Upside Drag 風險</div></div><div class="cards-grid" id="tacticalIncomeGrid"></div></article>
+
+          <article class="panel income-master-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">WAIS INCOME DATA STATUS</span>
+                <h3>Income Signal Board</h3>
+              </div>
+              <div class="weekly-review-date" id="incomeUpdated">價格及分派資料載入中…</div>
+            </div>
+            <div class="weekly-risk-note" id="incomeSystemNote">
+              顏色是行動訊號；價格／分派／SMA 由資料檔自動更新。READY 1 仍需符合 WAIS Income 質素與風險條件，不會單靠高 Yield 自動升級。
+            </div>
+          </article>
+
+          <article class="panel income-filter-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">WAIS INCOME YIELD FILTER</span>
+                <h3>Income Yield Selector｜收入率篩選</h3>
+              </div>
+              <div class="track-note"><span id="incomeYieldMatchCount">0</span> ETFs符合目前篩選</div>
+            </div>
+            <div class="income-filter-row">
+              <label for="incomeYieldFilter">最低 T12M Distribution Yield</label>
+              <select id="incomeYieldFilter">
+                <option value="0">全部</option>
+                <option value="3">≥ 3%</option>
+                <option value="5" selected>≥ 5%</option>
+                <option value="8">≥ 8%</option>
+                <option value="10">≥ 10%</option>
+              </select>
+              <span class="yield-filter-note">預設 ≥5%。Covered-call / option ETF 的 Distribution Yield 不等於保證回報，亦可能包含 option income 或 ROC。</span>
+            </div>
+          </article>
+
+          <article class="panel income-track-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">WEEKLY INCOME</span>
+                <h3>Weekly Income｜每週收入</h3>
+              </div>
+              <div class="track-note">Core + Tactical 分開</div>
+            </div>
+            <div class="cards-grid" id="weeklyIncomeGrid"></div>
+          </article>
+
+          <article class="panel income-track-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">MONTHLY INCOME</span>
+                <h3>Monthly Income｜每月收入</h3>
+              </div>
+              <div class="track-note">Dividend + Covered Call + Equity Premium</div>
+            </div>
+            <div class="cards-grid" id="monthlyIncomeGrid"></div>
+          </article>
+
+          <article class="panel income-track-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">TACTICAL / HIGH INCOME</span>
+                <h3>Tactical Income｜高收入策略</h3>
+              </div>
+              <div class="track-note">較高 NAV / ROC / Upside Drag 風險</div>
+            </div>
+            <div class="cards-grid" id="tacticalIncomeGrid"></div>
+          </article>
         </section>
 
         <section class="page-section" id="research">
@@ -410,7 +501,7 @@
             <div class="panel-head">
               <div>
                 <span class="panel-kicker">WAIS VERIFIED EVENTS</span>
-                <h3>Economic Calendar｜本週重要經濟事件</h3>
+                <h3>Economic Calendar｜本週＋下週重要事件</h3>
               </div>
               <div class="weekly-review-date" id="economicEventsUpdated">Verified official schedules</div>
             </div>
