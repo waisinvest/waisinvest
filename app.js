@@ -1,6 +1,8 @@
 
+
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD'}).format(n);
+const fmtUSD = (n) => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);
 let livePrices = {};
 let livePricesUpdatedAt = null;
 
@@ -26,27 +28,29 @@ async function loadLivePrices() {
   }
 }
 
-const topPicks = (window.WAIS_MARKET_DATA?.focusStocks || [])
-  .filter(stock => stock.stance !== "WATCH")
+const stockUniverse = window.WAIS_MARKET_DATA?.focusStocks || [];
+
+const topPicks = stockUniverse
+  .filter(stock => stock.bucket === "TOP_PICK")
   .map(stock => ({
     ticker: stock.ticker,
-    company: stock.ticker,
+    company: stock.company || stock.ticker,
     role: stock.category,
     risk: stock.risk,
-    rating: stock.stance === "READY 1" ? "Build" : "Core",
+    rating: stock.rating || (stock.stance === "READY 1" ? "Build" : "Core"),
     status: stock.stance,
     score: stock.evidenceConfidence,
     note: stock.note
   }));
 
-const gems = (window.WAIS_MARKET_DATA?.focusStocks || [])
-  .filter(stock => stock.stance === "WATCH")
+const gems = stockUniverse
+  .filter(stock => stock.bucket === "HIDDEN_GEM")
   .map(stock => ({
     ticker: stock.ticker,
-    company: stock.ticker,
+    company: stock.company || stock.ticker,
     role: stock.category,
     risk: stock.risk,
-    rating: stock.risk === "Very High" ? "Speculative" : "Research",
+    rating: stock.rating || (stock.risk === "Very High" ? "Speculative" : "Research"),
     status: stock.stance,
     score: stock.evidenceConfidence,
     note: stock.note
@@ -63,7 +67,7 @@ function renderCards(items, target){
         <div><span>WAIS Score</span><b>${x.score}/100</b></div>
         <div><span>Current Price</span><b>${
   livePrices[String(x.ticker).toUpperCase()]?.price != null
-    ? fmt(livePrices[String(x.ticker).toUpperCase()].price)
+    ? fmtUSD(livePrices[String(x.ticker).toUpperCase()].price)
     : "—"
 }</b></div>
         <div><span>Risk</span><b>${x.risk}</b></div>
@@ -135,15 +139,21 @@ $('holdingForm').addEventListener('submit',e=>{
 });
 renderHoldings();
 
-function riskState(score){
-  if(score<=20)return {mode:'AGGRESSIVE',cash:15,label:'Aggressive',def:'NORMAL'};
-  if(score<=40)return {mode:'WAIT',cash:25,label:'Normal',def:'NORMAL'};
-  if(score<=60)return {mode:'CAUTIOUS',cash:40,label:'Cautious',def:'CAUTIOUS'};
-  if(score<=80)return {mode:'DEFENSE',cash:60,label:'Defensive',def:'DEFENSIVE'};
-  return {mode:'MOSTLY CASH',cash:85,label:'Crisis',def:'CRISIS'};
+function riskState(score, cashOverride = null){
+  let state;
+  if(score<=20) state = {mode:'AGGRESSIVE',cash:15,label:'Aggressive',def:'NORMAL'};
+  else if(score<=40) state = {mode:'WAIT',cash:25,label:'Normal / Selective',def:'NORMAL'};
+  else if(score<=60) state = {mode:'CAUTIOUS',cash:30,label:'Cautious',def:'CAUTIOUS'};
+  else if(score<=80) state = {mode:'DEFENSE',cash:50,label:'Defensive',def:'DEFENSIVE'};
+  else state = {mode:'MOSTLY CASH',cash:75,label:'Crisis',def:'CRISIS'};
+
+  if(Number.isFinite(Number(cashOverride))){
+    state.cash = Number(cashOverride);
+  }
+  return state;
 }
-function updateRisk(score){
-  const s=riskState(score);
+function updateRisk(score, cashOverride = null){
+  const s=riskState(score, cashOverride);
   $('riskScoreMetric').textContent=score;
   $('riskProgress').style.width=score+'%';
   $('riskLabel').textContent=s.label;
@@ -158,7 +168,9 @@ function updateRisk(score){
   localStorage.setItem('waisRiskScore',score);
 }
 const savedRisk=Number(window.WAIS_MARKET_DATA?.riskScore ?? 38);
-$('riskSlider').value=savedRisk;updateRisk(savedRisk);
+const systemCash=Number(window.WAIS_MARKET_DATA?.recommendedCash);
+$('riskSlider').value=savedRisk;
+updateRisk(savedRisk, systemCash);
 $('riskSlider').addEventListener('input',e=>updateRisk(Number(e.target.value)));
 
 let journal = JSON.parse(localStorage.getItem('waisJournal') || '[]');
@@ -217,7 +229,7 @@ document.querySelectorAll('[data-jump]').forEach(item => item.addEventListener('
 const savedWatchlist = JSON.parse(localStorage.getItem("waisWatchlist") || "[]");
 
 const autoWatchlist = (window.WAIS_MARKET_DATA?.focusStocks || [])
-  .filter(stock => stock.stance === "READY 1" || stock.stance === "WATCH")
+  .filter(stock => stock.showInWatchlist === true)
   .map(stock => {
     const savedItem = savedWatchlist.find(
       item => String(item.ticker).toUpperCase() === stock.ticker.toUpperCase()
@@ -225,7 +237,7 @@ const autoWatchlist = (window.WAIS_MARKET_DATA?.focusStocks || [])
 
     return {
       ticker: stock.ticker,
-      status: stock.stance === "READY 1" ? "Ready" : "Watch",
+      status: stock.stance === "READY 1" ? "Ready" : stock.stance === "WATCH" ? "Watch" : "Wait",
       risk: stock.risk,
      entry: Number(savedItem?.entry ?? stock.entry) || 0,
 target: Number(savedItem?.target ?? stock.target) || 0,
@@ -288,19 +300,19 @@ function renderWatchlist(){
     <span>Current Price</span>
     <strong>${
       livePrices[String(item.ticker).toUpperCase()]?.price != null
-        ? fmt(livePrices[String(item.ticker).toUpperCase()].price)
+        ? fmtUSD(livePrices[String(item.ticker).toUpperCase()].price)
         : "—"
     }</strong>
   </div>
 
   <div>
     <span>Entry</span>
-    <strong>${fmt(item.entry)}</strong>
+    <strong>${item.entry > 0 ? fmtUSD(item.entry) : "—"}</strong>
   </div>
 
   <div>
     <span>Target</span>
-    <strong>${fmt(item.target)}</strong>
+    <strong>${item.target > 0 ? fmtUSD(item.target) : "—"}</strong>
   </div>
 </div>
 
@@ -349,6 +361,51 @@ $('watchlistForm')?.addEventListener('submit', event => {
   $('watchStatus').value = 'Wait';
   renderWatchlist();
 });
+function renderDashboardResearchLists(){
+  const compactList = document.querySelector('#dashboard .compact-list');
+  if(compactList){
+    const dashboardPicks = topPicks.slice(0,5);
+    compactList.innerHTML = dashboardPicks.length
+      ? dashboardPicks.map((x,index) => `
+        <div><span class="rank">${index+1}</span><b>${escapeHTML(x.ticker)}</b><em>${escapeHTML(x.status)}</em></div>
+      `).join('')
+      : '<div><span class="rank">—</span><b>No READY / Top Pick</b><em>Wait</em></div>';
+  }
+
+  const gemGrid = document.querySelector('#dashboard .gem-grid');
+  if(gemGrid){
+    gemGrid.innerHTML = gems.slice(0,4).map(x => `
+      <div class="mini-card">
+        <b>${escapeHTML(x.ticker)}</b>
+        <span>${escapeHTML(x.role)}</span>
+        <small>${escapeHTML(x.rating)}</small>
+      </div>
+    `).join('');
+  }
+}
+
+function renderWeeklyPlan(){
+  const target = $('weeklyPlan');
+  const plan = window.WAIS_MARKET_DATA?.actionPlan || [];
+  if(!target || !plan.length) return;
+
+  target.innerHTML = plan.slice(0,5).map((item,index) => `
+    <div><b>${String(index+1).padStart(2,'0')}</b><span>${escapeHTML(item)}</span></div>
+  `).join('');
+}
+
+function renderDailyThought(){
+  const thought = window.WAIS_MARKET_DATA?.dailyThought;
+  const box = document.querySelector('.daily-thought');
+  if(!thought || !box) return;
+
+  box.innerHTML = `
+    <div class="daily-thought-label">WAIS 今日思考｜WAIS Thought of the Day｜${escapeHTML(thought.date || '')}</div>
+    <div class="daily-thought-zh">${escapeHTML(thought.zh || '')}</div>
+    <div class="daily-thought-en">${escapeHTML(thought.en || '')}</div>
+  `;
+}
+
 function formatMarketValue(value, indicatorName) {
   const number = Number(value);
 
@@ -529,5 +586,8 @@ async function initializeApp() {
   renderCards(topPicks, "topPicksGrid");
   renderCards(gems, "hiddenGemsGrid");
   renderWatchlist();
+  renderDashboardResearchLists();
+  renderWeeklyPlan();
+  renderDailyThought();
 }
 initializeApp();
