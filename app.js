@@ -1,5 +1,4 @@
 
-
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD'}).format(n);
 const fmtUSD = (n) => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);
@@ -520,6 +519,10 @@ async function loadMarketIndicators() {
   HSTECH: {
     valueId: "hstechValue",
     changeId: "hstechChange"
+  },
+  HSIF: {
+    valueId: "hsifValue",
+    changeId: "hsifChange"
   }
 };
 
@@ -564,8 +567,9 @@ async function loadMarketIndicators() {
       if (updatedTime) {
         const date = new Date(updatedTime);
 
+        const statusText = data.dataStatus ? ` · ${data.dataStatus}` : "";
         updatedElement.textContent =
-          `更新：${date.toLocaleString("en-CA")}`;
+          `更新：${date.toLocaleString("en-CA")}${statusText}`;
       } else {
         updatedElement.textContent = "市場資料已更新";
       }
