@@ -327,6 +327,74 @@ window.WAIS_MARKET_DATA = {
     }
   ],
 
+  weeklyEvents: [
+    {
+      date: "08月12日",
+      event: "美國 CPI",
+      time: "08:30 ET",
+      referenceMonth: "2026年7月",
+      source: "U.S. Bureau of Labor Statistics",
+      waisNote: "本週最高優先級宏觀風險事件；公布前避免因強勢市況追價。"
+    },
+    {
+      date: "08月13日",
+      event: "美國 PPI",
+      time: "08:30 ET",
+      referenceMonth: "2026年7月",
+      source: "U.S. Bureau of Labor Statistics",
+      waisNote: "檢查成本通脹及利率重新定價風險。"
+    },
+    {
+      date: "08月14日",
+      event: "美國零售銷售",
+      time: "08:30 ET",
+      referenceMonth: "2026年7月",
+      source: "U.S. Census Bureau",
+      waisNote: "關注消費韌性、經濟增長及利率預期。"
+    },
+    {
+      date: "08月19日",
+      event: "FOMC 會議紀錄",
+      time: "14:00 ET",
+      referenceMonth: "7月28–29日會議",
+      source: "Federal Reserve",
+      waisNote: "留意官員對通脹、就業及利率路徑的分歧。"
+    }
+  ],
+
+  technicalSummary: [
+    {
+      name: "S&P 500",
+      status: "STRONG",
+      summary: "8月7日收7,757.64並上升0.62%；大市趨勢仍強，但接近高位時Entry紀律更重要。"
+    },
+    {
+      name: "NASDAQ Composite",
+      status: "STRONG",
+      summary: "8月7日收26,690.62並上升1.30%；科技及成長股動能偏強，但高beta板塊已有急升。"
+    },
+    {
+      name: "SOX",
+      status: "STRONG / EXTENDED",
+      summary: "8月7日半導體指數上升2.56%；趨勢強但短線延伸，WAIS不追急升。"
+    },
+    {
+      name: "VIX",
+      status: "LOW VOLATILITY",
+      summary: "8月7日收14.90；波動率偏低，但CPI、PPI及零售銷售令事件風險仍高。"
+    },
+    {
+      name: "US 10Y",
+      status: "ELEVATED",
+      summary: "10年期美債息約4.64%；仍是高估值成長股的估值壓力來源。"
+    },
+    {
+      name: "Hong Kong",
+      status: "POSITIVE / SELECTIVE",
+      summary: "恒指與恒生科技8月7日均錄得升幅；保持選股及事件風險紀律。"
+    }
+  ],
+
   actionPlan: [
     "維持CAUTIOUS模式；市場強，但本週事件密度高，不追星期五急升股。",
     "Market Risk 45/100，建議保留約30%現金。",
