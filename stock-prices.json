@@ -1,47 +1,231 @@
 {
-  "lastUpdated": "2026-08-08T00:02:39.281584+00:00",
+  "lastUpdated": "2026-08-10T03:10:22.098130+00:00",
   "marketStatus": "updated",
-  "currency": "USD",
+  "dataStatus": "Delayed / closing data; NOT REAL-TIME",
   "prices": {
     "NVDA": {
       "price": 223.96,
-      "currency": "USD"
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
     },
     "TSM": {
       "price": 420.04,
-      "currency": "USD"
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
     },
     "AVGO": {
       "price": 427.76,
-      "currency": "USD"
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
     },
     "MRVL": {
       "price": 218.72,
-      "currency": "USD"
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
     },
     "MU": {
       "price": 877.57,
-      "currency": "USD"
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
     },
     "COHR": {
       "price": 379.13,
-      "currency": "USD"
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
     },
     "LITE": {
       "price": 890.17,
-      "currency": "USD"
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
     },
     "AXTI": {
       "price": 88.58,
-      "currency": "USD"
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
     },
     "TSEM": {
       "price": 252.49,
-      "currency": "USD"
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
     },
     "POET": {
       "price": 8.91,
-      "currency": "USD"
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+    },
+    "GFS": {
+      "price": 53.93,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+    },
+    "POWL": {
+      "price": 211.56,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+    },
+    "MOD": {
+      "price": 195.6,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+    },
+    "GOOGL": {
+      "price": 354.3,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+    },
+    "AAOI": {
+      "price": 135.63,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+    },
+    "AEHR": {
+      "price": 103.07,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+    },
+    "FORM": {
+      "price": 117.39,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+    },
+    "MXL": {
+      "price": 74.98,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+    },
+    "NVTS": {
+      "price": 13.89,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+    },
+    "OSS": {
+      "price": 13.24,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+    },
+    "AIRO": {
+      "price": 8.52,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+    },
+    "VDY.TO": {
+      "price": 77.07,
+      "currency": "CAD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME",
+      "lastDistribution": 0.177,
+      "lastDistributionDate": "2026-07-17",
+      "trailing12mDistribution": 2.188351,
+      "trailing12mDistributionYield": 2.8394
+    },
+    "ZWB.TO": {
+      "price": 31.28,
+      "currency": "CAD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME",
+      "lastDistribution": 0.17,
+      "lastDistributionDate": "2026-07-30",
+      "trailing12mDistribution": 1.53,
+      "trailing12mDistributionYield": 4.8913
+    },
+    "ZWC.TO": {
+      "price": 22.75,
+      "currency": "CAD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME",
+      "lastDistribution": 0.12,
+      "lastDistributionDate": "2026-07-30",
+      "trailing12mDistribution": 1.295,
+      "trailing12mDistributionYield": 5.6923
+    },
+    "ZWU.TO": {
+      "price": 11.45,
+      "currency": "CAD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME",
+      "lastDistribution": 0.07,
+      "lastDistributionDate": "2026-07-30",
+      "trailing12mDistribution": 0.84,
+      "trailing12mDistributionYield": 7.3362
+    },
+    "JEPI": {
+      "price": 57.58,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME",
+      "lastDistribution": 0.367,
+      "lastDistributionDate": "2026-08-03",
+      "trailing12mDistribution": 4.58,
+      "trailing12mDistributionYield": 7.9542
+    },
+    "JEPQ": {
+      "price": 59.74,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME",
+      "lastDistribution": 0.705,
+      "lastDistributionDate": "2026-08-03",
+      "trailing12mDistribution": 6.524,
+      "trailing12mDistributionYield": 10.9207
+    },
+    "QYLD": {
+      "price": 18.14,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Delayed / closing data; NOT REAL-TIME",
+      "lastDistribution": 0.178,
+      "lastDistributionDate": "2026-07-20",
+      "trailing12mDistribution": 2.111,
+      "trailing12mDistributionYield": 11.6373
     }
   }
 }
