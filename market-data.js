@@ -362,23 +362,23 @@ window.WAIS_MARKET_DATA = {
   ],
 
   technicalSummary: [
-    { name: "S&P 500", value: "7,757.64", move: "+0.62%", signal: "STRONG", note: "大市趨勢仍強；接近高位時更重視Entry紀律。" },
-    { name: "NASDAQ", value: "26,690.62", move: "+1.30%", signal: "STRONG", note: "科技與成長股動能偏強，但高beta板塊已有延伸。" },
-    { name: "SOX", value: "12,356.79", move: "+2.56%", signal: "EXTENDED", note: "半導體強勢，但短線過熱風險上升，不追急升。" },
-    { name: "VIX", value: "14.90", move: "LOW", signal: "CALM", note: "波動率低，但本週宏觀事件密集，低VIX不等於低事件風險。" },
-    { name: "US 10Y", value: "4.64%", move: "ELEVATED", signal: "WATCH", note: "仍是高估值成長股的重要估值壓力來源。" },
-    { name: "HSI / HSTECH", value: "25,668 / 4,858", move: "+0.54% / +0.78%", signal: "SELECTIVE", note: "香港市場偏正面，但維持選股與風險紀律。" }
+    { key: "SP500", name: "S&P 500", signal: "STRONG", note: "大市趨勢仍強；接近高位時更重視Entry紀律。" },
+    { key: "NASDAQ", name: "NASDAQ Composite", signal: "STRONG", note: "科技與成長股動能偏強，但高beta板塊已有延伸。" },
+    { key: "SOX", name: "SOX", signal: "EXTENDED", note: "半導體強勢，但短線過熱風險上升，不追急升。" },
+    { key: "VIX", name: "VIX", signal: "CALM", note: "波動率偏低，但事件密集時低VIX不等於低風險。" },
+    { key: "US10Y", name: "US 10Y", signal: "WATCH", note: "仍是高估值成長股的重要估值壓力來源。" },
+    { key: "HSTECH", name: "Hang Seng TECH", signal: "SELECTIVE", note: "香港科技股偏正面，但維持選股與風險紀律。" }
   ],
 
   incomeDefenseStatus: "CAUTIOUS",
   incomeEtfs: [
-    { ticker: "VDY", name: "Vanguard FTSE Canadian High Dividend Yield Index ETF", category: "Core Dividend", frequency: "Research", yield: null, incomeQuality: "Research", navRisk: "Medium", upsideDrag: "Low", status: "RESEARCH", note: "加拿大高股息核心候選；先核實最新官方分派與總回報資料。" },
-    { ticker: "ZWB", name: "BMO Covered Call Canadian Banks ETF", category: "Covered Call", frequency: "Research", yield: null, incomeQuality: "Research", navRisk: "Medium", upsideDrag: "Medium", status: "RESEARCH", note: "銀行股收入型候選；需同時評估covered-call限制上行的成本。" },
-    { ticker: "ZWC", name: "BMO Canadian High Dividend Covered Call ETF", category: "Covered Call", frequency: "Research", yield: null, incomeQuality: "Research", navRisk: "Medium", upsideDrag: "Medium", status: "RESEARCH", note: "高股息加covered-call；不以派息率單獨排序。" },
-    { ticker: "ZWU", name: "BMO Covered Call Utilities ETF", category: "Covered Call / Utilities", frequency: "Research", yield: null, incomeQuality: "Research", navRisk: "Medium", upsideDrag: "Medium", status: "RESEARCH", note: "公用事業收入候選；需檢查利率敏感度與資本回報。" },
-    { ticker: "JEPI", name: "JPMorgan Equity Premium Income ETF", category: "Equity Premium Income", frequency: "Research", yield: null, incomeQuality: "Research", navRisk: "Medium", upsideDrag: "Medium", status: "RESEARCH", note: "美股收入策略候選；需核實最新分派來源、總回報及稅務影響。" },
-    { ticker: "JEPQ", name: "JPMorgan Nasdaq Equity Premium Income ETF", category: "Growth Income", frequency: "Research", yield: null, incomeQuality: "Research", navRisk: "Medium High", upsideDrag: "Medium", status: "RESEARCH", note: "科技收入型候選；收入較高但成長與波動特性不同於傳統股息ETF。" },
-    { ticker: "QYLD", name: "Global X Nasdaq 100 Covered Call ETF", category: "High Income / Covered Call", frequency: "Research", yield: null, incomeQuality: "Research", navRisk: "High", upsideDrag: "High", status: "RESEARCH", note: "高收入研究標的；WAIS會特別檢查NAV侵蝕、總回報及上行犧牲。" }
+    { ticker: "VDY", priceSymbol: "VDY.TO", currency: "CAD", name: "Vanguard FTSE Canadian High Dividend Yield Index ETF", category: "Core Dividend", frequency: "Monthly", incomeQuality: "Research", navRisk: "Medium", upsideDrag: "Low", status: "RESEARCH", note: "加拿大高股息核心候選；重視總回報、股息質素與金融板塊集中度。" },
+    { ticker: "ZWB", priceSymbol: "ZWB.TO", currency: "CAD", name: "BMO Covered Call Canadian Banks ETF", category: "Covered Call", frequency: "Monthly", incomeQuality: "Research", navRisk: "Medium", upsideDrag: "Medium", status: "RESEARCH", note: "銀行股收入型候選；同時評估covered-call限制上行的成本。" },
+    { ticker: "ZWC", priceSymbol: "ZWC.TO", currency: "CAD", name: "BMO Canadian High Dividend Covered Call ETF", category: "Covered Call", frequency: "Monthly", incomeQuality: "Research", navRisk: "Medium", upsideDrag: "Medium", status: "RESEARCH", note: "高股息加covered-call；不以派息率單獨排序。" },
+    { ticker: "ZWU", priceSymbol: "ZWU.TO", currency: "CAD", name: "BMO Covered Call Utilities ETF", category: "Covered Call / Utilities", frequency: "Monthly", incomeQuality: "Research", navRisk: "Medium", upsideDrag: "Medium", status: "RESEARCH", note: "公用事業收入候選；需檢查利率敏感度與資本回報。" },
+    { ticker: "JEPI", priceSymbol: "JEPI", currency: "USD", name: "JPMorgan Equity Premium Income ETF", category: "Equity Premium Income", frequency: "Monthly", incomeQuality: "Research", navRisk: "Medium", upsideDrag: "Medium", status: "RESEARCH", note: "美股收入策略候選；重視收入穩定、總回報與下行控制。" },
+    { ticker: "JEPQ", priceSymbol: "JEPQ", currency: "USD", name: "JPMorgan Nasdaq Equity Premium Income ETF", category: "Growth Income", frequency: "Monthly", incomeQuality: "Research", navRisk: "Medium High", upsideDrag: "Medium", status: "RESEARCH", note: "科技收入型候選；收入較高但成長與波動特性不同於傳統股息ETF。" },
+    { ticker: "QYLD", priceSymbol: "QYLD", currency: "USD", name: "Global X Nasdaq 100 Covered Call ETF", category: "High Income / Covered Call", frequency: "Monthly", incomeQuality: "Research", navRisk: "High", upsideDrag: "High", status: "RESEARCH", note: "高收入研究標的；特別檢查NAV侵蝕、總回報及上行犧牲。" }
   ],
 
   actionPlan: [
