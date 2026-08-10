@@ -52,3 +52,26 @@
   background:#111d31!important;
   border-color:#53637e!important;
 }
+
+
+/* WAIS Director refinement 2026-08-10 */
+.status-text{color:var(--sig)!important}
+.income-filter-panel{margin-top:16px;border-top:2px solid rgba(53,194,255,.38)}
+.income-filter-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.income-filter-row label{font-weight:800;color:#dce6f7}
+.income-filter-row select{background:#101d31;color:#eef5ff;border:1px solid #385170;border-radius:10px;padding:9px 12px;font-weight:800}
+.yield-filter-note{font-size:11px;color:#92a3bc;line-height:1.45;flex:1;min-width:280px}
+.income-title-row{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:10px}
+.yield-hero{min-width:145px;padding:10px 12px;border-radius:12px;text-align:right;border:1px solid rgba(255,255,255,.12);background:#101c30}
+.yield-hero span{display:block;font-size:9px;letter-spacing:.8px;color:#8fa0bb;font-weight:800}
+.yield-hero strong{display:block;font-size:25px;line-height:1.05;margin-top:4px}
+.yield-hero small{display:block;font-size:9px;margin-top:5px;font-weight:800}
+.yield-hero.yield-pass{border-color:rgba(54,211,153,.60);background:rgba(54,211,153,.09)}
+.yield-hero.yield-pass strong,.yield-hero.yield-pass small{color:#66e5b3}
+.yield-hero.yield-below{border-color:rgba(255,138,52,.38)}
+.yield-hero.yield-below strong,.yield-hero.yield-below small{color:#ffb06f}
+.yield-metric-cell{outline:1px solid rgba(54,211,153,.24);background:rgba(54,211,153,.06)!important}
+.yield-metric-cell b{color:#66e5b3!important;font-size:15px!important}
+.income-empty{grid-column:1/-1;padding:24px;border:1px dashed #3c4e69;border-radius:12px;color:#9aabc3;text-align:center}
+.week-tag{display:inline-block;margin-right:7px;padding:2px 6px;border-radius:6px;background:rgba(53,194,255,.12);color:#7fddff;font-size:9px;font-style:normal}
+@media(max-width:720px){.income-title-row{flex-direction:column}.yield-hero{width:100%;text-align:left}.yield-filter-note{min-width:100%}}
