@@ -80,8 +80,31 @@ function renderCards(items,target){
   const el=$(target); if(!el)return; const isGem=target==='hiddenGemsGrid';
   el.innerHTML=items.map(x=>{ const ticker=String(x.ticker).toUpperCase(),q=quoteFor(ticker),current=q.price,entry=Number(x.entry),tp=Number(x.target),dist=distanceToEntryPct(current,entry),sig=getSignalMeta(isGem?'RESEARCH':x.status),up=Number.isFinite(entry)&&entry>0&&Number.isFinite(tp)&&tp>0?(((tp-entry)/entry)*100).toFixed(1)+'%':'—'; const stage=isGem?(x.researchStage||'RESEARCH'):'';
   const secondary=isGem?stage:(x.topPickRank?`TOP PICK #${x.topPickRank}`:(x.rating||''));
-  const primaryLabel=isGem?'HIDDEN GEM':sig.label;
-  return `<article class="stock-card signal-card ${sig.className}"><div class="signal-card-head"><span class="signal-chip ${sig.className}">${escapeHTML(primaryLabel)}</span>${secondary?`<span class="priority-chip">${escapeHTML(secondary)}</span>`:''}</div><h3>${escapeHTML(x.ticker)}</h3><div class="company">${escapeHTML(x.company)}</div><div class="stock-meta"><div><span>Role</span><b>${escapeHTML(x.role)}</b></div><div><span>WAIS Score</span><b>${escapeHTML(x.score)}/100</b></div><div><span>Current / Last Close</span><b>${current!=null?fmtUSD(current):'—'}</b></div><div><span>Price Date</span><b>${escapeHTML(q.asOf||'—')}</b></div><div><span>Entry</span><b>${Number.isFinite(entry)&&entry>0?fmtUSD(entry):'—'}</b></div><div><span>Distance to Entry</span><b>${dist==null?'—':`${dist>=0?'+':''}${dist.toFixed(1)}%`}</b></div><div><span>Target</span><b>${Number.isFinite(tp)&&tp>0?fmtUSD(tp):'—'}</b></div><div><span>Planned Upside</span><b>${up}</b></div><div><span>Risk</span><b>${escapeHTML(x.risk)}</b></div><div><span>${isGem?'Research Stage':'Rating'}</span><b>${escapeHTML(isGem?(x.researchStage||'RESEARCH'):x.rating)}</b></div></div><p class="stock-note">${escapeHTML(x.note)}</p></article>`; }).join('');
+  const entryText=Number.isFinite(entry)&&entry>0?fmtUSD(entry):(isGem?'Set after Watchlist promotion':'—');
+  const targetText=Number.isFinite(tp)&&tp>0?fmtUSD(tp):(isGem?'Set after Watchlist promotion':'—');
+  const distanceText=dist==null?(isGem?'Not set during research stage':'—'):`${dist>=0?'+':''}${dist.toFixed(1)}%`;
+  const upsideText=up==='—'&&isGem?'Not set during research stage':up;
+  return `<article class="stock-card signal-card ${sig.className}">
+    <div class="signal-card-head">
+      ${isGem?'':`<span class="signal-chip ${sig.className}">${escapeHTML(sig.label)}</span>`}
+      <span class="priority-chip">${escapeHTML(isGem?(x.researchStage||'RESEARCH'):(secondary||''))}</span>
+    </div>
+    <h3>${escapeHTML(x.ticker)}</h3>
+    <div class="company">${escapeHTML(x.company)}</div>
+    <div class="stock-meta">
+      <div><span>Role</span><b>${escapeHTML(x.role)}</b></div>
+      <div><span>WAIS Score</span><b>${escapeHTML(x.score)}/100</b></div>
+      <div><span>Current / Last Close</span><b>${current!=null?fmtUSD(current):'—'}</b></div>
+      <div><span>Price Date</span><b>${escapeHTML(q.asOf||'—')}</b></div>
+      <div><span>Entry</span><b>${escapeHTML(entryText)}</b></div>
+      <div><span>Distance to Entry</span><b>${escapeHTML(distanceText)}</b></div>
+      <div><span>Target</span><b>${escapeHTML(targetText)}</b></div>
+      <div><span>Planned Upside</span><b>${escapeHTML(upsideText)}</b></div>
+      <div><span>Risk</span><b>${escapeHTML(x.risk)}</b></div>
+      <div><span>${isGem?'Research Stage':'Rating'}</span><b>${escapeHTML(isGem?(x.researchStage||'RESEARCH'):x.rating)}</b></div>
+    </div>
+    <p class="stock-note">${escapeHTML(x.note)}</p>
+  </article>`; }).join('');
 }
 
 const navItems = document.querySelectorAll('.nav-item');
@@ -426,6 +449,62 @@ function renderEconomicEvents(){
   }).join(''):'<div><span>—</span><p>本週＋下週暫時沒有已確認的高影響事件。</p></div>';
 }
 
+
+function renderWeeklyMarketNotes(){
+  const listEl=$('weeklyMarketNotesList');
+  const reviewEl=$('weeklyMarketReviewDate');
+  const riskEl=$('weeklyMarketRiskNote');
+  if(!listEl || !reviewEl || !riskEl) return;
+
+  try{
+    const notes=window.WAIS_MARKET_DATA?.weeklyMarketNotes || [];
+    const risk=Number(window.WAIS_MARKET_DATA?.riskScore);
+    const cash=Number(window.WAIS_MARKET_DATA?.recommendedCash);
+    const mode=window.WAIS_MARKET_DATA?.marketMode || 'CAUTIOUS';
+    const rawUpdated=window.WAIS_MARKET_DATA?.lastUpdated || '';
+
+    const updatedText=rawUpdated
+      ? new Date(rawUpdated).toLocaleString('en-CA')
+      : 'Static verified fallback';
+
+    reviewEl.textContent=`策略更新：${updatedText}`;
+
+    if(notes.length){
+      listEl.innerHTML=notes.map((n,i)=>{
+        const action=String(n.action||'').trim();
+        return `<div class="strategy-note-row">
+          <span>${String(i+1).padStart(2,'0')}</span>
+          <p>
+            <strong>${escapeHTML(n.title||'WAIS Strategy')}
+              ${action?`<em class="strategy-action">${escapeHTML(action)}</em>`:''}
+            </strong>
+            <br>${escapeHTML(n.body||'')}
+          </p>
+        </div>`;
+      }).join('');
+    }else{
+      listEl.innerHTML=`<div class="strategy-note-row">
+        <span>01</span>
+        <p><strong>本週策略資料暫未更新</strong><br>
+        保持現有 Market Risk / Cash / Entry 紀律，直至下一次已驗證策略資料更新。</p>
+      </div>`;
+    }
+
+    riskEl.textContent=
+      `WAIS RISK NOTE · Market Risk ${Number.isFinite(risk)?risk:'—'}/100 · ${mode} · 建議現金 ${Number.isFinite(cash)?cash:'—'}% · READY 只在價格、基本面、事件與風險條件同時確認後成立。`;
+
+  }catch(err){
+    console.error('Failed to render weekly market notes:',err);
+    reviewEl.textContent='策略資料暫時未能更新';
+    listEl.innerHTML=`<div class="strategy-note-row">
+      <span>—</span>
+      <p><strong>Strategy fallback</strong><br>
+      Weekly notes 暫時未能載入；請以 Dashboard Market Risk、Cash Reserve 與已驗證市場資料為準。</p>
+    </div>`;
+    riskEl.textContent='WAIS Weekly Strategy Notes 暫時使用 fallback；不把未確認資料顯示成最新策略。';
+  }
+}
+
 function renderTechnicalSummary(){ const configs=window.WAIS_MARKET_DATA?.technicalSummary||[],target=$('waisTechnicalSummary'),updated=$('technicalSummaryUpdated'); if(!target)return; const data=marketIndicatorsSnapshot||{},ind=data.indicators||{},dates=data.marketDates||{},file=data.lastUpdated?new Date(data.lastUpdated).toLocaleString('en-CA'):'—'; if(updated)updated.textContent=`US close: ${dates.US||'—'}｜HK close: ${dates.HK||'—'}｜檔案更新: ${file}｜NOT REAL-TIME`; target.innerHTML=configs.map(item=>{const x=ind[item.key]||{},value=formatMarketValue(x.value,item.key);let move='--';if(item.key==='VIX'&&Number.isFinite(Number(x.value)))move=`Level ${Number(x.value).toFixed(2)}`;else if(item.key==='US10Y'&&Number.isFinite(Number(x.value)))move=`${Number(x.value).toFixed(2)}%`;else if(Number.isFinite(Number(x.changePercent))){const p=Number(x.changePercent);move=`${p>0?'+':''}${p.toFixed(2)}%`;}const sig=getSignalMeta(item.signal==='EXTENDED'?'WAIT':item.signal==='STRONG'||item.signal==='CALM'||item.signal==='SELECTIVE'?'WATCH':item.signal);return `<article class="research-card structure-card ${sig.className}"><div class="structure-head"><span>${escapeHTML(item.signal||'WAIS')}</span><b>${escapeHTML(x.asOf||'—')}</b></div><h3>${escapeHTML(item.name||item.key||'')}</h3><div class="structure-value">${escapeHTML(value)}</div><div class="structure-move">${escapeHTML(move)}</div><div class="structure-signal">${escapeHTML(item.signal||'—')}</div><p>${escapeHTML(item.note||'')}</p></article>`;}).join(''); }
 
 function renderIncomeEtfs(){
@@ -433,7 +512,7 @@ function renderIncomeEtfs(){
   if(!wg||!mg||!tg)return;
 
   const filterEl=$('incomeYieldFilter');
-  const minYield=Number(filterEl?.value ?? 5);
+  const minYield=Number(filterEl?.value ?? 3);
   const items=incomeEtfs;
 
   const enriched=items.map(item=>{
@@ -443,12 +522,12 @@ function renderIncomeEtfs(){
     return {...item,_quote:q,_yield:Number.isFinite(y)?y:null};
   });
 
-  const filtered=enriched.filter(item=>minYield<=0 || (item._yield!=null && item._yield>=minYield));
+  const filtered=enriched.filter(item=>item._yield!=null && item._yield>=minYield);
   const weekly=filtered.filter(i=>i.track==='WEEKLY');
   const monthly=filtered.filter(i=>i.track==='MONTHLY');
   const tactical=filtered.filter(i=>i.track==='TACTICAL');
-  const ready=g=>g.filter(i=>String(i.status).toUpperCase().includes('READY')).length;
 
+  const ready=g=>g.filter(i=>String(i.status).toUpperCase().includes('READY')).length;
   if($('weeklyIncomeReadyCount'))$('weeklyIncomeReadyCount').textContent=ready(weekly);
   if($('monthlyIncomeReadyCount'))$('monthlyIncomeReadyCount').textContent=ready(monthly);
   if($('incomeYieldMatchCount'))$('incomeYieldMatchCount').textContent=filtered.length;
@@ -459,68 +538,105 @@ function renderIncomeEtfs(){
     applySignalStatus($('incomeDefenseStatus'),defense);
   }
   if($('incomeCashReserve'))$('incomeCashReserve').textContent=window.WAIS_MARKET_DATA?.recommendedCash??'—';
-  if($('incomeUpdated'))$('incomeUpdated').textContent=`價格／分派資料檔更新：${livePricesUpdatedAt?new Date(livePricesUpdatedAt).toLocaleString('en-CA'):'—'}｜Completed closing data / NOT REAL-TIME`;
+
+  if($('incomeUpdated')){
+    $('incomeUpdated').textContent=
+      `價格／分派資料檔更新：${livePricesUpdatedAt?new Date(livePricesUpdatedAt).toLocaleString('en-CA'):'—'}｜Completed closing data / NOT REAL-TIME`;
+  }
 
   function card(item){
     const q=item._quote||{};
     const sig=getSignalMeta(item.status);
     const price=q.price!=null?`${q.currency||item.currency||''} ${Number(q.price).toFixed(2)}`.trim():'—';
     const dist=q.lastDistribution!=null?`${q.currency||item.currency||''} ${Number(q.lastDistribution).toFixed(4)}`.trim():'—';
-    const y=item._yield;
-    const yieldText=y!=null?`${y.toFixed(2)}%`:'—';
-    const yieldPass=y!=null && y>=minYield;
-    const freq=String(item.frequency||'').toLowerCase();
-    const periods=freq.includes('week')?52:(freq.includes('month')?12:4);
-    const periodLabel=freq.includes('week')?'WEEKLY':(freq.includes('month')?'MONTHLY':'PER-PERIOD');
-    const periodYield=y!=null?y/periods:null;
-    const periodYieldText=periodYield!=null?`${periodYield.toFixed(2)}%`:'—';
-    const cash10k=periodYield!=null?10000*periodYield/100:null;
-    const cash10kText=cash10k!=null?`~USD ${cash10k.toFixed(0)} / $10k`:'DATA PENDING';
+    const annualYield=item._yield;
+    const annualYieldText=annualYield!=null?`${annualYield.toFixed(2)}%`:'—';
+
+    // One common comparison scale for ALL weekly/monthly ETFs:
+    // estimated monthly cash yield = trailing annual distribution yield / 12.
+    const monthlyYield=annualYield!=null?annualYield/12:null;
+    const monthlyYieldText=monthlyYield!=null?`${monthlyYield.toFixed(2)}%`:'—';
+
+    const monthlyCash10k=monthlyYield!=null?10000*monthlyYield/100:null;
+    const monthlyCash10kText=monthlyCash10k!=null
+      ? `~${q.currency||item.currency||'USD'} ${monthlyCash10k.toFixed(0)} / $10k / month`
+      : 'DATA PENDING';
+
+    // Weekly-only secondary estimate for intuition; not used for filtering.
+    const isWeekly=String(item.frequency||'').toLowerCase().includes('week');
+    const weeklyYield=isWeekly && annualYield!=null?annualYield/52:null;
+    const weeklyYieldText=weeklyYield!=null?`${weeklyYield.toFixed(2)}%`:'—';
+
     const zone=dynamicEntryZone(item,q);
-    const zoneText=zone?`${q.currency||item.currency||''} ${zone.low.toFixed(2)} – ${zone.high.toFixed(2)}`.trim():(item.entryMethod||'—');
+    const zoneText=zone
+      ? `${q.currency||item.currency||''} ${zone.low.toFixed(2)} – ${zone.high.toFixed(2)}`.trim()
+      : (item.entryMethod||'—');
+
+    const riskFlag =
+      annualYield!=null && annualYield>=30 ? 'VERY HIGH DISTRIBUTION — CHECK NAV / ROC' :
+      annualYield!=null && annualYield>=20 ? 'HIGH DISTRIBUTION — EXTRA RISK REVIEW' :
+      annualYield!=null && annualYield>=10 ? 'ELEVATED INCOME' :
+      'STANDARD INCOME RANGE';
 
     return `<article class="stock-card income-card signal-card ${sig.className}">
       <div class="signal-card-head">
         <span class="signal-chip ${sig.className}">${escapeHTML(sig.label)}</span>
         <span class="priority-chip">${escapeHTML(item.frequency||'—')}</span>
       </div>
+
       <div class="income-title-row">
-        <div><h3>${escapeHTML(item.ticker||'')}</h3><div class="company">${escapeHTML(item.name||'')}</div></div>
-        <div class="yield-hero ${yieldPass?'yield-pass':'yield-below'}">
-          <span>EST. ${periodLabel} CASH YIELD*</span>
-          <strong>${escapeHTML(periodYieldText)}</strong>
-          <small>${escapeHTML(cash10kText)}</small>
+        <div>
+          <h3>${escapeHTML(item.ticker||'')}</h3>
+          <div class="company">${escapeHTML(item.name||'')}</div>
+        </div>
+        <div class="yield-hero ${annualYield!=null && annualYield>=5?'yield-pass':'yield-below'}">
+          <span>EST. MONTHLY CASH YIELD*</span>
+          <strong>${escapeHTML(monthlyYieldText)}</strong>
+          <small>${escapeHTML(monthlyCash10kText)}</small>
         </div>
       </div>
-      <div class="today-action ${sig.className}"><span>TODAY ACTION</span><strong>${escapeHTML(item.todayAction||'等待WAIS重新評估。')}</strong></div>
+
+      <div class="income-risk-flag">${escapeHTML(riskFlag)}</div>
+
+      <div class="today-action ${sig.className}">
+        <span>TODAY ACTION</span>
+        <strong>${escapeHTML(item.todayAction||'等待WAIS重新評估。')}</strong>
+      </div>
+
       <div class="stock-meta">
         <div><span>Current / Last Close</span><b>${escapeHTML(price)}</b></div>
         <div><span>Price Date</span><b>${escapeHTML(q.asOf||'—')}</b></div>
+        <div><span>Annualized T12M Dist. Yield*</span><b>${escapeHTML(annualYieldText)}</b></div>
+        <div><span>Est. Monthly Cash Yield*</span><b>${escapeHTML(monthlyYieldText)}</b></div>
+        <div><span>${isWeekly?'Est. Weekly Cash Yield*':'Distribution Frequency'}</span><b>${isWeekly?escapeHTML(weeklyYieldText):escapeHTML(item.frequency||'—')}</b></div>
         <div><span>Dynamic Entry Zone</span><b>${escapeHTML(zoneText)}</b></div>
         <div><span>First Tranche</span><b>${escapeHTML(item.firstTranche||'—')}</b></div>
         <div><span>Last Distribution</span><b>${escapeHTML(dist)}</b></div>
         <div><span>Distribution Date</span><b>${escapeHTML(q.lastDistributionDate||'—')}</b></div>
-        <div class="yield-metric-cell"><span>Annualized T12M Dist. Yield*</span><b>${escapeHTML(yieldText)}</b></div>
         <div><span>20D SMA</span><b>${q.sma20!=null?`${q.currency||item.currency||''} ${Number(q.sma20).toFixed(2)}`:'—'}</b></div>
         <div><span>Income Quality</span><b>${escapeHTML(item.incomeQuality||'Research')}</b></div>
         <div><span>NAV Risk</span><b>${escapeHTML(item.navRisk||'—')}</b></div>
         <div><span>Upside Drag</span><b>${escapeHTML(item.upsideDrag||'—')}</b></div>
         <div><span>Category</span><b>${escapeHTML(item.category||'—')}</b></div>
       </div>
+
       <p class="stock-note">${escapeHTML(item.note||'')}</p>
     </article>`;
   }
 
   function empty(track){
-    return `<div class="income-empty">目前「年化 ≥${minYield}%」篩選下沒有${track}標的。可用上方 selector 切換。</div>`;
+    return `<div class="income-empty">目前「年化 Distribution Yield ≥${minYield}%」篩選下沒有${track}標的。</div>`;
   }
 
-  wg.innerHTML=weekly.length?weekly.sort((a,b)=>(b._yield??-1)-(a._yield??-1)).map(card).join(''):empty(' Weekly Income ');
-  mg.innerHTML=monthly.length?monthly.sort((a,b)=>(b._yield??-1)-(a._yield??-1)).map(card).join(''):empty(' Monthly Income ');
-  tg.innerHTML=tactical.length?tactical.sort((a,b)=>(b._yield??-1)-(a._yield??-1)).map(card).join(''):empty(' Tactical Income ');
+  // Higher distribution appears first inside each category, but signal/risk still governs action.
+  const sortYield=(a,b)=>(b._yield??-1)-(a._yield??-1);
+  wg.innerHTML=weekly.length?weekly.sort(sortYield).map(card).join(''):empty(' Weekly Income ');
+  mg.innerHTML=monthly.length?monthly.sort(sortYield).map(card).join(''):empty(' Monthly Income ');
+  tg.innerHTML=tactical.length?tactical.sort(sortYield).map(card).join(''):empty(' Tactical Income ');
 
   if($('incomeSystemNote')){
-    $('incomeSystemNote').textContent=`WAIS Income：Selector 按年化 T12M Distribution Yield ≥${minYield}% 篩選，不代表每星期有 ${minYield}% 回報。卡片主數字按派息頻率把年化率簡單換算成估算每期 Cash Yield，並顯示每 USD 10,000 約收多少現金；實際每期分派可升可跌。covered-call / option ETF 分派亦可能包含 option income 或 ROC。Signal仍需 WAIS 質素、NAV風險及 Entry 條件確認。`;
+    $('incomeSystemNote').textContent=
+      `WAIS Income：正式 Income Universe 最低門檻為年化 Distribution Yield ≥${minYield}%；預設為3%。Weekly / Monthly ETF 全部用 Estimated Monthly Cash Yield 作共同比較尺度。價格、分派、Price Date、Distribution Date、T12M Distribution Yield及20D SMA由 stock-prices.json 自動更新。Distribution Yield不是保證總回報；高派息產品尤其要檢查NAV、ROC、option strategy及分派可持續性。`;
   }
 }
 
@@ -720,15 +836,21 @@ async function initializeApp() {
   await loadMarketIndicators();
   await loadWeeklyEvents();
 
-  renderHoldings();
-  renderCards(topPicks, "topPicksGrid");
-  renderCards(gems, "hiddenGemsGrid");
-  renderWatchlist();
-  renderDashboardResearchLists();
-  renderWeeklyPlan();
-  renderDailyThought();
-  renderEconomicEvents();
-  renderWeeklyMarketNotes();
-  renderIncomeEtfs();
+  const safeRender=(name,fn)=>{
+    try{ fn(); }
+    catch(err){ console.error(`WAIS render failed: ${name}`,err); }
+  };
+
+  safeRender('holdings',renderHoldings);
+  safeRender('top picks',()=>renderCards(topPicks, "topPicksGrid"));
+  safeRender('hidden gems',()=>renderCards(gems, "hiddenGemsGrid"));
+  safeRender('watchlist',renderWatchlist);
+  safeRender('dashboard research lists',renderDashboardResearchLists);
+  safeRender('weekly plan',renderWeeklyPlan);
+  safeRender('daily thought',renderDailyThought);
+  safeRender('economic events',renderEconomicEvents);
+  safeRender('weekly strategy notes',renderWeeklyMarketNotes);
+  safeRender('income ETFs',renderIncomeEtfs);
+  safeRender('technical summary',renderTechnicalSummary);
 }
 initializeApp();
