@@ -1,174 +1,350 @@
 window.WAIS_MARKET_DATA = {
-  lastUpdated: "2026-07-26",
-  marketMode: "WAIT",
-  riskScore: 58,
-  recommendedCash: 40,
+  lastUpdated: "2026-08-09",
+  dataAsOf: "2026-08-07 US/HK market close; Sunday 2026-08-09 review",
+  marketMode: "CAUTIOUS",
+  riskScore: 45,
+  recommendedCash: 30,
 
   marketSummary: {
-    trend: "美股主要指數仍接近高位，但科技股及半導體近期轉弱，短線波動上升。",
-    breadth: "市場廣度轉弱，升勢較集中，AI及高估值科技股承受較大壓力。",
-    volatility: "聯儲局議息、大型科技股業績、油價及債息令本週事件風險偏高。",
-    liquidity: "資金仍流向大型科技、能源及防守板塊，但追價風險上升。"
+    trend: "美股主要指數於8月7日收高，S&P 500創新高，NASDAQ與半導體板塊保持強勢；但短線已累積較大升幅。",
+    breadth: "市場氣氛改善，但AI硬件、光通訊及部分高beta股票單日升幅過急，追價風險上升。",
+    volatility: "VIX仍處低位，但本週有CPI、PPI、零售銷售及多項科技業績，事件密度高。",
+    liquidity: "債息回落有利風險資產，但10年期美債息仍處偏高水平，估值敏感板塊仍需控制倉位。"
   },
 
   keyRisks: [
-    "聯儲局政策及利率路徑不確定。",
-    "10年期美債息偏高，壓抑高估值科技股。",
-    "油價及地緣政治可能再次推高通脹。",
-    "大型科技公司AI資本開支過高，市場開始質疑回報。",
-    "半導體及AI硬件短線技術走勢轉弱。"
+    "8月12日美國CPI可能重新改變利率預期。",
+    "8月13日美國PPI可能確認或否定成本通脹壓力。",
+    "8月14日零售銷售將檢驗美國消費韌性。",
+    "AI、光通訊及半導體部分股票短線升幅過急，回吐風險上升。",
+    "地緣政治與油價變化仍可能重新推高通脹及市場波動。"
   ],
 
   focusStocks: [
     {
-      ticker: "NVDA",
-      category: "AI Compute",
-      stance: "WAIT",
-      evidenceConfidence: 88,
-      risk: "Medium",
-      entry: 185,
-      target: 235,
-      note: "長期AI核心，但高估值及市場波動下不宜追高。"
+      ticker: "GFS",
+      company: "GlobalFoundries",
+      category: "Foundry",
+      bucket: "TOP_PICK",
+      showInWatchlist: true,
+      stance: "WATCH",
+      evidenceConfidence: 82,
+      risk: "Medium High",
+      rating: "Core Watch",
+      entry: 51,
+      target: 62,
+      note: "8月7日收53.93美元；基本面與供應鏈位置值得跟進，但急升後先等回吐至較佳風險回報區。"
     },
     {
-      ticker: "TSM",
-      category: "Foundry",
+      ticker: "POWL",
+      company: "Powell Industries",
+      category: "Data Center Power",
+      bucket: "TOP_PICK",
+      showInWatchlist: true,
+      stance: "WATCH",
+      evidenceConfidence: 84,
+      risk: "Medium High",
+      rating: "Core Watch",
+      entry: 205,
+      target: 240,
+      note: "8月7日收211.56美元；受惠資料中心電力需求，但現價不宜追高，等回調再評估。"
+    },
+    {
+      ticker: "MOD",
+      company: "Modine",
+      category: "Data Center Cooling",
+      bucket: "TOP_PICK",
+      showInWatchlist: true,
       stance: "WAIT",
+      evidenceConfidence: 80,
+      risk: "Medium High",
+      rating: "Core Watch",
+      entry: 187,
+      target: 220,
+      note: "8月7日收195.60美元；資料中心冷卻增長故事仍強，但估值及事件風險令現階段以等待為主。"
+    },
+    {
+      ticker: "GOOGL",
+      company: "Alphabet",
+      category: "AI Platform / Cloud",
+      bucket: "WATCHLIST",
+      showInWatchlist: true,
+      stance: "WATCH",
       evidenceConfidence: 90,
       risk: "Medium",
-      entry: 360,
-      target: 460,
-      note: "AI先進製程核心，等待更理想估值及市場確認。"
+      rating: "Quality Watch",
+      entry: 344,
+      target: 392,
+      note: "8月7日收354.30美元；質素高，但仍等待更理想入場位置。"
+    },
+    {
+      ticker: "NVDA",
+      company: "NVIDIA",
+      category: "AI Compute",
+      bucket: "WATCHLIST",
+      showInWatchlist: true,
+      stance: "WAIT",
+      evidenceConfidence: 91,
+      risk: "Medium High",
+      rating: "Core Watch",
+      entry: 217,
+      target: 250,
+      note: "8月7日收223.96美元；長期AI核心，但本週宏觀事件前不追高。"
     },
     {
       ticker: "AVGO",
+      company: "Broadcom",
       category: "Networking / ASIC",
+      bucket: "WATCHLIST",
+      showInWatchlist: true,
       stance: "WAIT",
-      evidenceConfidence: 87,
+      evidenceConfidence: 89,
+      risk: "Medium High",
+      rating: "Core Watch",
+      entry: 412,
+      target: 470,
+      note: "8月7日收427.76美元；AI網絡及ASIC需求仍強，但估值高，等價格回落。"
+    },
+    {
+      ticker: "TSM",
+      company: "TSMC",
+      category: "Foundry",
+      bucket: "WATCHLIST",
+      showInWatchlist: true,
+      stance: "WATCH",
+      evidenceConfidence: 92,
       risk: "Medium",
-      entry: 340,
-      target: 440,
-      note: "ASIC及網絡需求強，但估值及AI資本開支風險需監察。"
+      rating: "Core Watch",
+      entry: 405,
+      target: 455,
+      note: "8月7日收420.04美元；先進製程核心地位不變，等較佳風險回報位置。"
     },
     {
       ticker: "MRVL",
+      company: "Marvell Technology",
       category: "AI Networking",
-      stance: "READY 1",
-      evidenceConfidence: 78,
+      bucket: "WATCHLIST",
+      showInWatchlist: true,
+      stance: "WAIT",
+      evidenceConfidence: 82,
       risk: "Medium High",
-      entry: 175,
-      target: 220,
-      note: "接近第一注觀察區，但必須等待價格及市場穩定確認。"
+      rating: "Watch",
+      entry: 205,
+      target: 240,
+      note: "8月7日收218.72美元；舊READY 1取消，因價格已離開原先理想買入區。"
     },
     {
       ticker: "MU",
+      company: "Micron Technology",
       category: "Memory / HBM",
-      stance: "READY 1",
-      evidenceConfidence: 82,
+      bucket: "WATCHLIST",
+      showInWatchlist: true,
+      stance: "WAIT",
+      evidenceConfidence: 85,
       risk: "Medium High",
-      entry: 830,
-      target: 1050,
-      note: "HBM及記憶體周期仍有支持，等待回調分段部署。"
+      rating: "Watch",
+      entry: 845,
+      target: 980,
+      note: "8月7日收877.57美元；HBM基本面仍具支持，但舊READY 1取消，等待回調。"
     },
     {
-      ticker: "COHR",
+      ticker: "AAOI",
+      company: "Applied Optoelectronics",
       category: "Optical",
+      bucket: "WATCHLIST",
+      showInWatchlist: true,
       stance: "WAIT",
-      evidenceConfidence: 76,
-      risk: "High",
-      entry: 180,
-      target: 240,
-      note: "光通訊受惠AI需求，但波動高，暫不追價。"
-    },
-    {
-      ticker: "LITE",
-      category: "Optical",
-      stance: "WAIT",
-      evidenceConfidence: 74,
-      risk: "High",
-      entry: 670,
-      target: 900,
-      note: "光學供應鏈有催化，但價格及競爭風險仍高。"
+      evidenceConfidence: 72,
+      risk: "Very High",
+      rating: "High Beta Watch",
+      entry: 122,
+      target: 158,
+      note: "8月7日收135.63美元，單日升幅約9%；短線過熱，不追。"
     },
     {
       ticker: "AXTI",
+      company: "AXT",
       category: "InP Materials",
-      stance: "WATCH",
-      evidenceConfidence: 62,
+      bucket: "WATCHLIST",
+      showInWatchlist: true,
+      stance: "WAIT",
+      evidenceConfidence: 68,
       risk: "Very High",
-      entry: 40,
-      target: 58,
-      note: "Serenity重點供應鏈概念，但屬高投機，需驗證收入及訂單。"
+      rating: "High Beta Watch",
+      entry: 75,
+      target: 100,
+      note: "8月7日收88.58美元，單日升幅約17.8%；高波動，等待冷卻及基本面驗證。"
     },
     {
       ticker: "TSEM",
+      company: "Tower Semiconductor",
       category: "Specialty Foundry",
-      stance: "WATCH",
-      evidenceConfidence: 70,
+      bucket: "WATCHLIST",
+      showInWatchlist: true,
+      stance: "WAIT",
+      evidenceConfidence: 76,
       risk: "High",
-      entry: 205,
-      target: 275,
-      note: "特色製程具潛力，但需要更明確增長催化。"
+      rating: "Watch",
+      entry: 232,
+      target: 278,
+      note: "8月7日收252.49美元，單日升幅約12.4%；等回調後再評估。"
+    },
+    {
+      ticker: "COHR",
+      company: "Coherent",
+      category: "Optical / Photonics",
+      bucket: "WATCHLIST",
+      showInWatchlist: true,
+      stance: "WAIT",
+      evidenceConfidence: 81,
+      risk: "High",
+      rating: "Watch",
+      entry: 352,
+      target: 420,
+      note: "8月7日收379.13美元，單日升幅約13.4%；AI光通訊主題強，但現價追高風險高。"
+    },
+    {
+      ticker: "LITE",
+      company: "Lumentum",
+      category: "Optical / Photonics",
+      bucket: "WATCHLIST",
+      showInWatchlist: true,
+      stance: "WAIT",
+      evidenceConfidence: 80,
+      risk: "High",
+      rating: "Event Watch",
+      entry: 0,
+      target: 0,
+      note: "8月7日收890.17美元；業績事件前暫停設定新Entry/Target，等公布後重新評估。"
+    },
+
+    {
+      ticker: "AEHR",
+      company: "Aehr Test Systems",
+      category: "Semiconductor Test",
+      bucket: "HIDDEN_GEM",
+      showInWatchlist: false,
+      stance: "WATCH",
+      evidenceConfidence: 62,
+      risk: "Very High",
+      rating: "Research",
+      note: "8月7日收103.07美元；研究價值高，但盈利與估值風險需要持續驗證。"
+    },
+    {
+      ticker: "FORM",
+      company: "FormFactor",
+      category: "Semiconductor Test",
+      bucket: "HIDDEN_GEM",
+      showInWatchlist: false,
+      stance: "WATCH",
+      evidenceConfidence: 67,
+      risk: "High",
+      rating: "Research",
+      note: "8月7日收117.39美元；先保留研究席位，等待更清晰催化。"
+    },
+    {
+      ticker: "MXL",
+      company: "MaxLinear",
+      category: "Connectivity / Analog",
+      bucket: "HIDDEN_GEM",
+      showInWatchlist: false,
+      stance: "WATCH",
+      evidenceConfidence: 60,
+      risk: "Very High",
+      rating: "Research",
+      note: "8月7日收74.98美元；高beta研究標的，未達部署級別。"
     },
     {
       ticker: "POET",
+      company: "POET Technologies",
       category: "Photonics",
+      bucket: "HIDDEN_GEM",
+      showInWatchlist: false,
       stance: "WATCH",
-      evidenceConfidence: 52,
+      evidenceConfidence: 55,
       risk: "Very High",
-      entry: 5.8,
-      target: 9,
-      note: "潛在高回報亦高失敗風險，只適合極小注研究倉。"
+      rating: "Speculative",
+      note: "8月7日收8.91美元；潛在高回報亦伴隨高執行及融資風險，只作研究。"
+    },
+    {
+      ticker: "NVTS",
+      company: "Navitas Semiconductor",
+      category: "Power Semiconductors",
+      bucket: "HIDDEN_GEM",
+      showInWatchlist: false,
+      stance: "WATCH",
+      evidenceConfidence: 58,
+      risk: "Very High",
+      rating: "Research",
+      note: "8月7日收13.89美元；高波動，需驗證AI電源需求能否轉化為收入與盈利。"
+    },
+    {
+      ticker: "OSS",
+      company: "One Stop Systems",
+      category: "Edge AI / Rugged Compute",
+      bucket: "HIDDEN_GEM",
+      showInWatchlist: false,
+      stance: "WATCH",
+      evidenceConfidence: 56,
+      risk: "Very High",
+      rating: "Research",
+      note: "8月7日收13.24美元；屬早期研究標的，暫不列入部署名單。"
+    },
+    {
+      ticker: "AIRO",
+      company: "AIRO Group",
+      category: "Aerospace / Defense Tech",
+      bucket: "HIDDEN_GEM",
+      showInWatchlist: false,
+      stance: "WATCH",
+      evidenceConfidence: 50,
+      risk: "Very High",
+      rating: "Speculative",
+      note: "8月7日收8.52美元；流動性及執行風險高，只作探索性研究。"
     }
   ],
 
-  readyList: [
-    {
-      ticker: "MRVL",
-      level: "READY 1",
-      action: "等待回調及市場確認後考慮第一注",
-      maxInitialPosition: "2%"
-    },
-    {
-      ticker: "MU",
-      level: "READY 1",
-      action: "等待回調及HBM基本面確認後考慮第一注",
-      maxInitialPosition: "2%"
-    }
-  ],
+  readyList: [],
 
   serenityData: [
     {
       theme: "AI optical and CPO",
-      tickers: ["COHR", "LITE", "AXTI", "POET"],
-      serenityView: "AI資料中心光學及InP供應鏈是長期樽頸。",
-      waisView: "主題合理，但小型股估值、流動性及實際收入必須獨立驗證。"
+      tickers: ["COHR", "LITE", "AAOI", "AXTI", "POET"],
+      serenityView: "AI資料中心光學及InP供應鏈仍是重要研究主題。",
+      waisView: "主題強，但8月7日多隻相關股急升；價格紀律優先於追逐主題。"
     },
     {
-      theme: "Taiwan AI supply chain",
-      tickers: ["TSM", "TSEM"],
-      serenityView: "台灣AI供應鏈、先進封裝及ASIC受惠資本開支。",
-      waisView: "長期方向正面，但必須控制地緣政治及周期風險。"
+      theme: "AI foundry and specialty manufacturing",
+      tickers: ["TSM", "GFS", "TSEM"],
+      serenityView: "AI、ASIC及特色製程需求支持晶圓代工供應鏈。",
+      waisView: "長期方向正面，但不同公司估值、製程位置及地緣風險必須分開評估。"
     },
     {
       theme: "Memory and HBM",
       tickers: ["MU"],
-      serenityView: "HBM及記憶體供應仍是AI基建重要樽頸。",
-      waisView: "基本面支持較強，但記憶體股周期性高，宜分段部署。"
+      serenityView: "HBM及記憶體供應仍是AI基建重要環節。",
+      waisView: "基本面支持較強，但周期性高；舊READY 1已取消，重新等待Entry。"
     }
   ],
 
   actionPlan: [
-    "維持WAIT模式，不追高。",
-    "建議保留40%現金，等待聯儲局及大型科技股業績後再調整。",
-    "MRVL及MU列入READY 1，但未等於立即買入。",
-    "如市場風險分數升至65以上，暫停所有新買入。",
-    "如Nasdaq及半導體板塊重新企穩，可重新評估第一注。"
+    "維持CAUTIOUS模式；市場強，但本週事件密度高，不追星期五急升股。",
+    "Market Risk 45/100，建議保留約30%現金。",
+    "READY 1暫時為0；GFS、POWL、MOD列作Top Picks研究，但仍等待Entry。",
+    "8月12日CPI及8月13日PPI公布前控制新倉；8月14日再檢視零售銷售。",
+    "如高beta AI/光通訊股出現有秩序回調而基本面不變，再重新評估第一注。"
   ],
 
+  dailyThought: {
+    date: "2026年8月9日",
+    zh: "強勢趨勢值得尊重，好的入場價值得等待。",
+    en: "Respect the trend. Wait for the right price."
+  },
+
   notes: [
+    "截至2026年8月9日，股票價格引用最近可驗證的2026年8月7日美股收市資料；並非即時報價。",
+    "Entry及Target屬WAIS策略規劃區間的代表值，不是市場報價或保證目標。",
     "Serenity資料只作研究輸入，不代表WAIS最終結論。",
-    "所有股票必須驗證公司公告、財報、估值及價格行為。",
-    "投資決定必須分段執行，並設定最大持倉及退出條件。"
+    "所有股票必須重新驗證公司公告、財報、估值、價格行為及事件風險後才可升級READY 1。"
   ]
 };
