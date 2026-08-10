@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="wais-theme.css">
 </head>
 <body>
   <div class="app-shell">
@@ -286,7 +287,7 @@
             </div>
             <div class="table-wrap">
               <table>
-                <thead><tr><th>Ticker</th><th>Shares</th><th>Avg Cost</th><th>Current</th><th>Value</th><th>P/L</th><th></th></tr></thead>
+                <thead><tr><th>Ticker</th><th>Signal</th><th>Shares</th><th>Avg Cost</th><th>Current</th><th>Value</th><th>P/L</th><th></th></tr></thead>
                 <tbody id="holdingsTable"></tbody>
               </table>
             </div>
@@ -359,9 +360,9 @@
         <section class="page-section" id="top-picks">
           <div class="section-banner">
             <div>
-              <span class="panel-kicker">WAIS CORE WATCHLIST</span>
+              <span class="panel-kicker">WAIS WATCHLIST PRIORITY</span>
               <h2>Top Picks</h2>
-              <p>每隻股票以供應鏈角色、風險及入市狀態分類。</p>
+              <p>由 Watchlist 中選出最高優先級 3–5 隻；Top Pick 是優先排名，顏色才代表今日行動。</p>
             </div>
           </div>
           <div class="cards-grid" id="topPicksGrid"></div>
@@ -370,9 +371,9 @@
         <section class="page-section" id="hidden-gems">
           <div class="section-banner">
             <div>
-              <span class="panel-kicker">EARLY OPPORTUNITY RADAR</span>
+              <span class="panel-kicker">WAIS DISCOVERY LAB</span>
               <h2>Hidden Gems</h2>
-              <p>高潛力同時高風險，必須分開「事實、論點、推測」。</p>
+              <p>只放仍在發掘／驗證中的研究標的；一旦升級到 Watchlist，就會由 Hidden Gems 移出。</p>
             </div>
           </div>
           <div class="cards-grid" id="hiddenGemsGrid"></div>
@@ -380,50 +381,20 @@
 
 
         <section class="page-section" id="income">
-          <div class="section-banner">
-            <div>
-              <span class="panel-kicker">WAIS INCOME ENGINE</span>
-              <h2>Income ETFs</h2>
-              <p>以可持續收入、資本保護與總回報為核心，不以最高派息率作唯一選股標準。</p>
-            </div>
+          <div class="section-banner"><div><span class="panel-kicker">WAIS INCOME SIGNAL ENGINE</span><h2>Income ETFs</h2><p>Weekly + Monthly 收入策略分開管理；價格、分派及日期盡量自動更新，顏色代表今日行動。</p></div></div>
+          <div class="signal-legend panel">
+            <span class="signal-chip signal-green">GREEN · READY INCOME 1</span><span class="signal-chip signal-yellow">YELLOW · WATCH INCOME</span><span class="signal-chip signal-orange">ORANGE · WAIT / CAUTIOUS</span><span class="signal-chip signal-red">RED · DEFENSE / AVOID</span><span class="signal-chip signal-blue">BLUE · RESEARCH</span>
           </div>
-
           <div class="metrics-grid">
-            <article class="metric-card">
-              <span>Income Universe</span>
-              <strong><span id="incomeUniverseCount">0</span></strong>
-              <p>目前 WAIS Income 研究 ETF 數量</p>
-            </article>
-            <article class="metric-card">
-              <span>Income Ready</span>
-              <strong><span id="incomeReadyCount">0</span></strong>
-              <p>符合 Income Ready 條件的 ETF</p>
-            </article>
-            <article class="metric-card">
-              <span>Income Defense</span>
-              <strong id="incomeDefenseStatus">CAUTIOUS</strong>
-              <p>按市場風險與收入穩定性調整部署節奏</p>
-            </article>
-            <article class="metric-card">
-              <span>Target Use</span>
-              <strong>INCOME</strong>
-              <p>Core Dividend / Covered Call / Tactical Income 分層研究</p>
-            </article>
+            <article class="metric-card signal-metric signal-green-soft"><span>Weekly Income Ready</span><strong><span id="weeklyIncomeReadyCount">0</span></strong><p>目前符合 Weekly Income 第一注條件</p></article>
+            <article class="metric-card signal-metric signal-yellow-soft"><span>Monthly Income Ready</span><strong><span id="monthlyIncomeReadyCount">0</span></strong><p>目前符合 Monthly Income 第一注條件</p></article>
+            <article class="metric-card signal-metric signal-orange-soft"><span>Income Defense</span><strong id="incomeDefenseStatus">CAUTIOUS</strong><p>收入策略的整體防守狀態</p></article>
+            <article class="metric-card"><span>Suggested Income Cash</span><strong><span id="incomeCashReserve">30</span><small>%</small></strong><p>等待較佳價格及維持收入策略機動性</p></article>
           </div>
-
-          <article class="panel">
-            <div class="panel-head">
-              <div>
-                <span class="panel-kicker">WAIS INCOME RESEARCH UNIVERSE</span>
-                <h3>ETF Income Research Board</h3>
-              </div>
-              <div class="weekly-review-date" id="incomeUpdated">價格及分派資料載入中…</div>
-            </div>
-            <div class="cards-grid" id="incomeEtfGrid"></div>
-            <div class="weekly-risk-note">
-              WAIS Income 原則：先看分派可持續性、NAV/總回報、回撤與策略成本，再看派息率。價格與最近分派由自動資料檔更新；所有日期及幣別均清楚標示。
-            </div>
-          </article>
+          <article class="panel income-master-panel"><div class="panel-head"><div><span class="panel-kicker">WAIS INCOME DATA STATUS</span><h3>Income Signal Board</h3></div><div class="weekly-review-date" id="incomeUpdated">價格及分派資料載入中…</div></div><div class="weekly-risk-note" id="incomeSystemNote">顏色是行動訊號；價格／分派／SMA 由資料檔自動更新。READY 1 仍需符合 WAIS Income 質素與風險條件，不會單靠高 Yield 自動升級。</div></article>
+          <article class="panel income-track-panel"><div class="panel-head"><div><span class="panel-kicker">WEEKLY INCOME</span><h3>Weekly Income｜每週收入</h3></div><div class="track-note">Core + Tactical 分開</div></div><div class="cards-grid" id="weeklyIncomeGrid"></div></article>
+          <article class="panel income-track-panel"><div class="panel-head"><div><span class="panel-kicker">MONTHLY INCOME</span><h3>Monthly Income｜每月收入</h3></div><div class="track-note">Dividend + Covered Call + Equity Premium</div></div><div class="cards-grid" id="monthlyIncomeGrid"></div></article>
+          <article class="panel income-track-panel"><div class="panel-head"><div><span class="panel-kicker">TACTICAL / HIGH INCOME</span><h3>Tactical Income｜高收入策略</h3></div><div class="track-note">較高 NAV / ROC / Upside Drag 風險</div></div><div class="cards-grid" id="tacticalIncomeGrid"></div></article>
         </section>
 
         <section class="page-section" id="research">
@@ -451,7 +422,7 @@
 
           <div class="panel weekly-market-notes">
             <div class="panel-head">
-              <h3>WAIS Weekly Strategy Notes｜本週策略重點</h3>
+              <h3>WAIS Weekly Strategy Notes｜本週部署</h3>
               <div class="weekly-review-date" id="weeklyMarketReviewDate">Loading...</div>
             </div>
             <div class="weekly-note-list" id="weeklyMarketNotesList"></div>
@@ -464,6 +435,7 @@
             <div>
               <span class="panel-kicker">WAIS VERIFIED CLOSE ANALYSIS</span>
               <h3>WAIS Market Structure Board｜市場結構儀表板</h3>
+                <p class="structure-subtitle">數值 = 已確認市場資料｜Signal = WAIS 市場結構判斷｜每張卡均顯示 As of 日期</p>
             </div>
             <div class="weekly-review-date" id="technicalSummaryUpdated">市場數據日期載入中…</div>
           </div>
