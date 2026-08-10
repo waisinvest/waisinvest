@@ -75,3 +75,118 @@
 .income-empty{grid-column:1/-1;padding:24px;border:1px dashed #3c4e69;border-radius:12px;color:#9aabc3;text-align:center}
 .week-tag{display:inline-block;margin-right:7px;padding:2px 6px;border-radius:6px;background:rgba(53,194,255,.12);color:#7fddff;font-size:9px;font-style:normal}
 @media(max-width:720px){.income-title-row{flex-direction:column}.yield-hero{width:100%;text-align:left}.yield-filter-note{min-width:100%}}
+
+
+/* WAIS FINAL LOCK INCOME EMPHASIS */
+.income-risk-flag{
+  margin:10px 0 4px;
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:.5px;
+  color:#9fb0c9;
+}
+.income-card .yield-hero strong{
+  font-size:28px!important;
+}
+.income-card .stock-meta>div:nth-child(3),
+.income-card .stock-meta>div:nth-child(4){
+  background:rgba(54,211,153,.06);
+  outline:1px solid rgba(54,211,153,.18);
+}
+.income-card .stock-meta>div:nth-child(3) b,
+.income-card .stock-meta>div:nth-child(4) b{
+  color:#66e5b3;
+  font-size:14px;
+}
+
+
+/* WAIS FINAL V2 — Research Library loading resilience + Risk Engine visual separation */
+.strategy-note-row{
+  display:grid;
+  grid-template-columns:42px 1fr;
+  gap:12px;
+  padding:14px 4px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.strategy-note-row>span{
+  font-weight:900;
+  color:#7fddff;
+}
+.strategy-note-row p{
+  margin:0;
+  line-height:1.55;
+  color:#cbd6e8;
+}
+.strategy-note-row strong{
+  color:#f4f7fb;
+}
+.strategy-note-row .strategy-action{
+  margin-left:8px;
+  color:#7fddff!important;
+  background:rgba(53,194,255,.12)!important;
+  border-color:rgba(53,194,255,.42)!important;
+}
+
+/* Risk Engine: make all five regimes visibly different */
+.defense-grid .defense-level{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.10);
+  transition:.15s ease;
+}
+.defense-grid .defense-level::before{
+  content:"";
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width:5px;
+}
+.defense-grid .defense-level b{
+  position:relative;
+  z-index:1;
+}
+.defense-grid .defense-level p{
+  position:relative;
+  z-index:1;
+}
+
+.defense-grid .level-aggressive{
+  background:rgba(54,211,153,.10);
+  border-color:rgba(54,211,153,.42);
+}
+.defense-grid .level-aggressive::before{background:#36d399}
+.defense-grid .level-aggressive b{color:#63e6b6}
+
+.defense-grid .level-normal{
+  background:rgba(53,194,255,.09);
+  border-color:rgba(53,194,255,.40);
+}
+.defense-grid .level-normal::before{background:#35c2ff}
+.defense-grid .level-normal b{color:#7fddff}
+
+.defense-grid .level-cautious{
+  background:rgba(255,173,66,.11);
+  border-color:rgba(255,173,66,.48);
+}
+.defense-grid .level-cautious::before{background:#ffad42}
+.defense-grid .level-cautious b{color:#ffc36f}
+
+.defense-grid .level-defensive{
+  background:rgba(255,102,122,.11);
+  border-color:rgba(255,102,122,.52);
+}
+.defense-grid .level-defensive::before{background:#ff667a}
+.defense-grid .level-defensive b{color:#ff8c9c}
+
+.defense-grid .level-mostly-cash{
+  background:rgba(157,61,93,.20);
+  border-color:rgba(213,83,119,.68);
+  box-shadow:inset 0 0 18px rgba(124,28,58,.16);
+}
+.defense-grid .level-mostly-cash::before{background:#b63d67}
+.defense-grid .level-mostly-cash b{color:#ff9db8}
+
+/* Cautious must be orange everywhere, including risk result text */
+#riskResultMode{
+  color:#ffad42;
+  font-weight:900;
+}
