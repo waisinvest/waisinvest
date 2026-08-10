@@ -1,45 +1,195 @@
-import json,re,urllib.request
-from datetime import datetime,timezone,time,timedelta
+import json
+import re
+import urllib.request
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from zoneinfo import ZoneInfo
+
 import yfinance as yf
-SYMS={"SP500":("^GSPC","US"),"NASDAQ":("^IXIC","US"),"NASDAQ100":("^NDX","US"),"DOW":("^DJI","US"),"SOX":("^SOX","US"),"VIX":("^VIX","US"),"US10Y":("^TNX","US"),"HSI":("^HSI","HK"),"HSTECH":("HSTECH.HK","HK")};OUT=Path('market-indicators.json');EV=Path('weekly-events.json')
-def load(p,d):
- try:return json.loads(p.read_text(encoding='utf-8')) if p.exists() else d
- except:return d
-def complete(h,m):
- if h.empty:return h
- tz=ZoneInfo('Asia/Hong_Kong' if m=='HK' else 'America/New_York');now=datetime.now(timezone.utc).astimezone(tz)
- return h.iloc[:-1] if h.index[-1].date()==now.date() and now.time()<time(16,20) else h
-def fetch(u):
- r=urllib.request.Request(u,headers={'User-Agent':'WAIS-Invest/1.0'});return urllib.request.urlopen(r,timeout=20).read().decode('utf-8','ignore')
-def events():
- out=[]
- try:
-  t=re.sub(r'\r?\n[ \t]','',fetch('https://www.bls.gov/schedule/news_release/bls.ics'))
-  for b in t.split('BEGIN:VEVENT')[1:]:
-   sm=re.search(r'SUMMARY:(.+)',b);dm=re.search(r'DTSTART(?:;[^:]*)?:(\d{8})',b)
-   if not sm or not dm:continue
-   name='美國 CPI' if 'Consumer Price Index' in sm.group(1) else ('美國 PPI' if 'Producer Price Index' in sm.group(1) else None)
-   if name:
-    d=datetime.strptime(dm.group(1),'%Y%m%d').date();out.append({"dateISO":d.isoformat(),"date":d.strftime('%m月%d日'),"event":name,"time":"08:30 ET","source":"U.S. Bureau of Labor Statistics"})
- except Exception as e:print('BLS events failed',e)
- try:
-  h=re.sub(r'\s+',' ',re.sub(r'<[^>]+>',' ',fetch('https://www.census.gov/economic-indicators/calendar-listview.html')));months={m:i for i,m in enumerate('January February March April May June July August September October November December'.split(),1)}
-  for m,d,y in re.findall(r'Advance Monthly Sales for Retail and Food Services\s+([A-Z][a-z]+)\s+(\d{1,2}),\s+(20\d{2})\s+8:30 AM',h):
-   dt=datetime(int(y),months[m],int(d)).date();out.append({"dateISO":dt.isoformat(),"date":dt.strftime('%m月%d日'),"event":"美國零售銷售","time":"08:30 ET","source":"U.S. Census Bureau"})
- except Exception as e:print('Census events failed',e)
- today=datetime.now(timezone.utc).astimezone(ZoneInfo('America/New_York')).date();end=today+timedelta(days=7);out=[e for e in out if today<=datetime.fromisoformat(e['dateISO']).date()<=end];out.sort(key=lambda e:(e['dateISO'],e['time'],e['event']));
- if out:EV.write_text(json.dumps({"lastUpdated":datetime.now(timezone.utc).isoformat(),"window":{"from":today.isoformat(),"to":end.isoformat()},"dataStatus":"Official release schedules; verify again before trading","events":out},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+OUTPUT_PATH = Path("market-indicators.json")
+EVENTS_PATH = Path("weekly-events.json")
+
+MARKET_SYMBOLS = {
+    "SP500": "^GSPC",
+    "NASDAQ": "^IXIC",
+    "NASDAQ100": "^NDX",
+    "DOW": "^DJI",
+    "SOX": "^SOX",
+    "VIX": "^VIX",
+    "US10Y": "^TNX",
+    "HSI": "^HSI",
+    "HSTECH": "HSTECH.HK",
+}
+
+MARKET_GROUP = {
+    "SP500": "US",
+    "NASDAQ": "US",
+    "NASDAQ100": "US",
+    "DOW": "US",
+    "SOX": "US",
+    "VIX": "US",
+    "US10Y": "US",
+    "HSI": "HK",
+    "HSTECH": "HK",
+}
+
+
+def load_json(path, default):
+    try:
+        if path.exists():
+            return json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        print(f"Warning: could not read {path}: {exc}")
+    return default
+
+
+def save_json(path, data):
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def fetch_text(url):
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "Mozilla/5.0 WAIS-Invest/1.0"}
+    )
+    with urllib.request.urlopen(req, timeout=15) as r:
+        return r.read().decode("utf-8", errors="ignore")
+
+
+def update_weekly_events():
+    existing = load_json(EVENTS_PATH, {"events": []})
+    now_et = datetime.now(timezone.utc)
+    start = now_et.date()
+    end = start + timedelta(days=7)
+    events = []
+
+    # BLS official ICS (best effort)
+    try:
+        text = fetch_text("https://www.bls.gov/schedule/news_release/bls.ics")
+        text = re.sub(r"\r?\n[ \t]", "", text)
+        for block in text.split("BEGIN:VEVENT")[1:]:
+            s = re.search(r"SUMMARY:(.+)", block)
+            d = re.search(r"DTSTART(?:;[^:]*)?:(\d{8})T?(\d{6})?", block)
+            if not s or not d:
+                continue
+            summary = s.group(1).strip()
+            if "Consumer Price Index" in summary:
+                name = "美國 CPI"
+            elif "Producer Price Index" in summary:
+                name = "美國 PPI"
+            else:
+                continue
+            day = datetime.strptime(d.group(1), "%Y%m%d").date()
+            if start <= day <= end:
+                events.append({
+                    "dateISO": day.isoformat(),
+                    "date": day.strftime("%m月%d日"),
+                    "event": name,
+                    "time": "08:30 ET",
+                    "source": "U.S. Bureau of Labor Statistics"
+                })
+    except Exception as exc:
+        print(f"Weekly event refresh warning (BLS): {exc}")
+
+    # Preserve reviewed fallback when no official refresh is available.
+    if events:
+        events.sort(key=lambda x: (x["dateISO"], x["event"]))
+        save_json(EVENTS_PATH, {
+            "lastUpdated": datetime.now(timezone.utc).isoformat(),
+            "window": {"from": start.isoformat(), "to": end.isoformat()},
+            "dataStatus": "Official release schedule; verify again before trading",
+            "events": events,
+        })
+        print(f"weekly-events.json updated with {len(events)} event(s).")
+    else:
+        if not EVENTS_PATH.exists():
+            save_json(EVENTS_PATH, existing)
+        print("No official event refresh available; existing weekly-events.json preserved.")
+
+
 def main():
- old=load(OUT,{});ind=old.get('indicators',{});dates={"US":None,"HK":None};ok=0
- for name,(sym,mkt) in SYMS.items():
-  try:
-   h=complete(yf.Ticker(sym).history(period='10d',interval='1d',auto_adjust=False,prepost=False));c=h['Close'].dropna() if not h.empty else []
-   if len(c)==0:continue
-   p=float(c.iloc[-1]);d=c.index[-1].date().isoformat();prev=float(c.iloc[-2]) if len(c)>=2 else p;chg=p-prev;pct=chg/prev*100 if prev else 0;ind[name]={"symbol":sym,"value":round(p,4),"previousClose":round(prev,4),"change":round(chg,4),"changePercent":round(pct,4),"asOf":d,"source":"Yahoo Finance via yfinance","dataStatus":"Completed daily close; NOT REAL-TIME"};dates[mkt]=max([x for x in [dates[mkt],d] if x]);ok+=1
-  except Exception as e:print('failed',name,e)
- if 'HSIF' in ind:ind['HSIF']['dataStatus']=ind['HSIF'].get('dataStatus','Separately verified futures data; NOT REAL-TIME')
- OUT.write_text(json.dumps({"lastUpdated":datetime.now(timezone.utc).isoformat(),"marketDates":dates,"marketStatus":"updated" if ok else "update_failed","dataStatus":"Completed daily close / separately verified delayed data; NOT REAL-TIME","indicators":ind},ensure_ascii=False,indent=2)+'\n',encoding='utf-8');events()
- if not ok:raise RuntimeError('No market indicators updated')
-if __name__=='__main__':main()
+    existing = load_json(OUTPUT_PATH, {})
+    indicators = existing.get("indicators", {})
+    market_dates = existing.get("marketDates", {"US": None, "HK": None})
+    if not isinstance(market_dates, dict):
+        market_dates = {"US": None, "HK": None}
+
+    successful = 0
+    failed = []
+
+    for name, symbol in MARKET_SYMBOLS.items():
+        try:
+            hist = yf.Ticker(symbol).history(
+                period="10d",
+                interval="1d",
+                auto_adjust=False,
+                prepost=False,
+            )
+
+            if hist.empty or hist["Close"].dropna().empty:
+                raise RuntimeError("no daily close returned")
+
+            closes = hist["Close"].dropna()
+
+            # Use the latest COMPLETED daily row. On weekends/after close this is naturally
+            # the latest close. If a provider exposes an in-progress daily bar, do not
+            # overwrite a newer verified close with an older date.
+            latest = float(closes.iloc[-1])
+            latest_date = closes.index[-1].date().isoformat()
+            previous = float(closes.iloc[-2]) if len(closes) >= 2 else latest
+            change = latest - previous
+            change_pct = (change / previous * 100) if previous else 0.0
+
+            indicators[name] = {
+                "symbol": symbol,
+                "value": round(latest, 4),
+                "previousClose": round(previous, 4),
+                "change": round(change, 4),
+                "changePercent": round(change_pct, 4),
+                "asOf": latest_date,
+                "source": "Yahoo Finance via yfinance",
+                "dataStatus": "Delayed / daily close; NOT REAL-TIME",
+            }
+
+            group = MARKET_GROUP[name]
+            old_date = market_dates.get(group)
+            if not old_date or latest_date > old_date:
+                market_dates[group] = latest_date
+
+            successful += 1
+            print(f"OK {name}: {latest:.4f} @ {latest_date}")
+
+        except Exception as exc:
+            failed.append(name)
+            print(f"WARNING {name}: {exc}; previous verified value preserved.")
+
+    # Preserve separately-verified HSIF. Never fabricate it from another symbol.
+    if "HSIF" in indicators:
+        indicators["HSIF"]["dataStatus"] = indicators["HSIF"].get(
+            "dataStatus",
+            "Separately verified delayed futures data; NOT REAL-TIME"
+        )
+
+    status = "updated" if successful else "stale_preserved"
+    save_json(OUTPUT_PATH, {
+        "lastUpdated": datetime.now(timezone.utc).isoformat(),
+        "marketDates": market_dates,
+        "marketStatus": status,
+        "dataStatus": "Delayed / daily close; NOT REAL-TIME",
+        "failedSymbols": failed,
+        "indicators": indicators,
+    })
+
+    # Best-effort calendar refresh must never break market-data publication.
+    try:
+        update_weekly_events()
+    except Exception as exc:
+        print(f"Weekly events warning: {exc}")
+
+    print(f"Completed: {successful} updated, {len(failed)} preserved.")
+    # Intentionally no RuntimeError here:
+    # stale values remain explicitly labelled rather than breaking the website.
+
+
+if __name__ == "__main__":
+    main()
