@@ -468,7 +468,14 @@ function renderIncomeEtfs(){
     const dist=q.lastDistribution!=null?`${q.currency||item.currency||''} ${Number(q.lastDistribution).toFixed(4)}`.trim():'—';
     const y=item._yield;
     const yieldText=y!=null?`${y.toFixed(2)}%`:'—';
-    const yieldPass=y!=null && y>=5;
+    const yieldPass=y!=null && y>=minYield;
+    const freq=String(item.frequency||'').toLowerCase();
+    const periods=freq.includes('week')?52:(freq.includes('month')?12:4);
+    const periodLabel=freq.includes('week')?'WEEKLY':(freq.includes('month')?'MONTHLY':'PER-PERIOD');
+    const periodYield=y!=null?y/periods:null;
+    const periodYieldText=periodYield!=null?`${periodYield.toFixed(2)}%`:'—';
+    const cash10k=periodYield!=null?10000*periodYield/100:null;
+    const cash10kText=cash10k!=null?`~USD ${cash10k.toFixed(0)} / $10k`:'DATA PENDING';
     const zone=dynamicEntryZone(item,q);
     const zoneText=zone?`${q.currency||item.currency||''} ${zone.low.toFixed(2)} – ${zone.high.toFixed(2)}`.trim():(item.entryMethod||'—');
 
@@ -480,9 +487,9 @@ function renderIncomeEtfs(){
       <div class="income-title-row">
         <div><h3>${escapeHTML(item.ticker||'')}</h3><div class="company">${escapeHTML(item.name||'')}</div></div>
         <div class="yield-hero ${yieldPass?'yield-pass':'yield-below'}">
-          <span>T12M DIST. YIELD*</span>
-          <strong>${escapeHTML(yieldText)}</strong>
-          <small>${y==null?'DATA PENDING':(yieldPass?'≥5% FILTER PASS':'BELOW 5%')}</small>
+          <span>EST. ${periodLabel} CASH YIELD*</span>
+          <strong>${escapeHTML(periodYieldText)}</strong>
+          <small>${escapeHTML(cash10kText)}</small>
         </div>
       </div>
       <div class="today-action ${sig.className}"><span>TODAY ACTION</span><strong>${escapeHTML(item.todayAction||'等待WAIS重新評估。')}</strong></div>
@@ -493,7 +500,7 @@ function renderIncomeEtfs(){
         <div><span>First Tranche</span><b>${escapeHTML(item.firstTranche||'—')}</b></div>
         <div><span>Last Distribution</span><b>${escapeHTML(dist)}</b></div>
         <div><span>Distribution Date</span><b>${escapeHTML(q.lastDistributionDate||'—')}</b></div>
-        <div class="yield-metric-cell"><span>T12M Dist. Yield*</span><b>${escapeHTML(yieldText)}</b></div>
+        <div class="yield-metric-cell"><span>Annualized T12M Dist. Yield*</span><b>${escapeHTML(yieldText)}</b></div>
         <div><span>20D SMA</span><b>${q.sma20!=null?`${q.currency||item.currency||''} ${Number(q.sma20).toFixed(2)}`:'—'}</b></div>
         <div><span>Income Quality</span><b>${escapeHTML(item.incomeQuality||'Research')}</b></div>
         <div><span>NAV Risk</span><b>${escapeHTML(item.navRisk||'—')}</b></div>
@@ -505,7 +512,7 @@ function renderIncomeEtfs(){
   }
 
   function empty(track){
-    return `<div class="income-empty">目前「≥${minYield}%」篩選下沒有${track}標的。可用上方 selector 切換。</div>`;
+    return `<div class="income-empty">目前「年化 ≥${minYield}%」篩選下沒有${track}標的。可用上方 selector 切換。</div>`;
   }
 
   wg.innerHTML=weekly.length?weekly.sort((a,b)=>(b._yield??-1)-(a._yield??-1)).map(card).join(''):empty(' Weekly Income ');
@@ -513,7 +520,7 @@ function renderIncomeEtfs(){
   tg.innerHTML=tactical.length?tactical.sort((a,b)=>(b._yield??-1)-(a._yield??-1)).map(card).join(''):empty(' Tactical Income ');
 
   if($('incomeSystemNote')){
-    $('incomeSystemNote').textContent=`WAIS Income：預設篩選 T12M Distribution Yield ≥${minYield}%（可自行改）。價格、Price Date、最近分派、Distribution Date、T12M Distribution Yield及20D SMA由 stock-prices.json 自動更新。Distribution Yield 不是保證總回報；covered-call / option ETF 的分派可能來自 option income 或 ROC。Signal仍需WAIS質素、NAV風險及Entry條件確認。`;
+    $('incomeSystemNote').textContent=`WAIS Income：Selector 按年化 T12M Distribution Yield ≥${minYield}% 篩選，不代表每星期有 ${minYield}% 回報。卡片主數字按派息頻率把年化率簡單換算成估算每期 Cash Yield，並顯示每 USD 10,000 約收多少現金；實際每期分派可升可跌。covered-call / option ETF 分派亦可能包含 option income 或 ROC。Signal仍需 WAIS 質素、NAV風險及 Entry 條件確認。`;
   }
 }
 
