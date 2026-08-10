@@ -265,7 +265,7 @@
                 <label>股票代號<input id="tickerInput" required placeholder="例如 NVDA"></label>
                 <label>股數<input id="sharesInput" required type="number" min="0" step="0.01" placeholder="10"></label>
                 <label>平均成本 (C$ / US$)<input id="costInput" required type="number" min="0" step="0.01" placeholder="120.00"></label>
-                <label>現價<input id="priceInput" required type="number" min="0" step="0.01" placeholder="125.00"></label>
+                <label>現價（可留空，自動讀 WAIS 價格）<input id="priceInput" type="number" min="0" step="0.01" placeholder="自動 / 例如 125.00"></label>
                 <button class="primary-btn full" type="submit">Add Holding</button>
               </form>
             </article>
@@ -385,20 +385,44 @@
               <p>將每間公司研究變成可累積、可比較、可追蹤嘅資料庫。</p>
             </div>
           </div>
-       <div class="market-tools-grid"><div class="panel economic-calendar-panel"><div class="panel-head"><h3>Economic Calendar｜經濟日曆</h3></div><div class="calendar-embed"><div class="economic-calendar-scale" id="economicCalendarScale"><iframe id="economicCalendarFrame" src="https://sslecal2.investing.com?ecoDayBackground=%23221a80&defaultFont=%23222222&innerBorderColor=%23615a8f&borderColor=%23596bd4&ecoDayFontColor=%237675bf&columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&category=_employment,_economicActivity,_inflation,_credit,_centralBanks,_confidenceIndex,_balance,_Bonds&importance=2,3&features=datepicker,timezone&countries=6,37,72,39,35,11,46,5&calType=week&timeZone=8&lang=1" width="650" height="467" frameborder="0" scrolling="no" allowtransparency="true" marginwidth="0" marginheight="0"></iframe></div><div class="calendar-powered">Real Time Economic Calendar provided by <a href="https://www.investing.com/" rel="nofollow" target="_blank">Investing.com</a>.</div></div></div><div class="panel weekly-market-notes">
-  <div class="panel-head">
-    <h3>WAIS Weekly Market Notes｜本週市場重點</h3>
-    <div class="weekly-review-date">最後更新：2026年8月9日｜下次檢視：2026年8月16日</div>
-  </div>
-  <div class="weekly-note-list">
-    <div><span>01</span><p>08月12日｜美國 CPI<br>08:30 ET｜7月消費物價指數<br>本週最高優先級宏觀風險事件；公布前避免因強勢市況而追價。</p></div>
-    <div><span>02</span><p>08月13日｜美國 PPI<br>08:30 ET｜7月生產者物價指數<br>檢查成本通脹及利率重新定價風險。</p></div>
-    <div><span>03</span><p>08月14日｜美國零售銷售<br>08:30 ET｜關注消費韌性及經濟增長訊號。</p></div>
-    <div><span>04</span><p>08月19日｜FOMC 會議紀錄<br>14:00 ET｜7月28–29日會議紀錄<br>留意官員對通脹、就業及利率路徑的分歧。</p></div>
-  </div>
-  <div class="weekly-risk-note">WAIS RISK NOTE · Market Risk 45/100｜CAUTIOUS｜建議約30%現金｜READY 1 暫時為0。市場趨勢強，但本週事件密度高；只在價格、基本面與風險同時配合時才部署。</div>
-</div></div>
-       <div class="panel technical-summary-panel"><div class="panel-head"><h3>WAIS Technical Summary｜市場技術概覽</h3></div><div class="technical-summary-embed"><div class="technical-summary-scale" id="technicalSummaryScale"><iframe id="technicalSummaryFrame" frameborder="0" scrolling="no" width="345" height="274" allowtransparency="true" marginwidth="0" marginheight="0" src="https://ssltools.investing.com/technical_summary.php?pairs=8830,8849,166,170,178,179&curr-name-color=%230059B0&fields=1h,1d&force_lang=1"></iframe></div><div class="technical-powered">This Technical Analysis is powered by <a href="https://www.investing.com/" rel="nofollow" target="_blank">Investing.com</a>.</div></div></div>
+       <div class="market-tools-grid">
+          <div class="panel economic-calendar-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">WAIS VERIFIED EVENTS</span>
+                <h3>Economic Calendar｜本週重要經濟事件</h3>
+              </div>
+              <div class="weekly-review-date" id="economicEventsUpdated">Verified official schedules</div>
+            </div>
+            <div class="weekly-note-list" id="economicEventsList"></div>
+            <div class="weekly-risk-note">
+              只列入已由官方日程確認的高影響事件；時間以美東時間 ET 為準。WAIS 不把第三方延遲資料當成即時數據。
+            </div>
+          </div>
+
+          <div class="panel weekly-market-notes">
+            <div class="panel-head">
+              <h3>WAIS Weekly Market Notes｜本週市場重點</h3>
+              <div class="weekly-review-date" id="weeklyMarketReviewDate">Loading...</div>
+            </div>
+            <div class="weekly-note-list" id="weeklyMarketNotesList"></div>
+            <div class="weekly-risk-note" id="weeklyMarketRiskNote">Loading...</div>
+          </div>
+        </div>
+
+        <div class="panel technical-summary-panel">
+          <div class="panel-head">
+            <div>
+              <span class="panel-kicker">WAIS VERIFIED CLOSE ANALYSIS</span>
+              <h3>WAIS Technical / Market Structure Summary｜市場結構概覽</h3>
+            </div>
+            <div class="weekly-review-date" id="technicalSummaryUpdated">Verified close data</div>
+          </div>
+          <div class="research-board" id="waisTechnicalSummary"></div>
+          <div class="weekly-risk-note">
+            此區為 WAIS 對已確認收市數據的結構性解讀，不是第三方即時技術訊號，亦不構成買賣建議。
+          </div>
+        </div>
           <div class="research-board">
             <article class="research-card">
               <span>AI COMPUTE</span><h3>GPU & Accelerators</h3><p>NVDA、AMD、custom silicon、生態系統與估值。</p>
@@ -498,95 +522,6 @@
 
   <script src="market-data.js"></script>
   <script src="app.js"></script>
- <script>
-  function resizeInvestingWidget(wrapperId, frameId, baseWidth, baseHeight) {
-    const wrapper = document.getElementById(wrapperId);
-    const frame = document.getElementById(frameId);
 
-    if (!wrapper || !frame) return;
-
- const panel = wrapper.closest(
-  ".economic-calendar-panel, .technical-summary-panel"
-);
-const containerWidth = panel ? panel.clientWidth : wrapper.clientWidth;
-
-if (!containerWidth || containerWidth <= 40) {
-  return;
-}
-
-const availableWidth = Math.min(
-  containerWidth - 40,
-  baseWidth
-);
-
-const scale = availableWidth / baseWidth;
-const scaledWidth = baseWidth * scale;
-wrapper.style.width = availableWidth + "px";
-wrapper.style.margin = "0 auto";
-    frame.style.width = baseWidth + "px";
-    frame.style.height = baseHeight + "px";
-    frame.style.left = (availableWidth - scaledWidth) / 2 + "px";
-    frame.style.transformOrigin = "top left";
-   frame.style.transform = "scale(" + scale + ")";
-
-    wrapper.style.height = baseHeight * scale + "px";
-  }
-
-  function resizeAllInvestingWidgets() {
-    resizeInvestingWidget(
-      "economicCalendarScale",
-      "economicCalendarFrame",
-      650,
-      467
-    );
-
-    resizeInvestingWidget(
-      "technicalSummaryScale",
-      "technicalSummaryFrame",
-      345,
-      274
-    );
-  }
-
-  function refreshTechnicalSummary() {
-    const frame = document.getElementById("technicalSummaryFrame");
-
-    if (!frame) return;
-
-    const baseUrl =
-      "https://ssltools.investing.com/technical_summary.php" +
-      "?pairs=8830,8849,166,170,178,179" +
-      "&curr-name-color=%230059B0" +
-      "&fields=1h,1d" +
-      "&force_lang=1";
-
-    frame.src = baseUrl + "&wais_refresh=" + Date.now();
-  }
-
-  window.addEventListener("load", function () {
-    resizeAllInvestingWidgets();
-    refreshTechnicalSummary();
-
-    setTimeout(resizeAllInvestingWidgets, 500);
-    setTimeout(resizeAllInvestingWidgets, 1500);
-  });
-
-  window.addEventListener("resize", resizeAllInvestingWidgets);
-
-  window.addEventListener("orientationchange", function () {
-    setTimeout(resizeAllInvestingWidgets, 300);
-  });
-
-  document.addEventListener("visibilitychange", function () {
-    if (!document.hidden) {
-      refreshTechnicalSummary();
-      setTimeout(resizeAllInvestingWidgets, 500);
-    }
-  });
-
-  setInterval(function () {
-    refreshTechnicalSummary();
-  }, 900000);
-</script>
 </body>
 </html>
