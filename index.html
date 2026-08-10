@@ -29,6 +29,7 @@
         <button class="nav-item" data-section="watchlist">Watchlist</button>
         <button class="nav-item" data-section="top-picks">Top Picks</button>
         <button class="nav-item" data-section="hidden-gems">Hidden Gems</button>
+        <button class="nav-item" data-section="income">Income ETFs</button>
         <button class="nav-item" data-section="research">Research Library</button>
         <button class="nav-item" data-section="risk">Risk Engine</button>
         <button class="nav-item" data-section="journal">Decision Journal</button>
@@ -377,6 +378,54 @@
           <div class="cards-grid" id="hiddenGemsGrid"></div>
         </section>
 
+
+        <section class="page-section" id="income">
+          <div class="section-banner">
+            <div>
+              <span class="panel-kicker">WAIS INCOME ENGINE</span>
+              <h2>Income ETFs</h2>
+              <p>以可持續收入、資本保護與總回報為核心，不以最高派息率作唯一選股標準。</p>
+            </div>
+          </div>
+
+          <div class="metrics-grid">
+            <article class="metric-card">
+              <span>Income Universe</span>
+              <strong><span id="incomeUniverseCount">0</span></strong>
+              <p>目前 WAIS Income 研究 ETF 數量</p>
+            </article>
+            <article class="metric-card">
+              <span>Income Ready</span>
+              <strong><span id="incomeReadyCount">0</span></strong>
+              <p>符合 Income Ready 條件的 ETF</p>
+            </article>
+            <article class="metric-card">
+              <span>Income Defense</span>
+              <strong id="incomeDefenseStatus">CAUTIOUS</strong>
+              <p>按市場風險與收入穩定性調整部署節奏</p>
+            </article>
+            <article class="metric-card">
+              <span>Target Use</span>
+              <strong>INCOME</strong>
+              <p>Core Dividend / Covered Call / Tactical Income 分層研究</p>
+            </article>
+          </div>
+
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">WAIS INCOME RESEARCH UNIVERSE</span>
+                <h3>ETF Income Research Board</h3>
+              </div>
+              <div class="weekly-review-date" id="incomeUpdated">Research mode</div>
+            </div>
+            <div class="cards-grid" id="incomeEtfGrid"></div>
+            <div class="weekly-risk-note">
+              WAIS Income 原則：先看分派可持續性、NAV/總回報、回撤與策略成本，再看派息率。未經官方最新資料核實的 Yield 不顯示。
+            </div>
+          </article>
+        </section>
+
         <section class="page-section" id="research">
           <div class="section-banner">
             <div>
@@ -402,7 +451,7 @@
 
           <div class="panel weekly-market-notes">
             <div class="panel-head">
-              <h3>WAIS Weekly Market Notes｜本週市場重點</h3>
+              <h3>WAIS Weekly Strategy Notes｜本週策略重點</h3>
               <div class="weekly-review-date" id="weeklyMarketReviewDate">Loading...</div>
             </div>
             <div class="weekly-note-list" id="weeklyMarketNotesList"></div>
@@ -414,13 +463,13 @@
           <div class="panel-head">
             <div>
               <span class="panel-kicker">WAIS VERIFIED CLOSE ANALYSIS</span>
-              <h3>WAIS Technical / Market Structure Summary｜市場結構概覽</h3>
+              <h3>WAIS Market Structure Board｜市場結構儀表板</h3>
             </div>
             <div class="weekly-review-date" id="technicalSummaryUpdated">Verified close data</div>
           </div>
           <div class="research-board" id="waisTechnicalSummary"></div>
           <div class="weekly-risk-note">
-            此區為 WAIS 對已確認收市數據的結構性解讀，不是第三方即時技術訊號，亦不構成買賣建議。
+            數值以已確認收市資料為基準；Signal 為 WAIS 結構判讀。此區不是即時報價，亦不構成買賣建議。
           </div>
         </div>
           <div class="research-board">
