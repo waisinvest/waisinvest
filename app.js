@@ -3,6 +3,7 @@ const fmt = (n) => new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD
 const fmtUSD = (n) => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);
 let livePrices = {};
 let livePricesUpdatedAt = null;
+let marketIndicatorsSnapshot = null;
 
 async function loadLivePrices() {
   try {
@@ -509,28 +510,49 @@ function renderWeeklyMarketNotes(){
 }
 
 function renderTechnicalSummary(){
-  const items = window.WAIS_MARKET_DATA?.technicalSummary || [];
+  const configs = window.WAIS_MARKET_DATA?.technicalSummary || [];
   const target = $('waisTechnicalSummary');
   const updated = $('technicalSummaryUpdated');
   if(!target) return;
 
+  const data = marketIndicatorsSnapshot || {};
+  const indicators = data.indicators || {};
+  const dataAsOf = data.dataAsOf || data.marketDate || window.WAIS_MARKET_DATA?.dataAsOf || '—';
+  const fileUpdated = data.lastUpdated ? new Date(data.lastUpdated).toLocaleString("en-CA") : '—';
+
   if(updated){
-    updated.textContent = `資料基準：${window.WAIS_MARKET_DATA?.dataAsOf || window.WAIS_MARKET_DATA?.lastUpdated || '—'}`;
+    updated.textContent = `市場數據截至：${dataAsOf}｜資料檔更新：${fileUpdated}｜NOT REAL-TIME`;
   }
 
-  target.innerHTML = items.length
-    ? items.map(item => `
-      <article class="research-card">
-        <span>${escapeHTML(item.signal || item.status || 'WAIS')}</span>
-        <h3>${escapeHTML(item.name || '')}</h3>
-        <div class="stock-meta">
-          <div><span>Value</span><b>${escapeHTML(item.value ?? '—')}</b></div>
-          <div><span>Move</span><b>${escapeHTML(item.move ?? '—')}</b></div>
-          <div><span>Signal</span><b>${escapeHTML(item.signal || item.status || '—')}</b></div>
-        </div>
-        <p>${escapeHTML(item.note || item.summary || '')}</p>
-      </article>
-    `).join('')
+  target.innerHTML = configs.length
+    ? configs.map(item => {
+        const indicator = indicators[item.key] || {};
+        const value = formatMarketValue(indicator.value, item.key);
+        let move = '--';
+
+        if(item.key === 'VIX' && Number.isFinite(Number(indicator.value))){
+          move = `Level ${Number(indicator.value).toFixed(2)}`;
+        } else if(item.key === 'US10Y' && Number.isFinite(Number(indicator.value))){
+          move = `${Number(indicator.value).toFixed(2)}%`;
+        } else if(Number.isFinite(Number(indicator.changePercent))){
+          const pct = Number(indicator.changePercent);
+          move = `${pct > 0 ? '+' : ''}${pct.toFixed(2)}%`;
+        }
+
+        return `
+          <article class="research-card">
+            <span>${escapeHTML(item.signal || 'WAIS')}</span>
+            <h3>${escapeHTML(item.name || item.key || '')}</h3>
+            <div class="stock-meta">
+              <div><span>Value</span><b>${escapeHTML(value)}</b></div>
+              <div><span>Move / Level</span><b>${escapeHTML(move)}</b></div>
+              <div><span>Signal</span><b>${escapeHTML(item.signal || '—')}</b></div>
+              <div><span>As of</span><b>${escapeHTML(indicator.asOf || dataAsOf)}</b></div>
+            </div>
+            <p>${escapeHTML(item.note || '')}</p>
+          </article>
+        `;
+      }).join('')
     : '<article class="research-card"><span>WAIS</span><h3>No verified summary</h3><p>等待已確認市場資料。</p></article>';
 }
 
@@ -540,27 +562,70 @@ function renderIncomeEtfs(){
 
   const items = incomeEtfs;
   const ready = items.filter(item => String(item.status).toUpperCase().includes('READY')).length;
+
   if($('incomeUniverseCount')) $('incomeUniverseCount').textContent = items.length;
   if($('incomeReadyCount')) $('incomeReadyCount').textContent = ready;
-  if($('incomeDefenseStatus')) $('incomeDefenseStatus').textContent = window.WAIS_MARKET_DATA?.incomeDefenseStatus || window.WAIS_MARKET_DATA?.marketMode || 'CAUTIOUS';
-  if($('incomeUpdated')) $('incomeUpdated').textContent = `最後更新：${window.WAIS_MARKET_DATA?.lastUpdated || '—'}｜Yield 待官方核實`;
+  if($('incomeDefenseStatus')){
+    $('incomeDefenseStatus').textContent =
+      window.WAIS_MARKET_DATA?.incomeDefenseStatus ||
+      window.WAIS_MARKET_DATA?.marketMode ||
+      'CAUTIOUS';
+  }
 
-  target.innerHTML = items.map(item => `
-    <article class="stock-card">
-      <span class="tag">${escapeHTML(item.status || 'RESEARCH')}</span>
-      <h3>${escapeHTML(item.ticker || '')}</h3>
-      <div class="company">${escapeHTML(item.name || '')}</div>
-      <div class="stock-meta">
-        <div><span>Category</span><b>${escapeHTML(item.category || '—')}</b></div>
-        <div><span>Frequency</span><b>${escapeHTML(item.frequency || '—')}</b></div>
-        <div><span>Yield</span><b>${item.yield != null ? escapeHTML(item.yield) : '待核實'}</b></div>
-        <div><span>Income Quality</span><b>${escapeHTML(item.incomeQuality || 'Research')}</b></div>
-        <div><span>NAV Risk</span><b>${escapeHTML(item.navRisk || '—')}</b></div>
-        <div><span>Upside Drag</span><b>${escapeHTML(item.upsideDrag || '—')}</b></div>
-      </div>
-      <p class="stock-note">${escapeHTML(item.note || '')}</p>
-    </article>
-  `).join('');
+  if($('incomeUpdated')){
+    const updatedText = livePricesUpdatedAt
+      ? new Date(livePricesUpdatedAt).toLocaleString("en-CA")
+      : '—';
+    $('incomeUpdated').textContent =
+      `價格／分派資料檔更新：${updatedText}｜Delayed / closing data`;
+  }
+
+  target.innerHTML = items.map(item => {
+    const priceKey = String(item.priceSymbol || item.ticker || '').toUpperCase();
+    const quote = livePrices[priceKey] || {};
+    const price = quote.price != null
+      ? `${quote.currency || item.currency || ''} ${Number(quote.price).toFixed(2)}`.trim()
+      : '—';
+    const priceDate = quote.asOf || quote.priceDate || '—';
+
+    const distribution =
+      quote.lastDistribution != null
+        ? `${quote.currency || item.currency || ''} ${Number(quote.lastDistribution).toFixed(4)}`.trim()
+        : '—';
+    const distributionDate = quote.lastDistributionDate || '—';
+
+    const trailingYield =
+      quote.trailing12mDistributionYield != null
+        ? `${Number(quote.trailing12mDistributionYield).toFixed(2)}%`
+        : '—';
+
+    return `
+      <article class="stock-card">
+        <span class="tag">${escapeHTML(item.status || 'RESEARCH')}</span>
+        <h3>${escapeHTML(item.ticker || '')}</h3>
+        <div class="company">${escapeHTML(item.name || '')}</div>
+        <div class="stock-meta">
+          <div><span>Current / Last Close</span><b>${escapeHTML(price)}</b></div>
+          <div><span>Price Date</span><b>${escapeHTML(priceDate)}</b></div>
+          <div><span>Last Distribution</span><b>${escapeHTML(distribution)}</b></div>
+          <div><span>Distribution Date</span><b>${escapeHTML(distributionDate)}</b></div>
+          <div><span>T12M Dist. Yield*</span><b>${escapeHTML(trailingYield)}</b></div>
+          <div><span>Frequency</span><b>${escapeHTML(item.frequency || '—')}</b></div>
+          <div><span>Category</span><b>${escapeHTML(item.category || '—')}</b></div>
+          <div><span>Income Quality</span><b>${escapeHTML(item.incomeQuality || 'Research')}</b></div>
+          <div><span>NAV Risk</span><b>${escapeHTML(item.navRisk || '—')}</b></div>
+          <div><span>Upside Drag</span><b>${escapeHTML(item.upsideDrag || '—')}</b></div>
+        </div>
+        <p class="stock-note">${escapeHTML(item.note || '')}</p>
+      </article>
+    `;
+  }).join('');
+
+  const note = document.querySelector('#income .weekly-risk-note');
+  if(note){
+    note.textContent =
+      'WAIS Income：價格及最近分派由 stock-prices.json 自動更新；*T12M Distribution Yield 為最近12個月分派總額 ÷ 最近收市價的衍生值，並非基金公司官方 forward yield。所有數據均標示日期，並非即時報價。';
+  }
 }
 
 function formatMarketValue(value, indicatorName) {
@@ -649,6 +714,7 @@ async function loadMarketIndicators() {
     }
 
     const data = await response.json();
+    marketIndicatorsSnapshot = data;
     const indicators = data.indicators || data;
 
     const indicatorMap = {
@@ -732,16 +798,30 @@ async function loadMarketIndicators() {
       data.updatedAt ||
       data.timestamp;
 
+    const dataAsOf =
+      data.dataAsOf ||
+      data.marketDate ||
+      Object.values(indicators)
+        .map(x => x?.asOf)
+        .filter(Boolean)[0] ||
+      "—";
+
+    const titleElement = $("marketIndicatorsTitle");
+    if (titleElement) {
+      titleElement.textContent = `全球市場最新指標（截至 ${dataAsOf}）`;
+    }
+
     if (updatedElement) {
       if (updatedTime) {
         const date = new Date(updatedTime);
-
         updatedElement.textContent =
-          `更新：${date.toLocaleString("en-CA")}`;
+          `資料檔更新：${date.toLocaleString("en-CA")}｜NOT REAL-TIME`;
       } else {
-        updatedElement.textContent = "市場資料已更新";
+        updatedElement.textContent = `數據截至：${dataAsOf}｜NOT REAL-TIME`;
       }
     }
+
+    renderTechnicalSummary();
 
   } catch (error) {
     console.error("Failed to load market indicators:", error);
@@ -764,7 +844,6 @@ async function initializeApp() {
   renderDailyThought();
   renderEconomicEvents();
   renderWeeklyMarketNotes();
-  renderTechnicalSummary();
   renderIncomeEtfs();
 }
 initializeApp();
