@@ -58,6 +58,8 @@ const gems = stockUniverse
     note: stock.note
   }));
 
+const incomeEtfs = window.WAIS_MARKET_DATA?.incomeEtfs || [];
+
 function renderCards(items, target){
   const targetElement = $(target);
   if(!targetElement) return;
@@ -475,33 +477,34 @@ function renderEconomicEvents(){
 }
 
 function renderWeeklyMarketNotes(){
-  const events = window.WAIS_MARKET_DATA?.weeklyEvents || [];
+  const notes = window.WAIS_MARKET_DATA?.weeklyMarketNotes || [];
   const target = $('weeklyMarketNotesList');
   const review = $('weeklyMarketReviewDate');
   const riskNote = $('weeklyMarketRiskNote');
   if(!target) return;
 
   if(review){
-    review.textContent = `最後更新：${window.WAIS_MARKET_DATA?.lastUpdated || '—'}｜下次檢視：2026-08-16`;
+    review.textContent = `最後更新：${window.WAIS_MARKET_DATA?.lastUpdated || '—'}｜策略檢視`;
   }
 
-  target.innerHTML = events.slice(0,4).map((event,index) => `
-    <div>
-      <span>${String(index+1).padStart(2,'0')}</span>
-      <p>
-        ${escapeHTML(event.date || '')}｜${escapeHTML(event.event || '')}<br>
-        ${escapeHTML(event.time || '')}${event.referenceMonth ? `｜${escapeHTML(event.referenceMonth)}` : ''}<br>
-        ${escapeHTML(event.waisNote || '')}
-      </p>
-    </div>
-  `).join('');
+  target.innerHTML = notes.length
+    ? notes.slice(0,4).map((item,index) => `
+      <div>
+        <span>${String(index+1).padStart(2,'0')}</span>
+        <p>
+          <strong>${escapeHTML(item.title || '')}</strong><br>
+          ${escapeHTML(item.body || '')}
+        </p>
+      </div>
+    `).join('')
+    : '<div><span>—</span><p>暫時沒有新的 WAIS 策略重點。</p></div>';
 
   if(riskNote){
     const risk = window.WAIS_MARKET_DATA?.riskScore ?? '—';
     const cash = window.WAIS_MARKET_DATA?.recommendedCash ?? '—';
     const readyCount = (window.WAIS_MARKET_DATA?.readyList || []).length;
     riskNote.textContent =
-      `WAIS RISK NOTE · Market Risk ${risk}/100｜${window.WAIS_MARKET_DATA?.marketMode || '—'}｜建議約${cash}%現金｜READY 1：${readyCount}。只在價格、基本面與風險同時配合時才部署。`;
+      `WAIS RISK NOTE · Market Risk ${risk}/100｜${window.WAIS_MARKET_DATA?.marketMode || '—'}｜建議約${cash}%現金｜READY 1：${readyCount}。Calendar 負責「何時發生」；本欄只講「市場影響與部署」。`;
   }
 }
 
@@ -518,15 +521,53 @@ function renderTechnicalSummary(){
   target.innerHTML = items.length
     ? items.map(item => `
       <article class="research-card">
-        <span>${escapeHTML(item.status || 'WAIS')}</span>
+        <span>${escapeHTML(item.signal || item.status || 'WAIS')}</span>
         <h3>${escapeHTML(item.name || '')}</h3>
-        <p>${escapeHTML(item.summary || '')}</p>
+        <div class="stock-meta">
+          <div><span>Value</span><b>${escapeHTML(item.value ?? '—')}</b></div>
+          <div><span>Move</span><b>${escapeHTML(item.move ?? '—')}</b></div>
+          <div><span>Signal</span><b>${escapeHTML(item.signal || item.status || '—')}</b></div>
+        </div>
+        <p>${escapeHTML(item.note || item.summary || '')}</p>
       </article>
     `).join('')
     : '<article class="research-card"><span>WAIS</span><h3>No verified summary</h3><p>等待已確認市場資料。</p></article>';
 }
 
+function renderIncomeEtfs(){
+  const target = $('incomeEtfGrid');
+  if(!target) return;
+
+  const items = incomeEtfs;
+  const ready = items.filter(item => String(item.status).toUpperCase().includes('READY')).length;
+  if($('incomeUniverseCount')) $('incomeUniverseCount').textContent = items.length;
+  if($('incomeReadyCount')) $('incomeReadyCount').textContent = ready;
+  if($('incomeDefenseStatus')) $('incomeDefenseStatus').textContent = window.WAIS_MARKET_DATA?.incomeDefenseStatus || window.WAIS_MARKET_DATA?.marketMode || 'CAUTIOUS';
+  if($('incomeUpdated')) $('incomeUpdated').textContent = `最後更新：${window.WAIS_MARKET_DATA?.lastUpdated || '—'}｜Yield 待官方核實`;
+
+  target.innerHTML = items.map(item => `
+    <article class="stock-card">
+      <span class="tag">${escapeHTML(item.status || 'RESEARCH')}</span>
+      <h3>${escapeHTML(item.ticker || '')}</h3>
+      <div class="company">${escapeHTML(item.name || '')}</div>
+      <div class="stock-meta">
+        <div><span>Category</span><b>${escapeHTML(item.category || '—')}</b></div>
+        <div><span>Frequency</span><b>${escapeHTML(item.frequency || '—')}</b></div>
+        <div><span>Yield</span><b>${item.yield != null ? escapeHTML(item.yield) : '待核實'}</b></div>
+        <div><span>Income Quality</span><b>${escapeHTML(item.incomeQuality || 'Research')}</b></div>
+        <div><span>NAV Risk</span><b>${escapeHTML(item.navRisk || '—')}</b></div>
+        <div><span>Upside Drag</span><b>${escapeHTML(item.upsideDrag || '—')}</b></div>
+      </div>
+      <p class="stock-note">${escapeHTML(item.note || '')}</p>
+    </article>
+  `).join('');
+}
+
 function formatMarketValue(value, indicatorName) {
+  if (value === null || value === undefined || value === "") {
+    return "--";
+  }
+
   const number = Number(value);
 
   if (!Number.isFinite(number)) {
@@ -547,8 +588,15 @@ function showMarketChange(elementId, change, changePercent) {
   const element = $(elementId);
   if (!element) return;
 
-  const pointChange = Number(change);
-  const percentChange = Number(changePercent);
+  const pointChange =
+    change === null || change === undefined || change === ""
+      ? NaN
+      : Number(change);
+
+  const percentChange =
+    changePercent === null || changePercent === undefined || changePercent === ""
+      ? NaN
+      : Number(changePercent);
 
   element.classList.remove(
     "market-change-up",
@@ -640,6 +688,10 @@ async function loadMarketIndicators() {
   HSTECH: {
     valueId: "hstechValue",
     changeId: "hstechChange"
+  },
+  HSIF: {
+    valueId: "hsifValue",
+    changeId: "hsifChange"
   }
 };
 
@@ -713,5 +765,6 @@ async function initializeApp() {
   renderEconomicEvents();
   renderWeeklyMarketNotes();
   renderTechnicalSummary();
+  renderIncomeEtfs();
 }
 initializeApp();
