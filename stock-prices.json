@@ -1,161 +1,249 @@
 {
-  "lastUpdated": "2026-08-10T03:10:22.098130+00:00",
+  "lastUpdated": "2026-08-10T04:01:13.245461+00:00",
   "marketStatus": "updated",
-  "dataStatus": "Delayed / closing data; NOT REAL-TIME",
+  "dataStatus": "Completed daily close; NOT REAL-TIME",
   "prices": {
     "NVDA": {
       "price": 223.96,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 206.817,
+      "sma50": 206.074,
+      "change": 4.97,
+      "changePercent": 2.2695
     },
     "TSM": {
       "price": 420.04,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 409.291,
+      "sma50": 425.878,
+      "change": 1.84,
+      "changePercent": 0.44
     },
     "AVGO": {
       "price": 427.76,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 391.8575,
+      "sma50": 395.0406,
+      "change": 7.19,
+      "changePercent": 1.7096
     },
     "MRVL": {
       "price": 218.72,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 199.56,
+      "sma50": 240.8914,
+      "change": 8.18,
+      "changePercent": 3.8853
     },
     "MU": {
       "price": 877.57,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 888.2645,
+      "sma50": 970.9456,
+      "change": -3.9,
+      "changePercent": -0.4424
     },
     "COHR": {
       "price": 379.13,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 294.23,
+      "sma50": 342.9756,
+      "change": 44.91,
+      "changePercent": 13.4373
     },
     "LITE": {
       "price": 890.17,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 768.0355,
+      "sma50": 817.9728,
+      "change": 52.11,
+      "changePercent": 6.2179
     },
     "AXTI": {
       "price": 88.58,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 55.632,
+      "sma50": 72.4096,
+      "change": 13.41,
+      "changePercent": 17.8396
     },
     "TSEM": {
       "price": 252.49,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 231.884,
+      "sma50": 245.3358,
+      "change": 27.79,
+      "changePercent": 12.3676
     },
     "POET": {
       "price": 8.91,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 7.7035,
+      "sma50": 9.8584,
+      "change": 0.38,
+      "changePercent": 4.4549
     },
     "GFS": {
       "price": 53.93,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 54.726,
+      "sma50": 69.2058,
+      "change": 3.57,
+      "changePercent": 7.089
     },
     "POWL": {
       "price": 211.56,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 222.324,
+      "sma50": 256.9586,
+      "change": 4.2,
+      "changePercent": 2.0255
     },
     "MOD": {
       "price": 195.6,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 217.9615,
+      "sma50": 249.4476,
+      "change": 3.08,
+      "changePercent": 1.5998
     },
     "GOOGL": {
       "price": 354.3,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 348.762,
+      "sma50": 356.5056,
+      "change": -3.45,
+      "changePercent": -0.9644
     },
     "AAOI": {
       "price": 135.63,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 108.56,
+      "sma50": 138.2216,
+      "change": 11.41,
+      "changePercent": 9.1853
     },
     "AEHR": {
       "price": 103.07,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 85.0315,
+      "sma50": 91.5048,
+      "change": 3.33,
+      "changePercent": 3.3387
     },
     "FORM": {
       "price": 117.39,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 108.128,
+      "sma50": 122.156,
+      "change": 2.18,
+      "changePercent": 1.8922
     },
     "MXL": {
       "price": 74.98,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 74.7465,
+      "sma50": 84.3906,
+      "change": 4.78,
+      "changePercent": 6.8091
     },
     "NVTS": {
       "price": 13.89,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 11.9153,
+      "sma50": 17.4327,
+      "change": 1.49,
+      "changePercent": 12.0161
     },
     "OSS": {
       "price": 13.24,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 12.808,
+      "sma50": 15.2708,
+      "change": -0.08,
+      "changePercent": -0.6006
     },
     "AIRO": {
       "price": 8.52,
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME"
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 6.9838,
+      "sma50": 7.5107,
+      "change": 0.66,
+      "changePercent": 8.397
     },
     "VDY.TO": {
       "price": 77.07,
       "currency": "CAD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME",
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 78.19,
+      "sma50": 76.3736,
+      "change": -0.47,
+      "changePercent": -0.6061,
       "lastDistribution": 0.177,
       "lastDistributionDate": "2026-07-17",
       "trailing12mDistribution": 2.188351,
@@ -166,7 +254,11 @@
       "currency": "CAD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME",
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 31.4355,
+      "sma50": 30.5876,
+      "change": -0.04,
+      "changePercent": -0.1277,
       "lastDistribution": 0.17,
       "lastDistributionDate": "2026-07-30",
       "trailing12mDistribution": 1.53,
@@ -177,7 +269,11 @@
       "currency": "CAD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME",
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 22.8412,
+      "sma50": 22.5652,
+      "change": 0.01,
+      "changePercent": 0.044,
       "lastDistribution": 0.12,
       "lastDistributionDate": "2026-07-30",
       "trailing12mDistribution": 1.295,
@@ -188,7 +284,11 @@
       "currency": "CAD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME",
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 11.863,
+      "sma50": 11.8924,
+      "change": -0.06,
+      "changePercent": -0.5213,
       "lastDistribution": 0.07,
       "lastDistributionDate": "2026-07-30",
       "trailing12mDistribution": 0.84,
@@ -199,7 +299,11 @@
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME",
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 56.9955,
+      "sma50": 56.4438,
+      "change": -0.01,
+      "changePercent": -0.0174,
       "lastDistribution": 0.367,
       "lastDistributionDate": "2026-08-03",
       "trailing12mDistribution": 4.58,
@@ -210,7 +314,11 @@
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME",
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 58.7735,
+      "sma50": 59.6238,
+      "change": 0.4,
+      "changePercent": 0.6741,
       "lastDistribution": 0.705,
       "lastDistributionDate": "2026-08-03",
       "trailing12mDistribution": 6.524,
@@ -221,11 +329,60 @@
       "currency": "USD",
       "asOf": "2026-08-07",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / closing data; NOT REAL-TIME",
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 17.8517,
+      "sma50": 18.011,
+      "change": 0.06,
+      "changePercent": 0.3319,
       "lastDistribution": 0.178,
       "lastDistributionDate": "2026-07-20",
       "trailing12mDistribution": 2.111,
       "trailing12mDistributionYield": 11.6373
+    },
+    "WEEK": {
+      "price": 100.04,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 100.0356,
+      "sma50": 100.0408,
+      "change": 0.0,
+      "changePercent": 0.0,
+      "lastDistribution": 0.069,
+      "lastDistributionDate": "2026-08-04",
+      "trailing12mDistribution": 3.622,
+      "trailing12mDistributionYield": 3.6206
+    },
+    "QDTE": {
+      "price": 29.69,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 29.2205,
+      "sma50": 30.2123,
+      "change": 0.35,
+      "changePercent": 1.1929,
+      "lastDistribution": 0.137,
+      "lastDistributionDate": "2026-08-06",
+      "trailing12mDistribution": 13.226,
+      "trailing12mDistributionYield": 44.547
+    },
+    "TOPW": {
+      "price": 35.26,
+      "currency": "USD",
+      "asOf": "2026-08-07",
+      "source": "Yahoo Finance via yfinance",
+      "dataStatus": "Completed daily close; NOT REAL-TIME",
+      "sma20": 33.935,
+      "sma50": 34.75,
+      "change": 0.22,
+      "changePercent": 0.6278,
+      "lastDistribution": 0.207,
+      "lastDistributionDate": "2026-08-04",
+      "trailing12mDistribution": 17.514,
+      "trailing12mDistributionYield": 49.671
     }
   }
 }
