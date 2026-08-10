@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-10T05:54:33.239427+00:00",
+  "lastUpdated": "2026-08-10T06:29:42.553956+00:00",
   "marketDates": {
     "US": "2026-08-07",
     "HK": "2026-08-10"
@@ -80,18 +80,18 @@
     },
     "HSI": {
       "symbol": "^HSI",
-      "value": 25831.4199,
+      "value": 25875.0,
       "previousClose": 25668.0293,
-      "change": 163.3906,
-      "changePercent": 0.6366,
+      "change": 206.9707,
+      "changePercent": 0.8063,
       "asOf": "2026-08-10",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Delayed / daily close; NOT REAL-TIME"
     },
     "HSTECH": {
       "symbol": "HSTECH.HK",
-      "value": 4875.8398,
-      "previousClose": 4875.8398,
+      "value": 4889.1099,
+      "previousClose": 4889.1099,
       "change": 0.0,
       "changePercent": 0.0,
       "asOf": "2026-08-10",
