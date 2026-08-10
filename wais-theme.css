@@ -190,3 +190,114 @@
   color:#ffad42;
   font-weight:900;
 }
+
+
+/* WAIS FINAL V3 — Income Sustainability + Hidden Gems research-stage colors */
+
+/* Hidden Gems stage badges */
+.research-stage-chip{
+  display:inline-flex;
+  align-items:center;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.35px;
+  border:1px solid transparent;
+}
+.research-stage-chip.stage-research,
+.research-stage-cell.stage-research b{
+  color:#c0b7ff!important;
+}
+.research-stage-chip.stage-research{
+  background:rgba(139,124,255,.18);
+  border-color:rgba(139,124,255,.70);
+  box-shadow:0 0 0 1px rgba(139,124,255,.10),0 0 14px rgba(139,124,255,.12);
+}
+.research-stage-chip.stage-validating,
+.research-stage-cell.stage-validating b{
+  color:#7fddff!important;
+}
+.research-stage-chip.stage-validating{
+  background:rgba(53,194,255,.17);
+  border-color:rgba(53,194,255,.72);
+  box-shadow:0 0 0 1px rgba(53,194,255,.10),0 0 14px rgba(53,194,255,.12);
+}
+.research-stage-chip.stage-watchlist,
+.research-stage-cell.stage-watchlist b{
+  color:#66e5b3!important;
+}
+.research-stage-chip.stage-watchlist{
+  background:rgba(54,211,153,.16);
+  border-color:rgba(54,211,153,.72);
+  box-shadow:0 0 0 1px rgba(54,211,153,.10),0 0 14px rgba(54,211,153,.12);
+}
+.research-stage-cell{
+  outline:1px solid rgba(255,255,255,.05);
+}
+.research-stage-cell.stage-research{background:rgba(139,124,255,.055)!important}
+.research-stage-cell.stage-validating{background:rgba(53,194,255,.055)!important}
+.research-stage-cell.stage-watchlist{background:rgba(54,211,153,.055)!important}
+
+/* Income Sustainability block */
+.income-sustainability{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:4px 14px;
+  align-items:center;
+  margin:10px 0;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:#101c30;
+}
+.income-sustainability>div span{
+  display:block;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.65px;
+  color:#8fa0bb;
+}
+.income-sustainability>div strong{
+  display:block;
+  margin-top:2px;
+  font-size:15px;
+}
+.income-sustainability>b{
+  font-size:18px;
+}
+.income-sustainability>small{
+  grid-column:1/-1;
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.4px;
+  color:#aab8cc;
+}
+.income-sustain-high{
+  color:#66e5b3!important;
+}
+.income-sustainability.income-sustain-high{
+  background:rgba(54,211,153,.08);
+  border-color:rgba(54,211,153,.48);
+}
+.income-sustain-medium{
+  color:#7fddff!important;
+}
+.income-sustainability.income-sustain-medium{
+  background:rgba(53,194,255,.08);
+  border-color:rgba(53,194,255,.46);
+}
+.income-sustain-low{
+  color:#ffbf6b!important;
+}
+.income-sustainability.income-sustain-low{
+  background:rgba(255,173,66,.09);
+  border-color:rgba(255,173,66,.50);
+}
+.income-sustain-speculative{
+  color:#ff8c9c!important;
+}
+.income-sustainability.income-sustain-speculative{
+  background:rgba(255,102,122,.09);
+  border-color:rgba(255,102,122,.50);
+}
