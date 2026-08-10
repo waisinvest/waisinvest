@@ -1,128 +1,35 @@
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timezone, time
 from pathlib import Path
-
+from zoneinfo import ZoneInfo
 import yfinance as yf
-
-SYMBOLS = {
-    # WAIS stocks
-    "NVDA": {"yf": "NVDA", "currency": "USD"},
-    "TSM": {"yf": "TSM", "currency": "USD"},
-    "AVGO": {"yf": "AVGO", "currency": "USD"},
-    "MRVL": {"yf": "MRVL", "currency": "USD"},
-    "MU": {"yf": "MU", "currency": "USD"},
-    "COHR": {"yf": "COHR", "currency": "USD"},
-    "LITE": {"yf": "LITE", "currency": "USD"},
-    "AXTI": {"yf": "AXTI", "currency": "USD"},
-    "TSEM": {"yf": "TSEM", "currency": "USD"},
-    "POET": {"yf": "POET", "currency": "USD"},
-    "GFS": {"yf": "GFS", "currency": "USD"},
-    "POWL": {"yf": "POWL", "currency": "USD"},
-    "MOD": {"yf": "MOD", "currency": "USD"},
-    "GOOGL": {"yf": "GOOGL", "currency": "USD"},
-    "AAOI": {"yf": "AAOI", "currency": "USD"},
-    "AEHR": {"yf": "AEHR", "currency": "USD"},
-    "FORM": {"yf": "FORM", "currency": "USD"},
-    "MXL": {"yf": "MXL", "currency": "USD"},
-    "NVTS": {"yf": "NVTS", "currency": "USD"},
-    "OSS": {"yf": "OSS", "currency": "USD"},
-    "AIRO": {"yf": "AIRO", "currency": "USD"},
-
-    # WAIS Income ETFs
-    "VDY.TO": {"yf": "VDY.TO", "currency": "CAD", "income": True},
-    "ZWB.TO": {"yf": "ZWB.TO", "currency": "CAD", "income": True},
-    "ZWC.TO": {"yf": "ZWC.TO", "currency": "CAD", "income": True},
-    "ZWU.TO": {"yf": "ZWU.TO", "currency": "CAD", "income": True},
-    "JEPI": {"yf": "JEPI", "currency": "USD", "income": True},
-    "JEPQ": {"yf": "JEPQ", "currency": "USD", "income": True},
-    "QYLD": {"yf": "QYLD", "currency": "USD", "income": True},
-}
-
-OUTPUT_PATH = Path("stock-prices.json")
-
-
-def load_existing_data():
-    if not OUTPUT_PATH.exists():
-        return {"lastUpdated": None, "marketStatus": "pending", "prices": {}}
-    try:
-        with OUTPUT_PATH.open("r", encoding="utf-8") as file:
-            return json.load(file)
-    except (json.JSONDecodeError, OSError):
-        return {"lastUpdated": None, "marketStatus": "pending", "prices": {}}
-
-
+SYMBOLS={
+"NVDA":("NVDA","USD",False),"TSM":("TSM","USD",False),"AVGO":("AVGO","USD",False),"MRVL":("MRVL","USD",False),"MU":("MU","USD",False),"COHR":("COHR","USD",False),"LITE":("LITE","USD",False),"AXTI":("AXTI","USD",False),"TSEM":("TSEM","USD",False),"POET":("POET","USD",False),"GFS":("GFS","USD",False),"POWL":("POWL","USD",False),"MOD":("MOD","USD",False),"GOOGL":("GOOGL","USD",False),"AAOI":("AAOI","USD",False),"AEHR":("AEHR","USD",False),"FORM":("FORM","USD",False),"MXL":("MXL","USD",False),"NVTS":("NVTS","USD",False),"OSS":("OSS","USD",False),"AIRO":("AIRO","USD",False),
+"WEEK":("WEEK","USD",True),"QDTE":("QDTE","USD",True),"TOPW":("TOPW","USD",True),"VDY.TO":("VDY.TO","CAD",True),"ZWB.TO":("ZWB.TO","CAD",True),"ZWC.TO":("ZWC.TO","CAD",True),"ZWU.TO":("ZWU.TO","CAD",True),"JEPI":("JEPI","USD",True),"JEPQ":("JEPQ","USD",True),"QYLD":("QYLD","USD",True)}
+OUT=Path('stock-prices.json')
+def existing():
+ try:return json.loads(OUT.read_text(encoding='utf-8')) if OUT.exists() else {"prices":{}}
+ except:return {"prices":{}}
+def completed(h):
+ if h.empty:return h
+ now=datetime.now(timezone.utc).astimezone(ZoneInfo('America/New_York'))
+ return h.iloc[:-1] if h.index[-1].date()==now.date() and now.time()<time(16,20) else h
 def main():
-    existing_data = load_existing_data()
-    prices = existing_data.get("prices", {})
-    successful_updates = 0
-
-    for output_symbol, meta in SYMBOLS.items():
-        yf_symbol = meta["yf"]
-        try:
-            ticker = yf.Ticker(yf_symbol)
-            history = ticker.history(
-                period="1y" if meta.get("income") else "10d",
-                interval="1d",
-                auto_adjust=False,
-                prepost=False,
-                actions=True,
-            )
-
-            if history.empty or history["Close"].dropna().empty:
-                print(f"No closing price returned for {output_symbol}")
-                continue
-
-            closes = history["Close"].dropna()
-            latest_price = float(closes.iloc[-1])
-            latest_date = closes.index[-1].date().isoformat()
-
-            record = {
-                "price": round(latest_price, 4),
-                "currency": meta["currency"],
-                "asOf": latest_date,
-                "source": "Yahoo Finance via yfinance",
-                "dataStatus": "Delayed / closing data; NOT REAL-TIME",
-            }
-
-            if meta.get("income") and "Dividends" in history.columns:
-                distributions = history["Dividends"].fillna(0)
-                positive = distributions[distributions > 0]
-
-                if not positive.empty:
-                    last_distribution = float(positive.iloc[-1])
-                    last_distribution_date = positive.index[-1].date().isoformat()
-                    trailing_12m_distribution = float(positive.sum())
-
-                    record["lastDistribution"] = round(last_distribution, 6)
-                    record["lastDistributionDate"] = last_distribution_date
-                    record["trailing12mDistribution"] = round(trailing_12m_distribution, 6)
-
-                    if latest_price > 0:
-                        record["trailing12mDistributionYield"] = round(
-                            trailing_12m_distribution / latest_price * 100, 4
-                        )
-
-            prices[output_symbol] = record
-            successful_updates += 1
-            print(f"{output_symbol}: {latest_price:.4f} {meta['currency']} @ {latest_date}")
-
-        except Exception as error:
-            print(f"Failed to update {output_symbol}: {error}")
-
-    output = {
-        "lastUpdated": datetime.now(timezone.utc).isoformat(),
-        "marketStatus": "updated" if successful_updates > 0 else "update_failed",
-        "dataStatus": "Delayed / closing data; NOT REAL-TIME",
-        "prices": prices,
-    }
-
-    with OUTPUT_PATH.open("w", encoding="utf-8") as file:
-        json.dump(output, file, ensure_ascii=False, indent=2)
-        file.write("\n")
-
-    if successful_updates == 0:
-        raise RuntimeError("No stock / ETF prices were updated.")
-
-
-if __name__ == "__main__":
-    main()
+ data=existing();prices=data.get('prices',{});ok=0
+ for out,(sym,currency,income) in SYMBOLS.items():
+  try:
+   h=completed(yf.Ticker(sym).history(period='1y' if income else '6mo',interval='1d',auto_adjust=False,prepost=False,actions=True))
+   c=h['Close'].dropna() if not h.empty else []
+   if len(c)==0:continue
+   p=float(c.iloc[-1]);d=c.index[-1].date().isoformat();r={"price":round(p,4),"currency":currency,"asOf":d,"source":"Yahoo Finance via yfinance","dataStatus":"Completed daily close; NOT REAL-TIME","sma20":round(float(c.tail(20).mean()),4) if len(c)>=5 else None,"sma50":round(float(c.tail(50).mean()),4) if len(c)>=10 else None}
+   if len(c)>=2:
+    prev=float(c.iloc[-2]);r['change']=round(p-prev,4);r['changePercent']=round((p/prev-1)*100,4) if prev else None
+   if income and 'Dividends' in h.columns:
+    div=h['Dividends'].fillna(0);pos=div[div>0]
+    if not pos.empty:
+     r['lastDistribution']=round(float(pos.iloc[-1]),6);r['lastDistributionDate']=pos.index[-1].date().isoformat();one_year_ago=(datetime.now(timezone.utc).date().replace(year=datetime.now(timezone.utc).date().year-1));trail=pos[[x.date()>=one_year_ago for x in pos.index]];s=float(trail.sum()) if not trail.empty else 0;r['trailing12mDistribution']=round(s,6);r['trailing12mDistributionYield']=round(s/p*100,4) if p>0 else None
+   prices[out]=r;ok+=1;print(out,p,d)
+  except Exception as e:print('failed',out,e)
+ OUT.write_text(json.dumps({"lastUpdated":datetime.now(timezone.utc).isoformat(),"marketStatus":"updated" if ok else "update_failed","dataStatus":"Completed daily close; NOT REAL-TIME","prices":prices},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+ if not ok:raise RuntimeError('No prices updated')
+if __name__=='__main__':main()
