@@ -76,35 +76,72 @@ function quoteFor(ticker){ return livePrices[String(ticker||'').toUpperCase()]||
 function distanceToEntryPct(current,entry){ const c=Number(current),e=Number(entry); return Number.isFinite(c)&&Number.isFinite(e)&&e>0?((c-e)/e)*100:null; }
 function dynamicEntryZone(item,quote){ const s=Number(quote?.sma20),lo=Number(item?.entryBandLowPct),hi=Number(item?.entryBandHighPct); return Number.isFinite(s)&&s>0&&Number.isFinite(lo)&&Number.isFinite(hi)?{low:s*(1+lo/100),high:s*(1+hi/100)}:null; }
 
+
+function getResearchStageMeta(stage='RESEARCH'){
+  const s=String(stage||'RESEARCH').trim().toUpperCase();
+  if(s.includes('WATCHLIST')) return {label:'WATCHLIST CANDIDATE',className:'stage-watchlist'};
+  if(s.includes('VALIDAT')) return {label:'VALIDATING',className:'stage-validating'};
+  if(s.includes('RESEARCH')) return {label:'RESEARCH',className:'stage-research'};
+  return {label:s||'RESEARCH',className:'stage-research'};
+}
+
 function renderCards(items,target){
-  const el=$(target); if(!el)return; const isGem=target==='hiddenGemsGrid';
-  el.innerHTML=items.map(x=>{ const ticker=String(x.ticker).toUpperCase(),q=quoteFor(ticker),current=q.price,entry=Number(x.entry),tp=Number(x.target),dist=distanceToEntryPct(current,entry),sig=getSignalMeta(isGem?'RESEARCH':x.status),up=Number.isFinite(entry)&&entry>0&&Number.isFinite(tp)&&tp>0?(((tp-entry)/entry)*100).toFixed(1)+'%':'—'; const stage=isGem?(x.researchStage||'RESEARCH'):'';
-  const secondary=isGem?stage:(x.topPickRank?`TOP PICK #${x.topPickRank}`:(x.rating||''));
-  const entryText=Number.isFinite(entry)&&entry>0?fmtUSD(entry):(isGem?'Set after Watchlist promotion':'—');
-  const targetText=Number.isFinite(tp)&&tp>0?fmtUSD(tp):(isGem?'Set after Watchlist promotion':'—');
-  const distanceText=dist==null?(isGem?'Not set during research stage':'—'):`${dist>=0?'+':''}${dist.toFixed(1)}%`;
-  const upsideText=up==='—'&&isGem?'Not set during research stage':up;
-  return `<article class="stock-card signal-card ${sig.className}">
-    <div class="signal-card-head">
-      ${isGem?'':`<span class="signal-chip ${sig.className}">${escapeHTML(sig.label)}</span>`}
-      <span class="priority-chip">${escapeHTML(isGem?(x.researchStage||'RESEARCH'):(secondary||''))}</span>
-    </div>
-    <h3>${escapeHTML(x.ticker)}</h3>
-    <div class="company">${escapeHTML(x.company)}</div>
-    <div class="stock-meta">
-      <div><span>Role</span><b>${escapeHTML(x.role)}</b></div>
-      <div><span>WAIS Score</span><b>${escapeHTML(x.score)}/100</b></div>
-      <div><span>Current / Last Close</span><b>${current!=null?fmtUSD(current):'—'}</b></div>
-      <div><span>Price Date</span><b>${escapeHTML(q.asOf||'—')}</b></div>
-      <div><span>Entry</span><b>${escapeHTML(entryText)}</b></div>
-      <div><span>Distance to Entry</span><b>${escapeHTML(distanceText)}</b></div>
-      <div><span>Target</span><b>${escapeHTML(targetText)}</b></div>
-      <div><span>Planned Upside</span><b>${escapeHTML(upsideText)}</b></div>
-      <div><span>Risk</span><b>${escapeHTML(x.risk)}</b></div>
-      <div><span>${isGem?'Research Stage':'Rating'}</span><b>${escapeHTML(isGem?(x.researchStage||'RESEARCH'):x.rating)}</b></div>
-    </div>
-    <p class="stock-note">${escapeHTML(x.note)}</p>
-  </article>`; }).join('');
+  const el=$(target); if(!el)return;
+  const isGem=target==='hiddenGemsGrid';
+
+  el.innerHTML=items.map(x=>{
+    const ticker=String(x.ticker).toUpperCase();
+    const q=quoteFor(ticker);
+    const current=q.price;
+    const entry=Number(x.entry);
+    const tp=Number(x.target);
+    const dist=distanceToEntryPct(current,entry);
+    const sig=getSignalMeta(isGem?'RESEARCH':x.status);
+    const up=Number.isFinite(entry)&&entry>0&&Number.isFinite(tp)&&tp>0
+      ?(((tp-entry)/entry)*100).toFixed(1)+'%'
+      :'—';
+
+    const stageMeta=isGem?getResearchStageMeta(x.researchStage||'RESEARCH'):null;
+    const secondary=isGem
+      ?stageMeta.label
+      :(x.topPickRank?`TOP PICK #${x.topPickRank}`:(x.rating||''));
+
+    const entryText=Number.isFinite(entry)&&entry>0
+      ?fmtUSD(entry)
+      :(isGem?'Set after Watchlist promotion':'—');
+    const targetText=Number.isFinite(tp)&&tp>0
+      ?fmtUSD(tp)
+      :(isGem?'Set after Watchlist promotion':'—');
+    const distanceText=dist==null
+      ?(isGem?'Not set during research stage':'—')
+      :`${dist>=0?'+':''}${dist.toFixed(1)}%`;
+    const upsideText=up==='—'&&isGem?'Not set during research stage':up;
+
+    return `<article class="stock-card signal-card ${sig.className}">
+      <div class="signal-card-head">
+        ${isGem?'':`<span class="signal-chip ${sig.className}">${escapeHTML(sig.label)}</span>`}
+        <span class="${isGem?`research-stage-chip ${stageMeta.className}`:'priority-chip'}">${escapeHTML(secondary||'')}</span>
+      </div>
+      <h3>${escapeHTML(x.ticker)}</h3>
+      <div class="company">${escapeHTML(x.company)}</div>
+      <div class="stock-meta">
+        <div><span>Role</span><b>${escapeHTML(x.role)}</b></div>
+        <div><span>WAIS Score</span><b>${escapeHTML(x.score)}/100</b></div>
+        <div><span>Current / Last Close</span><b>${current!=null?fmtUSD(current):'—'}</b></div>
+        <div><span>Price Date</span><b>${escapeHTML(q.asOf||'—')}</b></div>
+        <div><span>Entry</span><b>${escapeHTML(entryText)}</b></div>
+        <div><span>Distance to Entry</span><b>${escapeHTML(distanceText)}</b></div>
+        <div><span>Target</span><b>${escapeHTML(targetText)}</b></div>
+        <div><span>Planned Upside</span><b>${escapeHTML(upsideText)}</b></div>
+        <div><span>Risk</span><b>${escapeHTML(x.risk)}</b></div>
+        <div class="${isGem?`research-stage-cell ${stageMeta.className}`:''}">
+          <span>${isGem?'Research Stage':'Rating'}</span>
+          <b>${escapeHTML(isGem?stageMeta.label:x.rating)}</b>
+        </div>
+      </div>
+      <p class="stock-note">${escapeHTML(x.note)}</p>
+    </article>`;
+  }).join('');
 }
 
 const navItems = document.querySelectorAll('.nav-item');
@@ -507,6 +544,63 @@ function renderWeeklyMarketNotes(){
 
 function renderTechnicalSummary(){ const configs=window.WAIS_MARKET_DATA?.technicalSummary||[],target=$('waisTechnicalSummary'),updated=$('technicalSummaryUpdated'); if(!target)return; const data=marketIndicatorsSnapshot||{},ind=data.indicators||{},dates=data.marketDates||{},file=data.lastUpdated?new Date(data.lastUpdated).toLocaleString('en-CA'):'—'; if(updated)updated.textContent=`US close: ${dates.US||'—'}｜HK close: ${dates.HK||'—'}｜檔案更新: ${file}｜NOT REAL-TIME`; target.innerHTML=configs.map(item=>{const x=ind[item.key]||{},value=formatMarketValue(x.value,item.key);let move='--';if(item.key==='VIX'&&Number.isFinite(Number(x.value)))move=`Level ${Number(x.value).toFixed(2)}`;else if(item.key==='US10Y'&&Number.isFinite(Number(x.value)))move=`${Number(x.value).toFixed(2)}%`;else if(Number.isFinite(Number(x.changePercent))){const p=Number(x.changePercent);move=`${p>0?'+':''}${p.toFixed(2)}%`;}const sig=getSignalMeta(item.signal==='EXTENDED'?'WAIT':item.signal==='STRONG'||item.signal==='CALM'||item.signal==='SELECTIVE'?'WATCH':item.signal);return `<article class="research-card structure-card ${sig.className}"><div class="structure-head"><span>${escapeHTML(item.signal||'WAIS')}</span><b>${escapeHTML(x.asOf||'—')}</b></div><h3>${escapeHTML(item.name||item.key||'')}</h3><div class="structure-value">${escapeHTML(value)}</div><div class="structure-move">${escapeHTML(move)}</div><div class="structure-signal">${escapeHTML(item.signal||'—')}</div><p>${escapeHTML(item.note||'')}</p></article>`;}).join(''); }
 
+
+function getIncomeSustainability(item,annualYield){
+  let score=70;
+  const y=Number(annualYield);
+  const nav=String(item.navRisk||'').toUpperCase();
+  const quality=String(item.incomeQuality||'').toUpperCase();
+  const drag=String(item.upsideDrag||'').toUpperCase();
+  const category=String(item.category||'').toUpperCase();
+  const track=String(item.track||'').toUpperCase();
+
+  // Distribution burden: very high annualized cash distribution requires
+  // more option income / ROC / NAV support, so sustainability confidence falls.
+  if(Number.isFinite(y)){
+    if(y>=40) score-=35;
+    else if(y>=25) score-=25;
+    else if(y>=15) score-=14;
+    else if(y>=8) score-=6;
+    else if(y<4) score+=5;
+  }else{
+    score-=15;
+  }
+
+  if(nav.includes('VERY HIGH')) score-=25;
+  else if(nav.includes('HIGH')) score-=16;
+  else if(nav.includes('MEDIUM')) score-=7;
+  else if(nav.includes('LOW')) score+=8;
+
+  if(quality.includes('HIGH')) score+=10;
+  else if(quality.includes('MEDIUM')) score+=2;
+  else if(quality.includes('LOW')) score-=10;
+  else if(quality.includes('RESEARCH')) score-=6;
+
+  if(drag.includes('HIGH')) score-=8;
+  else if(drag.includes('MEDIUM')) score-=3;
+  else if(drag.includes('LOW')) score+=3;
+
+  if(category.includes('T-BILL')||category.includes('TREASURY')) score+=12;
+  if(category.includes('0DTE')) score-=12;
+  if(track==='TACTICAL') score-=5;
+
+  score=Math.max(0,Math.min(100,Math.round(score)));
+
+  let label='LOW';
+  let cls='income-sustain-low';
+  if(score>=75){label='HIGH';cls='income-sustain-high';}
+  else if(score>=55){label='MEDIUM';cls='income-sustain-medium';}
+  else if(score>=35){label='LOW';cls='income-sustain-low';}
+  else {label='SPECULATIVE';cls='income-sustain-speculative';}
+
+  let role='CORE INCOME';
+  if(category.includes('T-BILL')||category.includes('TREASURY')) role='DEFENSIVE / CASH';
+  else if(track==='TACTICAL'||category.includes('0DTE')||(Number.isFinite(y)&&y>=20)) role='TACTICAL INCOME';
+  else if(String(item.frequency||'').toUpperCase().includes('MONTH')) role='CORE INCOME';
+
+  return {score,label,cls,role};
+}
+
 function renderIncomeEtfs(){
   const wg=$('weeklyIncomeGrid'),mg=$('monthlyIncomeGrid'),tg=$('tacticalIncomeGrid');
   if(!wg||!mg||!tg)return;
@@ -552,31 +646,31 @@ function renderIncomeEtfs(){
     const annualYield=item._yield;
     const annualYieldText=annualYield!=null?`${annualYield.toFixed(2)}%`:'—';
 
-    // One common comparison scale for ALL weekly/monthly ETFs:
-    // estimated monthly cash yield = trailing annual distribution yield / 12.
+    // Common comparison scale across weekly and monthly products.
     const monthlyYield=annualYield!=null?annualYield/12:null;
     const monthlyYieldText=monthlyYield!=null?`${monthlyYield.toFixed(2)}%`:'—';
 
     const monthlyCash10k=monthlyYield!=null?10000*monthlyYield/100:null;
     const monthlyCash10kText=monthlyCash10k!=null
-      ? `~${q.currency||item.currency||'USD'} ${monthlyCash10k.toFixed(0)} / $10k / month`
-      : 'DATA PENDING';
+      ?`~${q.currency||item.currency||'USD'} ${monthlyCash10k.toFixed(0)} / $10k / month`
+      :'DATA PENDING';
 
-    // Weekly-only secondary estimate for intuition; not used for filtering.
     const isWeekly=String(item.frequency||'').toLowerCase().includes('week');
     const weeklyYield=isWeekly && annualYield!=null?annualYield/52:null;
     const weeklyYieldText=weeklyYield!=null?`${weeklyYield.toFixed(2)}%`:'—';
 
     const zone=dynamicEntryZone(item,q);
     const zoneText=zone
-      ? `${q.currency||item.currency||''} ${zone.low.toFixed(2)} – ${zone.high.toFixed(2)}`.trim()
-      : (item.entryMethod||'—');
+      ?`${q.currency||item.currency||''} ${zone.low.toFixed(2)} – ${zone.high.toFixed(2)}`.trim()
+      :(item.entryMethod||'—');
 
     const riskFlag =
       annualYield!=null && annualYield>=30 ? 'VERY HIGH DISTRIBUTION — CHECK NAV / ROC' :
       annualYield!=null && annualYield>=20 ? 'HIGH DISTRIBUTION — EXTRA RISK REVIEW' :
       annualYield!=null && annualYield>=10 ? 'ELEVATED INCOME' :
       'STANDARD INCOME RANGE';
+
+    const sus=getIncomeSustainability(item,annualYield);
 
     return `<article class="stock-card income-card signal-card ${sig.className}">
       <div class="signal-card-head">
@@ -594,6 +688,15 @@ function renderIncomeEtfs(){
           <strong>${escapeHTML(monthlyYieldText)}</strong>
           <small>${escapeHTML(monthlyCash10kText)}</small>
         </div>
+      </div>
+
+      <div class="income-sustainability ${sus.cls}">
+        <div>
+          <span>WAIS INCOME SUSTAINABILITY</span>
+          <strong>${escapeHTML(sus.label)}</strong>
+        </div>
+        <b>${sus.score}/100</b>
+        <small>${escapeHTML(sus.role)}</small>
       </div>
 
       <div class="income-risk-flag">${escapeHTML(riskFlag)}</div>
@@ -615,6 +718,8 @@ function renderIncomeEtfs(){
         <div><span>Distribution Date</span><b>${escapeHTML(q.lastDistributionDate||'—')}</b></div>
         <div><span>20D SMA</span><b>${q.sma20!=null?`${q.currency||item.currency||''} ${Number(q.sma20).toFixed(2)}`:'—'}</b></div>
         <div><span>Income Quality</span><b>${escapeHTML(item.incomeQuality||'Research')}</b></div>
+        <div><span>Income Sustainability</span><b class="${sus.cls}">${escapeHTML(sus.label)} · ${sus.score}/100</b></div>
+        <div><span>Income Role</span><b>${escapeHTML(sus.role)}</b></div>
         <div><span>NAV Risk</span><b>${escapeHTML(item.navRisk||'—')}</b></div>
         <div><span>Upside Drag</span><b>${escapeHTML(item.upsideDrag||'—')}</b></div>
         <div><span>Category</span><b>${escapeHTML(item.category||'—')}</b></div>
@@ -628,7 +733,8 @@ function renderIncomeEtfs(){
     return `<div class="income-empty">目前「年化 Distribution Yield ≥${minYield}%」篩選下沒有${track}標的。</div>`;
   }
 
-  // Higher distribution appears first inside each category, but signal/risk still governs action.
+  // Higher distribution is shown first inside each category only.
+  // WAIS Sustainability and status still govern suitability/action.
   const sortYield=(a,b)=>(b._yield??-1)-(a._yield??-1);
   wg.innerHTML=weekly.length?weekly.sort(sortYield).map(card).join(''):empty(' Weekly Income ');
   mg.innerHTML=monthly.length?monthly.sort(sortYield).map(card).join(''):empty(' Monthly Income ');
@@ -636,7 +742,7 @@ function renderIncomeEtfs(){
 
   if($('incomeSystemNote')){
     $('incomeSystemNote').textContent=
-      `WAIS Income：正式 Income Universe 最低門檻為年化 Distribution Yield ≥${minYield}%；預設為3%。Weekly / Monthly ETF 全部用 Estimated Monthly Cash Yield 作共同比較尺度。價格、分派、Price Date、Distribution Date、T12M Distribution Yield及20D SMA由 stock-prices.json 自動更新。Distribution Yield不是保證總回報；高派息產品尤其要檢查NAV、ROC、option strategy及分派可持續性。`;
+      `WAIS Income：Income Universe 最低門檻為年化 Distribution Yield ≥${minYield}%；預設3%。Weekly / Monthly ETF 使用 Estimated Monthly Cash Yield 作共同比較尺度，但高分派不等於高總回報。WAIS Income Sustainability 會另外按分派負擔、NAV Risk、Income Quality、Upside Drag及策略結構作規則式評估；分數是研究指標，不是保證。價格、分派、日期、T12M Distribution Yield及20D SMA由 stock-prices.json 自動更新。`;
   }
 }
 
