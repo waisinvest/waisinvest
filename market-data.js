@@ -334,7 +334,7 @@ window.WAIS_MARKET_DATA = {
       time: "08:30 ET",
       referenceMonth: "2026年7月",
       source: "U.S. Bureau of Labor Statistics",
-      waisNote: "本週最高優先級宏觀風險事件；公布前避免因強勢市況追價。"
+      waisNote: "本週最高優先級宏觀事件。"
     },
     {
       date: "08月13日",
@@ -350,49 +350,35 @@ window.WAIS_MARKET_DATA = {
       time: "08:30 ET",
       referenceMonth: "2026年7月",
       source: "U.S. Census Bureau",
-      waisNote: "關注消費韌性、經濟增長及利率預期。"
-    },
-    {
-      date: "08月19日",
-      event: "FOMC 會議紀錄",
-      time: "14:00 ET",
-      referenceMonth: "7月28–29日會議",
-      source: "Federal Reserve",
-      waisNote: "留意官員對通脹、就業及利率路徑的分歧。"
+      waisNote: "關注消費韌性與增長預期。"
     }
   ],
 
+  weeklyMarketNotes: [
+    { title: "利率主線", body: "CPI、PPI連續兩日公布；數據前不追高。若通脹重新升溫，先提高防守而不是急於加倉。" },
+    { title: "AI / 半導體", body: "趨勢仍強，但部分高beta與光通訊股已急升。優先等有秩序回調，再比較基本面與Entry質素。" },
+    { title: "香港市場", body: "恒指與恒科保持選擇性偏強；WAIS EAST仍以獨立風險參數判斷，不直接照搬美股訊號。" },
+    { title: "本週執行", body: "Market Risk 45/100、Cash 約30%、READY 1 暫為0。先守紀律，再等高質素第一注。" }
+  ],
+
   technicalSummary: [
-    {
-      name: "S&P 500",
-      status: "STRONG",
-      summary: "8月7日收7,757.64並上升0.62%；大市趨勢仍強，但接近高位時Entry紀律更重要。"
-    },
-    {
-      name: "NASDAQ Composite",
-      status: "STRONG",
-      summary: "8月7日收26,690.62並上升1.30%；科技及成長股動能偏強，但高beta板塊已有急升。"
-    },
-    {
-      name: "SOX",
-      status: "STRONG / EXTENDED",
-      summary: "8月7日半導體指數上升2.56%；趨勢強但短線延伸，WAIS不追急升。"
-    },
-    {
-      name: "VIX",
-      status: "LOW VOLATILITY",
-      summary: "8月7日收14.90；波動率偏低，但CPI、PPI及零售銷售令事件風險仍高。"
-    },
-    {
-      name: "US 10Y",
-      status: "ELEVATED",
-      summary: "10年期美債息約4.64%；仍是高估值成長股的估值壓力來源。"
-    },
-    {
-      name: "Hong Kong",
-      status: "POSITIVE / SELECTIVE",
-      summary: "恒指與恒生科技8月7日均錄得升幅；保持選股及事件風險紀律。"
-    }
+    { name: "S&P 500", value: "7,757.64", move: "+0.62%", signal: "STRONG", note: "大市趨勢仍強；接近高位時更重視Entry紀律。" },
+    { name: "NASDAQ", value: "26,690.62", move: "+1.30%", signal: "STRONG", note: "科技與成長股動能偏強，但高beta板塊已有延伸。" },
+    { name: "SOX", value: "12,356.79", move: "+2.56%", signal: "EXTENDED", note: "半導體強勢，但短線過熱風險上升，不追急升。" },
+    { name: "VIX", value: "14.90", move: "LOW", signal: "CALM", note: "波動率低，但本週宏觀事件密集，低VIX不等於低事件風險。" },
+    { name: "US 10Y", value: "4.64%", move: "ELEVATED", signal: "WATCH", note: "仍是高估值成長股的重要估值壓力來源。" },
+    { name: "HSI / HSTECH", value: "25,668 / 4,858", move: "+0.54% / +0.78%", signal: "SELECTIVE", note: "香港市場偏正面，但維持選股與風險紀律。" }
+  ],
+
+  incomeDefenseStatus: "CAUTIOUS",
+  incomeEtfs: [
+    { ticker: "VDY", name: "Vanguard FTSE Canadian High Dividend Yield Index ETF", category: "Core Dividend", frequency: "Research", yield: null, incomeQuality: "Research", navRisk: "Medium", upsideDrag: "Low", status: "RESEARCH", note: "加拿大高股息核心候選；先核實最新官方分派與總回報資料。" },
+    { ticker: "ZWB", name: "BMO Covered Call Canadian Banks ETF", category: "Covered Call", frequency: "Research", yield: null, incomeQuality: "Research", navRisk: "Medium", upsideDrag: "Medium", status: "RESEARCH", note: "銀行股收入型候選；需同時評估covered-call限制上行的成本。" },
+    { ticker: "ZWC", name: "BMO Canadian High Dividend Covered Call ETF", category: "Covered Call", frequency: "Research", yield: null, incomeQuality: "Research", navRisk: "Medium", upsideDrag: "Medium", status: "RESEARCH", note: "高股息加covered-call；不以派息率單獨排序。" },
+    { ticker: "ZWU", name: "BMO Covered Call Utilities ETF", category: "Covered Call / Utilities", frequency: "Research", yield: null, incomeQuality: "Research", navRisk: "Medium", upsideDrag: "Medium", status: "RESEARCH", note: "公用事業收入候選；需檢查利率敏感度與資本回報。" },
+    { ticker: "JEPI", name: "JPMorgan Equity Premium Income ETF", category: "Equity Premium Income", frequency: "Research", yield: null, incomeQuality: "Research", navRisk: "Medium", upsideDrag: "Medium", status: "RESEARCH", note: "美股收入策略候選；需核實最新分派來源、總回報及稅務影響。" },
+    { ticker: "JEPQ", name: "JPMorgan Nasdaq Equity Premium Income ETF", category: "Growth Income", frequency: "Research", yield: null, incomeQuality: "Research", navRisk: "Medium High", upsideDrag: "Medium", status: "RESEARCH", note: "科技收入型候選；收入較高但成長與波動特性不同於傳統股息ETF。" },
+    { ticker: "QYLD", name: "Global X Nasdaq 100 Covered Call ETF", category: "High Income / Covered Call", frequency: "Research", yield: null, incomeQuality: "Research", navRisk: "High", upsideDrag: "High", status: "RESEARCH", note: "高收入研究標的；WAIS會特別檢查NAV侵蝕、總回報及上行犧牲。" }
   ],
 
   actionPlan: [
