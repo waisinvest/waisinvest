@@ -66,13 +66,22 @@ const incomeEtfs = window.WAIS_MARKET_DATA?.incomeEtfs || [];
 
 const SIGNAL_META = { GREEN:{className:'signal-green'}, YELLOW:{className:'signal-yellow'}, ORANGE:{className:'signal-orange'}, RED:{className:'signal-red'}, BLUE:{className:'signal-blue'}, GREY:{className:'signal-grey'} };
 function getSignalMeta(status=''){ const s=String(status||'').toUpperCase(); if(s.includes('READY')) return {...SIGNAL_META.GREEN,label:status}; if(s.includes('WATCH')||s.includes('NEAR ENTRY')||s==='HOLD') return {...SIGNAL_META.YELLOW,label:status}; if(s.includes('WAIT')||s.includes('CAUTIOUS')) return {...SIGNAL_META.ORANGE,label:status}; if(s.includes('DEFENSE')||s.includes('AVOID')||s.includes('REJECT')||s.includes('EXIT')) return {...SIGNAL_META.RED,label:status}; if(s.includes('RESEARCH')||s.includes('DISCOVERY')||s.includes('VALIDATING')) return {...SIGNAL_META.BLUE,label:status}; return {...SIGNAL_META.GREY,label:status||'NO SIGNAL'}; }
+function applySignalStatus(el,status=''){
+  if(!el) return;
+  const sig=getSignalMeta(status);
+  el.classList.remove('signal-green','signal-yellow','signal-orange','signal-red','signal-blue','signal-grey');
+  el.classList.add('status-text',sig.className);
+}
 function quoteFor(ticker){ return livePrices[String(ticker||'').toUpperCase()]||{}; }
 function distanceToEntryPct(current,entry){ const c=Number(current),e=Number(entry); return Number.isFinite(c)&&Number.isFinite(e)&&e>0?((c-e)/e)*100:null; }
 function dynamicEntryZone(item,quote){ const s=Number(quote?.sma20),lo=Number(item?.entryBandLowPct),hi=Number(item?.entryBandHighPct); return Number.isFinite(s)&&s>0&&Number.isFinite(lo)&&Number.isFinite(hi)?{low:s*(1+lo/100),high:s*(1+hi/100)}:null; }
 
 function renderCards(items,target){
   const el=$(target); if(!el)return; const isGem=target==='hiddenGemsGrid';
-  el.innerHTML=items.map(x=>{ const ticker=String(x.ticker).toUpperCase(),q=quoteFor(ticker),current=q.price,entry=Number(x.entry),tp=Number(x.target),dist=distanceToEntryPct(current,entry),sig=getSignalMeta(isGem?'RESEARCH':x.status),up=Number.isFinite(entry)&&entry>0&&Number.isFinite(tp)&&tp>0?(((tp-entry)/entry)*100).toFixed(1)+'%':'—'; const secondary=isGem?(x.researchStage||'RESEARCHING'):(x.topPickRank?`TOP PICK #${x.topPickRank}`:(x.rating||'')); return `<article class="stock-card signal-card ${sig.className}"><div class="signal-card-head"><span class="signal-chip ${sig.className}">${escapeHTML(sig.label)}</span>${secondary?`<span class="priority-chip">${escapeHTML(secondary)}</span>`:''}</div><h3>${escapeHTML(x.ticker)}</h3><div class="company">${escapeHTML(x.company)}</div><div class="stock-meta"><div><span>Role</span><b>${escapeHTML(x.role)}</b></div><div><span>WAIS Score</span><b>${escapeHTML(x.score)}/100</b></div><div><span>Current / Last Close</span><b>${current!=null?fmtUSD(current):'—'}</b></div><div><span>Price Date</span><b>${escapeHTML(q.asOf||'—')}</b></div><div><span>Entry</span><b>${Number.isFinite(entry)&&entry>0?fmtUSD(entry):'—'}</b></div><div><span>Distance to Entry</span><b>${dist==null?'—':`${dist>=0?'+':''}${dist.toFixed(1)}%`}</b></div><div><span>Target</span><b>${Number.isFinite(tp)&&tp>0?fmtUSD(tp):'—'}</b></div><div><span>Planned Upside</span><b>${up}</b></div><div><span>Risk</span><b>${escapeHTML(x.risk)}</b></div><div><span>${isGem?'Research Stage':'Rating'}</span><b>${escapeHTML(isGem?(x.researchStage||'RESEARCHING'):x.rating)}</b></div></div><p class="stock-note">${escapeHTML(x.note)}</p></article>`; }).join('');
+  el.innerHTML=items.map(x=>{ const ticker=String(x.ticker).toUpperCase(),q=quoteFor(ticker),current=q.price,entry=Number(x.entry),tp=Number(x.target),dist=distanceToEntryPct(current,entry),sig=getSignalMeta(isGem?'RESEARCH':x.status),up=Number.isFinite(entry)&&entry>0&&Number.isFinite(tp)&&tp>0?(((tp-entry)/entry)*100).toFixed(1)+'%':'—'; const stage=isGem?(x.researchStage||'RESEARCH'):'';
+  const secondary=isGem?stage:(x.topPickRank?`TOP PICK #${x.topPickRank}`:(x.rating||''));
+  const primaryLabel=isGem?'HIDDEN GEM':sig.label;
+  return `<article class="stock-card signal-card ${sig.className}"><div class="signal-card-head"><span class="signal-chip ${sig.className}">${escapeHTML(primaryLabel)}</span>${secondary?`<span class="priority-chip">${escapeHTML(secondary)}</span>`:''}</div><h3>${escapeHTML(x.ticker)}</h3><div class="company">${escapeHTML(x.company)}</div><div class="stock-meta"><div><span>Role</span><b>${escapeHTML(x.role)}</b></div><div><span>WAIS Score</span><b>${escapeHTML(x.score)}/100</b></div><div><span>Current / Last Close</span><b>${current!=null?fmtUSD(current):'—'}</b></div><div><span>Price Date</span><b>${escapeHTML(q.asOf||'—')}</b></div><div><span>Entry</span><b>${Number.isFinite(entry)&&entry>0?fmtUSD(entry):'—'}</b></div><div><span>Distance to Entry</span><b>${dist==null?'—':`${dist>=0?'+':''}${dist.toFixed(1)}%`}</b></div><div><span>Target</span><b>${Number.isFinite(tp)&&tp>0?fmtUSD(tp):'—'}</b></div><div><span>Planned Upside</span><b>${up}</b></div><div><span>Risk</span><b>${escapeHTML(x.risk)}</b></div><div><span>${isGem?'Research Stage':'Rating'}</span><b>${escapeHTML(isGem?(x.researchStage||'RESEARCH'):x.rating)}</b></div></div><p class="stock-note">${escapeHTML(x.note)}</p></article>`; }).join('');
 }
 
 const navItems = document.querySelectorAll('.nav-item');
@@ -187,8 +196,12 @@ function updateRisk(score, cashOverride = null){
   $('riskLabel').textContent=s.label;
   $('cashMetric').textContent=s.cash;
   $('marketMode').textContent=s.mode;
+  applySignalStatus($('marketMode'),s.mode);
   $('actionPill').textContent=s.mode;
+  const actionSig=getSignalMeta(s.mode);
+  $('actionPill').className=`pill signal-chip ${actionSig.className}`;
   $('defenseStatus').textContent=s.def;
+  applySignalStatus($('defenseStatus'),s.def);
   $('riskResultScore').textContent=score+' / 100';
   $('riskResultMode').textContent=s.label;
   $('cashRecommendation').textContent=s.cash+'%';
@@ -383,43 +396,130 @@ function renderDailyThought(){
 let weeklyEventsSnapshot=null;
 async function loadWeeklyEvents(){ try{const r=await fetch(`weekly-events.json?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(`HTTP ${r.status}`);weeklyEventsSnapshot=await r.json();}catch(e){console.warn('Weekly events auto file unavailable; fallback used.',e);weeklyEventsSnapshot=null;} }
 
-function renderEconomicEvents(){ const fallback=window.WAIS_MARKET_DATA?.weeklyEvents||[],events=weeklyEventsSnapshot?.events?.length?weeklyEventsSnapshot.events:fallback,target=$('economicEventsList'),updated=$('economicEventsUpdated'); if(!target)return; if(updated)updated.textContent=`官方日程資料：${weeklyEventsSnapshot?.lastUpdated||window.WAIS_MARKET_DATA?.lastUpdated||'—'}｜Auto + fallback`; target.innerHTML=events.length?events.map((e,i)=>`<div class="calendar-row"><span>${String(i+1).padStart(2,'0')}</span><p><strong>${escapeHTML(e.date||'')}｜${escapeHTML(e.event||'')}</strong><br>${escapeHTML(e.time||'')}${e.referenceMonth?`｜${escapeHTML(e.referenceMonth)}`:''}<br><small>${escapeHTML(e.source||'')}</small></p></div>`).join(''):'<div><span>—</span><p>本週暫時沒有已確認的高影響事件。</p></div>'; }
-
-function renderWeeklyMarketNotes(){
-  const notes = window.WAIS_MARKET_DATA?.weeklyMarketNotes || [];
-  const target = $('weeklyMarketNotesList');
-  const review = $('weeklyMarketReviewDate');
-  const riskNote = $('weeklyMarketRiskNote');
-  if(!target) return;
-
-  if(review){
-    review.textContent = `最後更新：${window.WAIS_MARKET_DATA?.lastUpdated || '—'}｜策略檢視`;
+function eventWeekLabel(dateISO){
+  if(!dateISO) return '';
+  const now=new Date();
+  const start=new Date(now);
+  const day=(start.getDay()+6)%7; // Monday=0
+  start.setHours(0,0,0,0);
+  start.setDate(start.getDate()-day);
+  const next=new Date(start); next.setDate(start.getDate()+7);
+  const afterNext=new Date(start); afterNext.setDate(start.getDate()+14);
+  const d=new Date(`${dateISO}T12:00:00`);
+  if(d>=start && d<next) return '本週';
+  if(d>=next && d<afterNext) return '下週';
+  return '';
+}
+function renderEconomicEvents(){
+  const fallback=window.WAIS_MARKET_DATA?.weeklyEvents||[];
+  const events=weeklyEventsSnapshot?.events?.length?weeklyEventsSnapshot.events:fallback;
+  const target=$('economicEventsList'),updated=$('economicEventsUpdated');
+  if(!target)return;
+  if(updated){
+    const raw=weeklyEventsSnapshot?.lastUpdated||window.WAIS_MARKET_DATA?.lastUpdated||'—';
+    const shown=raw && raw!=='—' ? new Date(raw).toLocaleString('en-CA') : '—';
+    updated.textContent=`日程資料更新：${shown}｜本週＋下週｜Auto + verified fallback`;
   }
-
-  target.innerHTML = notes.length
-    ? notes.slice(0,4).map((item,index) => `
-      <div>
-        <span>${String(index+1).padStart(2,'0')}</span>
-        <p>
-          <strong>${escapeHTML(item.title || '')}</strong>${item.action ? `<span class="strategy-action">${escapeHTML(item.action)}</span>` : ''}<br>
-          ${escapeHTML(item.body || '')}
-        </p>
-      </div>
-    `).join('')
-    : '<div><span>—</span><p>暫時沒有新的 WAIS 策略重點。</p></div>';
-
-  if(riskNote){
-    const risk = window.WAIS_MARKET_DATA?.riskScore ?? '—';
-    const cash = window.WAIS_MARKET_DATA?.recommendedCash ?? '—';
-    const readyCount = (window.WAIS_MARKET_DATA?.readyList || []).length;
-    riskNote.textContent =
-      `WAIS RISK NOTE · Market Risk ${risk}/100｜${window.WAIS_MARKET_DATA?.marketMode || '—'}｜建議約${cash}%現金｜READY 1：${readyCount}。Calendar 負責「何時發生」；本欄只講「市場影響與部署」。`;
-  }
+  target.innerHTML=events.length?events.map((e,i)=>{
+    const week=eventWeekLabel(e.dateISO||'');
+    return `<div class="calendar-row"><span>${String(i+1).padStart(2,'0')}</span><p><strong>${week?`<em class="week-tag">${week}</em>`:''}${escapeHTML(e.date||'')}｜${escapeHTML(e.event||'')}</strong><br>${escapeHTML(e.time||'')}${e.referenceMonth?`｜${escapeHTML(e.referenceMonth)}`:''}<br><small>${escapeHTML(e.source||'')}</small></p></div>`;
+  }).join(''):'<div><span>—</span><p>本週＋下週暫時沒有已確認的高影響事件。</p></div>';
 }
 
 function renderTechnicalSummary(){ const configs=window.WAIS_MARKET_DATA?.technicalSummary||[],target=$('waisTechnicalSummary'),updated=$('technicalSummaryUpdated'); if(!target)return; const data=marketIndicatorsSnapshot||{},ind=data.indicators||{},dates=data.marketDates||{},file=data.lastUpdated?new Date(data.lastUpdated).toLocaleString('en-CA'):'—'; if(updated)updated.textContent=`US close: ${dates.US||'—'}｜HK close: ${dates.HK||'—'}｜檔案更新: ${file}｜NOT REAL-TIME`; target.innerHTML=configs.map(item=>{const x=ind[item.key]||{},value=formatMarketValue(x.value,item.key);let move='--';if(item.key==='VIX'&&Number.isFinite(Number(x.value)))move=`Level ${Number(x.value).toFixed(2)}`;else if(item.key==='US10Y'&&Number.isFinite(Number(x.value)))move=`${Number(x.value).toFixed(2)}%`;else if(Number.isFinite(Number(x.changePercent))){const p=Number(x.changePercent);move=`${p>0?'+':''}${p.toFixed(2)}%`;}const sig=getSignalMeta(item.signal==='EXTENDED'?'WAIT':item.signal==='STRONG'||item.signal==='CALM'||item.signal==='SELECTIVE'?'WATCH':item.signal);return `<article class="research-card structure-card ${sig.className}"><div class="structure-head"><span>${escapeHTML(item.signal||'WAIS')}</span><b>${escapeHTML(x.asOf||'—')}</b></div><h3>${escapeHTML(item.name||item.key||'')}</h3><div class="structure-value">${escapeHTML(value)}</div><div class="structure-move">${escapeHTML(move)}</div><div class="structure-signal">${escapeHTML(item.signal||'—')}</div><p>${escapeHTML(item.note||'')}</p></article>`;}).join(''); }
 
-function renderIncomeEtfs(){ const wg=$('weeklyIncomeGrid'),mg=$('monthlyIncomeGrid'),tg=$('tacticalIncomeGrid');if(!wg||!mg||!tg)return;const items=incomeEtfs,weekly=items.filter(i=>i.track==='WEEKLY'),monthly=items.filter(i=>i.track==='MONTHLY'),tactical=items.filter(i=>i.track==='TACTICAL'),ready=g=>g.filter(i=>String(i.status).toUpperCase().includes('READY')).length;if($('weeklyIncomeReadyCount'))$('weeklyIncomeReadyCount').textContent=ready(weekly);if($('monthlyIncomeReadyCount'))$('monthlyIncomeReadyCount').textContent=ready(monthly);if($('incomeDefenseStatus'))$('incomeDefenseStatus').textContent=window.WAIS_MARKET_DATA?.incomeDefenseStatus||window.WAIS_MARKET_DATA?.marketMode||'CAUTIOUS';if($('incomeCashReserve'))$('incomeCashReserve').textContent=window.WAIS_MARKET_DATA?.recommendedCash??'—';if($('incomeUpdated'))$('incomeUpdated').textContent=`價格／分派資料檔更新：${livePricesUpdatedAt?new Date(livePricesUpdatedAt).toLocaleString('en-CA'):'—'}｜Closing data / NOT REAL-TIME`;function card(item){const key=String(item.priceSymbol||item.ticker||'').toUpperCase(),q=quoteFor(key),sig=getSignalMeta(item.status),price=q.price!=null?`${q.currency||item.currency||''} ${Number(q.price).toFixed(2)}`.trim():'—',dist=q.lastDistribution!=null?`${q.currency||item.currency||''} ${Number(q.lastDistribution).toFixed(4)}`.trim():'—',yieldText=q.trailing12mDistributionYield!=null?`${Number(q.trailing12mDistributionYield).toFixed(2)}%`:'—',zone=dynamicEntryZone(item,q),zoneText=zone?`${q.currency||item.currency||''} ${zone.low.toFixed(2)} – ${zone.high.toFixed(2)}`.trim():(item.entryMethod||'—');return `<article class="stock-card income-card signal-card ${sig.className}"><div class="signal-card-head"><span class="signal-chip ${sig.className}">${escapeHTML(sig.label)}</span><span class="priority-chip">${escapeHTML(item.frequency||'—')}</span></div><h3>${escapeHTML(item.ticker||'')}</h3><div class="company">${escapeHTML(item.name||'')}</div><div class="today-action ${sig.className}"><span>TODAY ACTION</span><strong>${escapeHTML(item.todayAction||'等待WAIS重新評估。')}</strong></div><div class="stock-meta"><div><span>Current / Last Close</span><b>${escapeHTML(price)}</b></div><div><span>Price Date</span><b>${escapeHTML(q.asOf||'—')}</b></div><div><span>Dynamic Entry Zone</span><b>${escapeHTML(zoneText)}</b></div><div><span>First Tranche</span><b>${escapeHTML(item.firstTranche||'—')}</b></div><div><span>Last Distribution</span><b>${escapeHTML(dist)}</b></div><div><span>Distribution Date</span><b>${escapeHTML(q.lastDistributionDate||'—')}</b></div><div><span>T12M Dist. Yield*</span><b>${escapeHTML(yieldText)}</b></div><div><span>20D SMA</span><b>${q.sma20!=null?`${q.currency||item.currency||''} ${Number(q.sma20).toFixed(2)}`:'—'}</b></div><div><span>Income Quality</span><b>${escapeHTML(item.incomeQuality||'Research')}</b></div><div><span>NAV Risk</span><b>${escapeHTML(item.navRisk||'—')}</b></div><div><span>Upside Drag</span><b>${escapeHTML(item.upsideDrag||'—')}</b></div><div><span>Category</span><b>${escapeHTML(item.category||'—')}</b></div></div><p class="stock-note">${escapeHTML(item.note||'')}</p></article>`;}wg.innerHTML=weekly.map(card).join('');mg.innerHTML=monthly.map(card).join('');tg.innerHTML=tactical.map(card).join('');if($('incomeSystemNote'))$('incomeSystemNote').textContent='WAIS Income：價格、Price Date、最近分派、Distribution Date、T12M Distribution Yield及20D SMA由 stock-prices.json 自動更新。Entry Zone由20D SMA加上WAIS預設範圍計算；Signal仍由WAIS策略審核，不會只因價錢跌到某位置就自動變成READY。'; }
+function renderIncomeEtfs(){
+  const wg=$('weeklyIncomeGrid'),mg=$('monthlyIncomeGrid'),tg=$('tacticalIncomeGrid');
+  if(!wg||!mg||!tg)return;
+
+  const filterEl=$('incomeYieldFilter');
+  const minYield=Number(filterEl?.value ?? 5);
+  const items=incomeEtfs;
+
+  const enriched=items.map(item=>{
+    const key=String(item.priceSymbol||item.ticker||'').toUpperCase();
+    const q=quoteFor(key);
+    const y=Number(q.trailing12mDistributionYield);
+    return {...item,_quote:q,_yield:Number.isFinite(y)?y:null};
+  });
+
+  const filtered=enriched.filter(item=>minYield<=0 || (item._yield!=null && item._yield>=minYield));
+  const weekly=filtered.filter(i=>i.track==='WEEKLY');
+  const monthly=filtered.filter(i=>i.track==='MONTHLY');
+  const tactical=filtered.filter(i=>i.track==='TACTICAL');
+  const ready=g=>g.filter(i=>String(i.status).toUpperCase().includes('READY')).length;
+
+  if($('weeklyIncomeReadyCount'))$('weeklyIncomeReadyCount').textContent=ready(weekly);
+  if($('monthlyIncomeReadyCount'))$('monthlyIncomeReadyCount').textContent=ready(monthly);
+  if($('incomeYieldMatchCount'))$('incomeYieldMatchCount').textContent=filtered.length;
+
+  const defense=window.WAIS_MARKET_DATA?.incomeDefenseStatus||window.WAIS_MARKET_DATA?.marketMode||'CAUTIOUS';
+  if($('incomeDefenseStatus')){
+    $('incomeDefenseStatus').textContent=defense;
+    applySignalStatus($('incomeDefenseStatus'),defense);
+  }
+  if($('incomeCashReserve'))$('incomeCashReserve').textContent=window.WAIS_MARKET_DATA?.recommendedCash??'—';
+  if($('incomeUpdated'))$('incomeUpdated').textContent=`價格／分派資料檔更新：${livePricesUpdatedAt?new Date(livePricesUpdatedAt).toLocaleString('en-CA'):'—'}｜Completed closing data / NOT REAL-TIME`;
+
+  function card(item){
+    const q=item._quote||{};
+    const sig=getSignalMeta(item.status);
+    const price=q.price!=null?`${q.currency||item.currency||''} ${Number(q.price).toFixed(2)}`.trim():'—';
+    const dist=q.lastDistribution!=null?`${q.currency||item.currency||''} ${Number(q.lastDistribution).toFixed(4)}`.trim():'—';
+    const y=item._yield;
+    const yieldText=y!=null?`${y.toFixed(2)}%`:'—';
+    const yieldPass=y!=null && y>=5;
+    const zone=dynamicEntryZone(item,q);
+    const zoneText=zone?`${q.currency||item.currency||''} ${zone.low.toFixed(2)} – ${zone.high.toFixed(2)}`.trim():(item.entryMethod||'—');
+
+    return `<article class="stock-card income-card signal-card ${sig.className}">
+      <div class="signal-card-head">
+        <span class="signal-chip ${sig.className}">${escapeHTML(sig.label)}</span>
+        <span class="priority-chip">${escapeHTML(item.frequency||'—')}</span>
+      </div>
+      <div class="income-title-row">
+        <div><h3>${escapeHTML(item.ticker||'')}</h3><div class="company">${escapeHTML(item.name||'')}</div></div>
+        <div class="yield-hero ${yieldPass?'yield-pass':'yield-below'}">
+          <span>T12M DIST. YIELD*</span>
+          <strong>${escapeHTML(yieldText)}</strong>
+          <small>${y==null?'DATA PENDING':(yieldPass?'≥5% FILTER PASS':'BELOW 5%')}</small>
+        </div>
+      </div>
+      <div class="today-action ${sig.className}"><span>TODAY ACTION</span><strong>${escapeHTML(item.todayAction||'等待WAIS重新評估。')}</strong></div>
+      <div class="stock-meta">
+        <div><span>Current / Last Close</span><b>${escapeHTML(price)}</b></div>
+        <div><span>Price Date</span><b>${escapeHTML(q.asOf||'—')}</b></div>
+        <div><span>Dynamic Entry Zone</span><b>${escapeHTML(zoneText)}</b></div>
+        <div><span>First Tranche</span><b>${escapeHTML(item.firstTranche||'—')}</b></div>
+        <div><span>Last Distribution</span><b>${escapeHTML(dist)}</b></div>
+        <div><span>Distribution Date</span><b>${escapeHTML(q.lastDistributionDate||'—')}</b></div>
+        <div class="yield-metric-cell"><span>T12M Dist. Yield*</span><b>${escapeHTML(yieldText)}</b></div>
+        <div><span>20D SMA</span><b>${q.sma20!=null?`${q.currency||item.currency||''} ${Number(q.sma20).toFixed(2)}`:'—'}</b></div>
+        <div><span>Income Quality</span><b>${escapeHTML(item.incomeQuality||'Research')}</b></div>
+        <div><span>NAV Risk</span><b>${escapeHTML(item.navRisk||'—')}</b></div>
+        <div><span>Upside Drag</span><b>${escapeHTML(item.upsideDrag||'—')}</b></div>
+        <div><span>Category</span><b>${escapeHTML(item.category||'—')}</b></div>
+      </div>
+      <p class="stock-note">${escapeHTML(item.note||'')}</p>
+    </article>`;
+  }
+
+  function empty(track){
+    return `<div class="income-empty">目前「≥${minYield}%」篩選下沒有${track}標的。可用上方 selector 切換。</div>`;
+  }
+
+  wg.innerHTML=weekly.length?weekly.sort((a,b)=>(b._yield??-1)-(a._yield??-1)).map(card).join(''):empty(' Weekly Income ');
+  mg.innerHTML=monthly.length?monthly.sort((a,b)=>(b._yield??-1)-(a._yield??-1)).map(card).join(''):empty(' Monthly Income ');
+  tg.innerHTML=tactical.length?tactical.sort((a,b)=>(b._yield??-1)-(a._yield??-1)).map(card).join(''):empty(' Tactical Income ');
+
+  if($('incomeSystemNote')){
+    $('incomeSystemNote').textContent=`WAIS Income：預設篩選 T12M Distribution Yield ≥${minYield}%（可自行改）。價格、Price Date、最近分派、Distribution Date、T12M Distribution Yield及20D SMA由 stock-prices.json 自動更新。Distribution Yield 不是保證總回報；covered-call / option ETF 的分派可能來自 option income 或 ROC。Signal仍需WAIS質素、NAV風險及Entry條件確認。`;
+  }
+}
+
+if($('incomeYieldFilter')){
+  $('incomeYieldFilter').addEventListener('change',renderIncomeEtfs);
+}
 
 function formatMarketValue(value, indicatorName) {
   if (value === null || value === undefined || value === "") {
