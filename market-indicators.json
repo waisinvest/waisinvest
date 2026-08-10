@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-10T16:38:44.752269+00:00",
+  "lastUpdated": "2026-08-10T19:58:31.519044+00:00",
   "marketDates": {
     "US": "2026-08-10",
     "HK": "2026-08-10"
@@ -10,70 +10,70 @@
   "indicators": {
     "SP500": {
       "symbol": "^GSPC",
-      "value": 7748.7002,
+      "value": 7747.75,
       "previousClose": 7757.6401,
-      "change": -8.9399,
-      "changePercent": -0.1152,
+      "change": -9.8901,
+      "changePercent": -0.1275,
       "asOf": "2026-08-10",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Delayed / daily close; NOT REAL-TIME"
     },
     "NASDAQ": {
       "symbol": "^IXIC",
-      "value": 26572.5156,
+      "value": 26595.5996,
       "previousClose": 26690.6191,
-      "change": -118.1035,
-      "changePercent": -0.4425,
+      "change": -95.0195,
+      "changePercent": -0.356,
       "asOf": "2026-08-10",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Delayed / daily close; NOT REAL-TIME"
     },
     "NASDAQ100": {
       "symbol": "^NDX",
-      "value": 29650.7109,
+      "value": 29612.5137,
       "previousClose": 29722.3008,
-      "change": -71.5898,
-      "changePercent": -0.2409,
+      "change": -109.7871,
+      "changePercent": -0.3694,
       "asOf": "2026-08-10",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Delayed / daily close; NOT REAL-TIME"
     },
     "DOW": {
       "symbol": "^DJI",
-      "value": 53940.3008,
+      "value": 53905.2109,
       "previousClose": 54036.9297,
-      "change": -96.6289,
-      "changePercent": -0.1788,
+      "change": -131.7188,
+      "changePercent": -0.2438,
       "asOf": "2026-08-10",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Delayed / daily close; NOT REAL-TIME"
     },
     "SOX": {
       "symbol": "^SOX",
-      "value": 12111.7568,
+      "value": 12005.8018,
       "previousClose": 12356.79,
-      "change": -245.0332,
-      "changePercent": -1.983,
+      "change": -350.9883,
+      "changePercent": -2.8404,
       "asOf": "2026-08-10",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Delayed / daily close; NOT REAL-TIME"
     },
     "VIX": {
       "symbol": "^VIX",
-      "value": 15.13,
+      "value": 15.43,
       "previousClose": 14.9,
-      "change": 0.23,
-      "changePercent": 1.5436,
+      "change": 0.53,
+      "changePercent": 3.5571,
       "asOf": "2026-08-10",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Delayed / daily close; NOT REAL-TIME"
     },
     "US10Y": {
       "symbol": "^TNX",
-      "value": 4.692,
+      "value": 4.699,
       "previousClose": 4.66,
-      "change": 0.032,
-      "changePercent": 0.6867,
+      "change": 0.039,
+      "changePercent": 0.8369,
       "asOf": "2026-08-10",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Delayed / daily close; NOT REAL-TIME"
