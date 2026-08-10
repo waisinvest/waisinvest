@@ -1,4 +1,3 @@
-
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD'}).format(n);
 const fmtUSD = (n) => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);
@@ -39,6 +38,8 @@ const topPicks = stockUniverse
     rating: stock.rating || (stock.stance === "READY 1" ? "Build" : "Core"),
     status: stock.stance,
     score: stock.evidenceConfidence,
+    entry: Number(stock.entry) || null,
+    target: Number(stock.target) || null,
     note: stock.note
   }));
 
@@ -52,28 +53,42 @@ const gems = stockUniverse
     rating: stock.rating || (stock.risk === "Very High" ? "Speculative" : "Research"),
     status: stock.stance,
     score: stock.evidenceConfidence,
+    entry: Number(stock.entry) || null,
+    target: Number(stock.target) || null,
     note: stock.note
   }));
 
 function renderCards(items, target){
-  $(target).innerHTML = items.map(x => `
-    <article class="stock-card">
-      <span class="tag">${x.status}</span>
-      <h3>${x.ticker}</h3>
-      <div class="company">${x.company}</div>
-      <div class="stock-meta">
-        <div><span>Role</span><b>${x.role}</b></div>
-        <div><span>WAIS Score</span><b>${x.score}/100</b></div>
-        <div><span>Current Price</span><b>${
-  livePrices[String(x.ticker).toUpperCase()]?.price != null
-    ? fmtUSD(livePrices[String(x.ticker).toUpperCase()].price)
-    : "—"
-}</b></div>
-        <div><span>Risk</span><b>${x.risk}</b></div>
-        <div><span>Rating</span><b>${x.rating}</b></div>
-      </div>
-      <p class="stock-note">${x.note}</p>
-    </article>`).join('');
+  const targetElement = $(target);
+  if(!targetElement) return;
+
+  targetElement.innerHTML = items.map(x => {
+    const ticker = String(x.ticker).toUpperCase();
+    const current = livePrices[ticker]?.price;
+    const entry = Number(x.entry);
+    const targetPrice = Number(x.target);
+    const upside = Number.isFinite(entry) && entry > 0 && Number.isFinite(targetPrice) && targetPrice > 0
+      ? (((targetPrice-entry)/entry)*100).toFixed(1) + '%'
+      : '—';
+
+    return `
+      <article class="stock-card">
+        <span class="tag">${escapeHTML(x.status)}</span>
+        <h3>${escapeHTML(x.ticker)}</h3>
+        <div class="company">${escapeHTML(x.company)}</div>
+        <div class="stock-meta">
+          <div><span>Role</span><b>${escapeHTML(x.role)}</b></div>
+          <div><span>WAIS Score</span><b>${escapeHTML(x.score)}/100</b></div>
+          <div><span>Current Price</span><b>${current != null ? fmtUSD(current) : "—"}</b></div>
+          <div><span>Entry</span><b>${Number.isFinite(entry) && entry > 0 ? fmtUSD(entry) : "—"}</b></div>
+          <div><span>Target</span><b>${Number.isFinite(targetPrice) && targetPrice > 0 ? fmtUSD(targetPrice) : "—"}</b></div>
+          <div><span>Planned Upside</span><b>${upside}</b></div>
+          <div><span>Risk</span><b>${escapeHTML(x.risk)}</b></div>
+          <div><span>Rating</span><b>${escapeHTML(x.rating)}</b></div>
+        </div>
+        <p class="stock-note">${escapeHTML(x.note)}</p>
+      </article>`;
+  }).join('');
 }
 
 const navItems = document.querySelectorAll('.nav-item');
@@ -94,23 +109,45 @@ $('todayDate').textContent = new Intl.DateTimeFormat('zh-Hant-CA',{year:'numeric
 
 let holdings = JSON.parse(localStorage.getItem('waisHoldings') || '[]');
 
+function getHoldingPrice(holding){
+  const ticker = String(holding.ticker || '').toUpperCase();
+  const live = Number(livePrices[ticker]?.price);
+  if(Number.isFinite(live) && live > 0) return live;
+
+  const fallback = Number(holding.price);
+  return Number.isFinite(fallback) && fallback > 0 ? fallback : 0;
+}
+
 function renderHoldings(){
   const body = $('holdingsTable');
+  if(!body) return;
+
   if(!holdings.length){
     body.innerHTML = '<tr><td colspan="7">暫時未有持倉。</td></tr>';
   }else{
     body.innerHTML = holdings.map((h,i)=>{
-      const value=h.shares*h.price, cost=h.shares*h.cost, pl=value-cost;
+      const currentPrice = getHoldingPrice(h);
+      const value = h.shares * currentPrice;
+      const cost = h.shares * h.cost;
+      const pl = value - cost;
+      const priceSource = livePrices[String(h.ticker).toUpperCase()]?.price != null ? 'WAIS' : 'Manual';
+
       return `<tr>
-        <td><b>${h.ticker}</b></td><td>${h.shares}</td><td>${fmt(h.cost)}</td><td>${fmt(h.price)}</td>
-        <td>${fmt(value)}</td><td class="${pl>=0?'positive':''}">${fmt(pl)}</td>
+        <td><b>${escapeHTML(h.ticker)}</b></td>
+        <td>${h.shares}</td>
+        <td>${fmt(h.cost)}</td>
+        <td>${currentPrice > 0 ? `${fmtUSD(currentPrice)} <small>${priceSource}</small>` : '—'}</td>
+        <td>${fmt(value)}</td>
+        <td class="${pl>=0?'positive':''}">${fmt(pl)}</td>
         <td><button class="text-btn" onclick="removeHolding(${i})">Remove</button></td>
       </tr>`;
     }).join('');
   }
-  const totalCost=holdings.reduce((s,h)=>s+h.shares*h.cost,0);
-  const mv=holdings.reduce((s,h)=>s+h.shares*h.price,0);
-  const pl=mv-totalCost;
+
+  const totalCost = holdings.reduce((s,h)=>s+h.shares*h.cost,0);
+  const mv = holdings.reduce((s,h)=>s+h.shares*getHoldingPrice(h),0);
+  const pl = mv-totalCost;
+
   $('totalCost').textContent=fmt(totalCost);
   $('marketValue').textContent=fmt(mv);
   $('portfolioPL').textContent=fmt(pl);
@@ -118,6 +155,7 @@ function renderHoldings(){
   $('summaryPL').textContent=fmt(pl);
   $('summaryHoldings').textContent=holdings.length;
   $('holdingsCountLabel').textContent=`${holdings.length} 個持倉`;
+
   const assumedCash=100000;
   const investedPct=Math.min(100, Math.round(mv/(assumedCash+mv)*100));
   $('investedMetric').textContent=investedPct;
@@ -127,11 +165,17 @@ function renderHoldings(){
 window.removeHolding=(i)=>{holdings.splice(i,1);localStorage.setItem('waisHoldings',JSON.stringify(holdings));renderHoldings();}
 $('holdingForm').addEventListener('submit',e=>{
   e.preventDefault();
+  const ticker = $('tickerInput').value.trim().toUpperCase();
+  const manualPrice = Number($('priceInput').value);
+  const autoPrice = Number(livePrices[ticker]?.price);
+
   holdings.push({
-    ticker:$('tickerInput').value.trim().toUpperCase(),
+    ticker,
     shares:Number($('sharesInput').value),
     cost:Number($('costInput').value),
-    price:Number($('priceInput').value)
+    price:Number.isFinite(manualPrice) && manualPrice > 0
+      ? manualPrice
+      : (Number.isFinite(autoPrice) && autoPrice > 0 ? autoPrice : 0)
   });
   localStorage.setItem('waisHoldings',JSON.stringify(holdings));
   e.target.reset(); renderHoldings();
@@ -405,6 +449,83 @@ function renderDailyThought(){
   `;
 }
 
+
+function renderEconomicEvents(){
+  const events = window.WAIS_MARKET_DATA?.weeklyEvents || [];
+  const target = $('economicEventsList');
+  const updated = $('economicEventsUpdated');
+  if(!target) return;
+
+  if(updated){
+    updated.textContent = `最後核對：${window.WAIS_MARKET_DATA?.lastUpdated || '—'}｜官方日程`;
+  }
+
+  target.innerHTML = events.length
+    ? events.map((event,index) => `
+      <div>
+        <span>${String(index+1).padStart(2,'0')}</span>
+        <p>
+          <strong>${escapeHTML(event.date || '')}｜${escapeHTML(event.event || '')}</strong><br>
+          ${escapeHTML(event.time || '')}${event.referenceMonth ? `｜${escapeHTML(event.referenceMonth)}` : ''}<br>
+          ${escapeHTML(event.waisNote || '')}
+        </p>
+      </div>
+    `).join('')
+    : '<div><span>—</span><p>暫時沒有已確認的高影響事件。</p></div>';
+}
+
+function renderWeeklyMarketNotes(){
+  const events = window.WAIS_MARKET_DATA?.weeklyEvents || [];
+  const target = $('weeklyMarketNotesList');
+  const review = $('weeklyMarketReviewDate');
+  const riskNote = $('weeklyMarketRiskNote');
+  if(!target) return;
+
+  if(review){
+    review.textContent = `最後更新：${window.WAIS_MARKET_DATA?.lastUpdated || '—'}｜下次檢視：2026-08-16`;
+  }
+
+  target.innerHTML = events.slice(0,4).map((event,index) => `
+    <div>
+      <span>${String(index+1).padStart(2,'0')}</span>
+      <p>
+        ${escapeHTML(event.date || '')}｜${escapeHTML(event.event || '')}<br>
+        ${escapeHTML(event.time || '')}${event.referenceMonth ? `｜${escapeHTML(event.referenceMonth)}` : ''}<br>
+        ${escapeHTML(event.waisNote || '')}
+      </p>
+    </div>
+  `).join('');
+
+  if(riskNote){
+    const risk = window.WAIS_MARKET_DATA?.riskScore ?? '—';
+    const cash = window.WAIS_MARKET_DATA?.recommendedCash ?? '—';
+    const readyCount = (window.WAIS_MARKET_DATA?.readyList || []).length;
+    riskNote.textContent =
+      `WAIS RISK NOTE · Market Risk ${risk}/100｜${window.WAIS_MARKET_DATA?.marketMode || '—'}｜建議約${cash}%現金｜READY 1：${readyCount}。只在價格、基本面與風險同時配合時才部署。`;
+  }
+}
+
+function renderTechnicalSummary(){
+  const items = window.WAIS_MARKET_DATA?.technicalSummary || [];
+  const target = $('waisTechnicalSummary');
+  const updated = $('technicalSummaryUpdated');
+  if(!target) return;
+
+  if(updated){
+    updated.textContent = `資料基準：${window.WAIS_MARKET_DATA?.dataAsOf || window.WAIS_MARKET_DATA?.lastUpdated || '—'}`;
+  }
+
+  target.innerHTML = items.length
+    ? items.map(item => `
+      <article class="research-card">
+        <span>${escapeHTML(item.status || 'WAIS')}</span>
+        <h3>${escapeHTML(item.name || '')}</h3>
+        <p>${escapeHTML(item.summary || '')}</p>
+      </article>
+    `).join('')
+    : '<article class="research-card"><span>WAIS</span><h3>No verified summary</h3><p>等待已確認市場資料。</p></article>';
+}
+
 function formatMarketValue(value, indicatorName) {
   const number = Number(value);
 
@@ -519,10 +640,6 @@ async function loadMarketIndicators() {
   HSTECH: {
     valueId: "hstechValue",
     changeId: "hstechChange"
-  },
-  HSIF: {
-    valueId: "hsifValue",
-    changeId: "hsifChange"
   }
 };
 
@@ -567,9 +684,8 @@ async function loadMarketIndicators() {
       if (updatedTime) {
         const date = new Date(updatedTime);
 
-        const statusText = data.dataStatus ? ` · ${data.dataStatus}` : "";
         updatedElement.textContent =
-          `更新：${date.toLocaleString("en-CA")}${statusText}`;
+          `更新：${date.toLocaleString("en-CA")}`;
       } else {
         updatedElement.textContent = "市場資料已更新";
       }
@@ -587,11 +703,15 @@ async function initializeApp() {
   await loadLivePrices();
   await loadMarketIndicators();
 
+  renderHoldings();
   renderCards(topPicks, "topPicksGrid");
   renderCards(gems, "hiddenGemsGrid");
   renderWatchlist();
   renderDashboardResearchLists();
   renderWeeklyPlan();
   renderDailyThought();
+  renderEconomicEvents();
+  renderWeeklyMarketNotes();
+  renderTechnicalSummary();
 }
 initializeApp();
