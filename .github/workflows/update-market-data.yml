@@ -2,11 +2,6 @@ name: Update Market Data
 
 on:
   workflow_dispatch:
-  schedule:
-    # Every 5 minutes on weekdays across Asia, US pre-market, regular session and after-hours.
-    - cron: "*/5 0-23 * * 1-5"
-    # Sunday maintenance / economic calendar refresh.
-    - cron: "15 12 * * 0"
 
 permissions:
   contents: write
@@ -41,6 +36,6 @@ jobs:
             echo "No market-data changes to commit."
             exit 0
           fi
-          git commit -m "Auto update WAIS market data"
+          git commit -m "Manual update WAIS market data"
           git pull --rebase origin main
           git push origin HEAD:main
