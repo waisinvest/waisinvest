@@ -3,7 +3,8 @@ name: Update Market Data
 on:
   workflow_dispatch:
   schedule:
-    - cron: "15,45 8-23 * * 1-5"
+    # Every 30 minutes across Hong Kong daytime, US pre-market, regular session and after-hours.
+    - cron: "15,45 0-23 * * 1-5"
     - cron: "15 12 * * 0"
 
 permissions:
