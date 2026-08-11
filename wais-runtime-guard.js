@@ -12,7 +12,7 @@
   };
   const parseTime = value => { const t = Date.parse(value || ''); return Number.isFinite(t) ? t : null; };
   const ageMinutes = value => { const t = parseTime(value); return t == null ? Infinity : Math.max(0, (Date.now() - t) / 60000); };
-  const isDelayed = item => /delayed/i.test(String(item?.dataStatus || '') + ' ' + String(item?.session || ''));
+  const isDelayed = item => /delayed/i.test(String(item?.dataStatus || '') + ' ' + String(item?.session || '') + ' ' + String(item?.freshness || ''));
   const freshness = (item, kind='stock') => {
     const age = ageMinutes(item?.asOf);
     const limit = isDelayed(item) ? STALE_MINUTES.delayed : STALE_MINUTES[kind];
@@ -21,6 +21,26 @@
   const fmt = (n, digits=2) => Number.isFinite(Number(n)) ? Number(n).toLocaleString('en-US',{maximumFractionDigits:digits,minimumFractionDigits:digits}) : '—';
   const fmtPct = n => Number.isFinite(Number(n)) ? `${Number(n)>=0?'+':''}${Number(n).toFixed(2)}%` : '—';
   const set = (id, value) => { const el=$(id); if(el) el.textContent=value; };
+  const hkDate = value => {
+    const t=parseTime(value); if(t==null) return '—';
+    const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(t));
+    const obj=Object.fromEntries(parts.map(x=>[x.type,x.value]));
+    return `${obj.year}/${obj.month}/${obj.day}`;
+  };
+
+  function renderHsifLabel(q){
+    if(!q) return;
+    const card=$('hsifValue')?.closest('.market-indicator-card');
+    const label=card?.querySelector('span');
+    const desc=card?.querySelector('p');
+    const quoteDate=hkDate(q.asOf);
+    if(label) label.textContent=`Hang Seng Futures · ${quoteDate}`;
+    if(desc){
+      const status=String(q.freshness||'LATEST').toUpperCase();
+      const session=q.session?` · ${q.session}`:'';
+      desc.textContent=`恒指期貨 ${status}${session} · 報價時間 ${quoteDate}`;
+    }
+  }
 
   function renderIndicators(data) {
     const m = data?.indicators || {};
@@ -28,12 +48,19 @@
     Object.entries(map).forEach(([key,[vId,cId]]) => {
       const q=m[key]; if(!q) return;
       const f=freshness(q,'indicator');
-      set(vId, f.stale ? `${fmt(q.value)} ⚠` : fmt(q.value));
-      set(cId, `${fmtPct(q.changePercent)} · ${f.stale?'STALE':(f.delayed?'DELAYED':'LATEST')}`);
+      if(key==='HSIF'){
+        const status=String(q.freshness|| (f.delayed?'DELAYED':'LATEST')).toUpperCase();
+        set(vId, fmt(q.value));
+        set(cId, `${fmtPct(q.changePercent)} · ${status}`);
+      }else{
+        set(vId, f.stale ? `${fmt(q.value)} ⚠` : fmt(q.value));
+        set(cId, `${fmtPct(q.changePercent)} · ${f.stale?'STALE':(f.delayed?'DELAYED':'LATEST')}`);
+      }
       const v=$(vId); const c=$(cId);
       if(v) v.title=`${q.source||'Unknown source'} · ${q.asOf||'unknown time'} · ${q.dataStatus||''}`;
       if(c) c.title=v?.title||'';
     });
+    renderHsifLabel(m.HSIF);
     const stamp=data?.lastUpdated;
     set('marketIndicatorsUpdated', `AUTO DATA · ${stamp ? new Date(stamp).toLocaleString('en-CA',{timeZone:'America/New_York'})+' ET' : 'time unavailable'} · cache-safe`);
     set('marketIndicatorsTitle', '全球市場最新可取得指標');
