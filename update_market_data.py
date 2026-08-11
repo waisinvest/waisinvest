@@ -83,11 +83,22 @@ def latest_intraday(ticker):
     intr = ticker.history(period="5d", interval="5m", auto_adjust=False, prepost=True, actions=False)
     if intr.empty or intr["Close"].dropna().empty:
         return None
+
     c = intr["Close"].dropna()
     ts = c.index[-1]
     if getattr(ts, "tzinfo", None) is None:
         ts = ts.tz_localize("UTC")
-    return float(c.iloc[-1]), ts.isoformat()
+
+    current_session_date = ts.date()
+    previous_session_close = None
+    session_dates = sorted({idx.date() for idx in c.index if idx.date() < current_session_date})
+    if session_dates:
+        previous_session_date = session_dates[-1]
+        previous_session = c[[idx.date() == previous_session_date for idx in c.index]]
+        if not previous_session.empty:
+            previous_session_close = float(previous_session.iloc[-1])
+
+    return float(c.iloc[-1]), ts.isoformat(), previous_session_close
 
 
 def main():
@@ -120,7 +131,9 @@ def main():
             try:
                 snap = latest_intraday(ticker)
                 if snap:
-                    value, as_of = snap
+                    value, as_of, intraday_previous_close = snap
+                    if intraday_previous_close is not None and intraday_previous_close > 0:
+                        previous_close = intraday_previous_close
                     status = "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
             except Exception as intraday_exc:
                 print(f"Intraday fallback {name}: {intraday_exc}")
