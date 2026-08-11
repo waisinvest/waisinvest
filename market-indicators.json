@@ -1,11 +1,11 @@
 {
-  "lastUpdated": "2026-08-11T22:27:44.991981+00:00",
+  "lastUpdated": "2026-08-11T23:33:55.728593+00:00",
   "marketDates": {
     "US": "2026-08-11",
     "HK": "2026-08-11"
   },
   "marketStatus": "updated",
-  "dataStatus": "Latest available intraday snapshot when available; fallback to completed close; NOT guaranteed real-time",
+  "dataStatus": "Latest available intraday snapshot when available; HSI futures use timestamped HKEX-authorized public display fallback; NOT all feeds are direct exchange APIs",
   "failedSymbols": [],
   "indicators": {
     "SP500": {
@@ -117,16 +117,22 @@
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
     "HSIF": {
-      "symbol": "HSI AUG-26",
-      "value": 25940,
-      "previousClose": null,
-      "change": 36,
-      "changePercent": 0.14,
-      "contract": "AUG-26",
-      "session": "HKEX delayed market data",
-      "source": "HKEX",
-      "asOf": "2026-08-09 delayed quote",
-      "dataStatus": "Delayed at least 15 minutes; NOT REAL-TIME"
+      "symbol": "HSI-202608",
+      "contract": "202608",
+      "value": 25628.0,
+      "previousClose": 25949.0,
+      "regularClose": 25628.0,
+      "regularCloseDate": "2026-08-12",
+      "change": -321.0,
+      "changePercent": -1.24,
+      "asOf": "2026-08-12T03:00:00+08:00",
+      "source": "ET Net / HKEX market data public display",
+      "sourceUrl": "https://www.etnet.com.hk/www/eng/futures/index.php?month=202608&subtype=HSI",
+      "session": "Regular",
+      "freshness": "DELAYED",
+      "ageMinutes": 273,
+      "expiryDate": null,
+      "dataStatus": "Regular HSI spot-month futures; source timestamp preserved; public-display source, not direct exchange API"
     }
   }
 }
