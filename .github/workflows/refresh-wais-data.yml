@@ -2,6 +2,9 @@ name: Refresh WAIS Data
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/refresh-wais-data.yml"
   schedule:
     # Every 5 minutes on weekdays, offset from the top of the hour to reduce scheduler congestion.
     - cron: "3-58/5 0-23 * * 1-5"
