@@ -22,15 +22,8 @@ MARKET_SYMBOLS = {
 }
 
 MARKET_GROUP = {
-    "SP500": "US",
-    "NASDAQ": "US",
-    "NASDAQ100": "US",
-    "DOW": "US",
-    "SOX": "US",
-    "VIX": "US",
-    "US10Y": "US",
-    "HSI": "HK",
-    "HSTECH": "HK",
+    "SP500": "US", "NASDAQ": "US", "NASDAQ100": "US", "DOW": "US",
+    "SOX": "US", "VIX": "US", "US10Y": "US", "HSI": "HK", "HSTECH": "HK",
 }
 
 
@@ -48,24 +41,17 @@ def save_json(path, data):
 
 
 def fetch_text(url):
-    req = urllib.request.Request(
-        url,
-        headers={"User-Agent": "Mozilla/5.0 WAIS-Invest/1.0"}
-    )
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 WAIS-Invest/1.0"})
     with urllib.request.urlopen(req, timeout=15) as r:
         return r.read().decode("utf-8", errors="ignore")
 
 
 def update_weekly_events():
     existing = load_json(EVENTS_PATH, {"events": []})
-    now_et = datetime.now(timezone.utc)
-    today = now_et.date()
-    # Calendar window = current Monday through end of next Sunday.
+    today = datetime.now(timezone.utc).date()
     start = today - timedelta(days=today.weekday())
     end = start + timedelta(days=13)
     events = []
-
-    # BLS official ICS (best effort)
     try:
         text = fetch_text("https://www.bls.gov/schedule/news_release/bls.ics")
         text = re.sub(r"\r?\n[ \t]", "", text)
@@ -83,30 +69,25 @@ def update_weekly_events():
                 continue
             day = datetime.strptime(d.group(1), "%Y%m%d").date()
             if start <= day <= end:
-                events.append({
-                    "dateISO": day.isoformat(),
-                    "date": day.strftime("%m月%d日"),
-                    "event": name,
-                    "time": "08:30 ET",
-                    "source": "U.S. Bureau of Labor Statistics"
-                })
+                events.append({"dateISO": day.isoformat(), "date": day.strftime("%m月%d日"), "event": name, "time": "08:30 ET", "source": "U.S. Bureau of Labor Statistics"})
     except Exception as exc:
-        print(f"Weekly event refresh warning (BLS): {exc}")
-
-    # Preserve reviewed fallback when no official refresh is available.
+        print(f"Weekly event refresh warning: {exc}")
     if events:
         events.sort(key=lambda x: (x["dateISO"], x["event"]))
-        save_json(EVENTS_PATH, {
-            "lastUpdated": datetime.now(timezone.utc).isoformat(),
-            "window": {"from": start.isoformat(), "to": end.isoformat()},
-            "dataStatus": "Current week + next week official release schedule; verify again before trading",
-            "events": events,
-        })
-        print(f"weekly-events.json updated with {len(events)} event(s).")
-    else:
-        if not EVENTS_PATH.exists():
-            save_json(EVENTS_PATH, existing)
-        print("No official event refresh available; existing weekly-events.json preserved.")
+        save_json(EVENTS_PATH, {"lastUpdated": datetime.now(timezone.utc).isoformat(), "window": {"from": start.isoformat(), "to": end.isoformat()}, "dataStatus": "Current week + next week official release schedule; verify again before trading", "events": events})
+    elif not EVENTS_PATH.exists():
+        save_json(EVENTS_PATH, existing)
+
+
+def latest_intraday(ticker):
+    intr = ticker.history(period="5d", interval="5m", auto_adjust=False, prepost=True, actions=False)
+    if intr.empty or intr["Close"].dropna().empty:
+        return None
+    c = intr["Close"].dropna()
+    ts = c.index[-1]
+    if getattr(ts, "tzinfo", None) is None:
+        ts = ts.tz_localize("UTC")
+    return float(c.iloc[-1]), ts.isoformat()
 
 
 def main():
@@ -121,76 +102,73 @@ def main():
 
     for name, symbol in MARKET_SYMBOLS.items():
         try:
-            hist = yf.Ticker(symbol).history(
-                period="10d",
-                interval="1d",
-                auto_adjust=False,
-                prepost=False,
-            )
-
-            if hist.empty or hist["Close"].dropna().empty:
+            ticker = yf.Ticker(symbol)
+            daily = ticker.history(period="10d", interval="1d", auto_adjust=False, prepost=False, actions=False)
+            closes = daily["Close"].dropna() if not daily.empty else []
+            if len(closes) == 0:
                 raise RuntimeError("no daily close returned")
 
-            closes = hist["Close"].dropna()
+            regular_close = float(closes.iloc[-1])
+            regular_date = closes.index[-1].date().isoformat()
+            previous_close = float(closes.iloc[-2]) if len(closes) >= 2 else regular_close
 
-            # Use the latest COMPLETED daily row. On weekends/after close this is naturally
-            # the latest close. If a provider exposes an in-progress daily bar, do not
-            # overwrite a newer verified close with an older date.
-            latest = float(closes.iloc[-1])
-            latest_date = closes.index[-1].date().isoformat()
-            previous = float(closes.iloc[-2]) if len(closes) >= 2 else latest
-            change = latest - previous
-            change_pct = (change / previous * 100) if previous else 0.0
+            value = regular_close
+            as_of = regular_date
+            status = "Completed daily close; intraday unavailable"
+            source = "Yahoo Finance via yfinance"
+
+            try:
+                snap = latest_intraday(ticker)
+                if snap:
+                    value, as_of = snap
+                    status = "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
+            except Exception as intraday_exc:
+                print(f"Intraday fallback {name}: {intraday_exc}")
+
+            change = value - previous_close
+            change_pct = (change / previous_close * 100) if previous_close else 0.0
 
             indicators[name] = {
                 "symbol": symbol,
-                "value": round(latest, 4),
-                "previousClose": round(previous, 4),
+                "value": round(value, 4),
+                "previousClose": round(previous_close, 4),
+                "regularClose": round(regular_close, 4),
+                "regularCloseDate": regular_date,
                 "change": round(change, 4),
                 "changePercent": round(change_pct, 4),
-                "asOf": latest_date,
-                "source": "Yahoo Finance via yfinance",
-                "dataStatus": "Delayed / daily close; NOT REAL-TIME",
+                "asOf": as_of,
+                "source": source,
+                "dataStatus": status,
             }
 
             group = MARKET_GROUP[name]
             old_date = market_dates.get(group)
-            if not old_date or latest_date > old_date:
-                market_dates[group] = latest_date
-
+            if not old_date or regular_date > old_date:
+                market_dates[group] = regular_date
             successful += 1
-            print(f"OK {name}: {latest:.4f} @ {latest_date}")
-
+            print(f"OK {name}: {value:.4f} @ {as_of}")
         except Exception as exc:
             failed.append(name)
             print(f"WARNING {name}: {exc}; previous verified value preserved.")
 
-    # Preserve separately-verified HSIF. Never fabricate it from another symbol.
     if "HSIF" in indicators:
-        indicators["HSIF"]["dataStatus"] = indicators["HSIF"].get(
-            "dataStatus",
-            "Separately verified delayed futures data; NOT REAL-TIME"
-        )
+        indicators["HSIF"]["dataStatus"] = indicators["HSIF"].get("dataStatus", "Separately verified delayed futures data; NOT REAL-TIME")
 
-    status = "updated" if successful else "stale_preserved"
     save_json(OUTPUT_PATH, {
         "lastUpdated": datetime.now(timezone.utc).isoformat(),
         "marketDates": market_dates,
-        "marketStatus": status,
-        "dataStatus": "Delayed / daily close; NOT REAL-TIME",
+        "marketStatus": "updated" if successful else "stale_preserved",
+        "dataStatus": "Latest available intraday snapshot when available; fallback to completed close; NOT guaranteed real-time",
         "failedSymbols": failed,
         "indicators": indicators,
     })
 
-    # Best-effort calendar refresh must never break market-data publication.
     try:
         update_weekly_events()
     except Exception as exc:
         print(f"Weekly events warning: {exc}")
 
     print(f"Completed: {successful} updated, {len(failed)} preserved.")
-    # Intentionally no RuntimeError here:
-    # stale values remain explicitly labelled rather than breaking the website.
 
 
 if __name__ == "__main__":
