@@ -5,9 +5,11 @@ on:
   push:
     paths:
       - ".github/workflows/refresh-wais-data.yml"
+      - "update_market_data.py"
+      - "update_stock_prices.py"
   schedule:
-    # Every 5 minutes on weekdays, offset from the top of the hour to reduce scheduler congestion.
-    - cron: "3-58/5 0-23 * * 1-5"
+    # Explicit five-minute cadence on weekdays, offset from :00 to reduce GitHub scheduler congestion.
+    - cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * 1-5"
     # Sunday maintenance / economic calendar refresh.
     - cron: "18 12 * * 0"
 
