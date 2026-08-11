@@ -1,102 +1,120 @@
 {
-  "lastUpdated": "2026-08-11T01:35:21.029001+00:00",
+  "lastUpdated": "2026-08-11T05:26:49.496315+00:00",
   "marketDates": {
     "US": "2026-08-10",
-    "HK": "2026-08-10"
+    "HK": "2026-08-11"
   },
   "marketStatus": "updated",
-  "dataStatus": "Delayed / daily close; NOT REAL-TIME",
+  "dataStatus": "Latest available intraday snapshot when available; fallback to completed close; NOT guaranteed real-time",
   "failedSymbols": [],
   "indicators": {
     "SP500": {
       "symbol": "^GSPC",
-      "value": 7753.1099,
+      "value": 7753.11,
       "previousClose": 7757.6401,
-      "change": -4.5303,
+      "regularClose": 7753.1099,
+      "regularCloseDate": "2026-08-10",
+      "change": -4.5301,
       "changePercent": -0.0584,
-      "asOf": "2026-08-10",
+      "asOf": "2026-08-10T16:35:00-04:00",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / daily close; NOT REAL-TIME"
+      "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
     "NASDAQ": {
       "symbol": "^IXIC",
-      "value": 26605.3574,
+      "value": 26605.357,
       "previousClose": 26690.6191,
-      "change": -85.2617,
+      "regularClose": 26605.3594,
+      "regularCloseDate": "2026-08-10",
+      "change": -85.2621,
       "changePercent": -0.3194,
-      "asOf": "2026-08-10",
+      "asOf": "2026-08-10T17:15:00-04:00",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / daily close; NOT REAL-TIME"
+      "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
     "NASDAQ100": {
       "symbol": "^NDX",
-      "value": 29621.8047,
+      "value": 29621.805,
       "previousClose": 29722.3008,
-      "change": -100.4961,
+      "regularClose": 29621.8008,
+      "regularCloseDate": "2026-08-10",
+      "change": -100.4958,
       "changePercent": -0.3381,
-      "asOf": "2026-08-10",
+      "asOf": "2026-08-10T17:15:00-04:00",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / daily close; NOT REAL-TIME"
+      "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
     "DOW": {
       "symbol": "^DJI",
-      "value": 53975.9805,
+      "value": 53975.98,
       "previousClose": 54036.9297,
-      "change": -60.9492,
+      "regularClose": 53975.9805,
+      "regularCloseDate": "2026-08-10",
+      "change": -60.9497,
       "changePercent": -0.1128,
-      "asOf": "2026-08-10",
+      "asOf": "2026-08-10T16:40:00-04:00",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / daily close; NOT REAL-TIME"
+      "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
     "SOX": {
       "symbol": "^SOX",
-      "value": 11993.8613,
+      "value": 11993.861,
       "previousClose": 12356.79,
-      "change": -362.9287,
+      "regularClose": 11993.8604,
+      "regularCloseDate": "2026-08-10",
+      "change": -362.929,
       "changePercent": -2.9371,
-      "asOf": "2026-08-10",
+      "asOf": "2026-08-10T17:15:00-04:00",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / daily close; NOT REAL-TIME"
+      "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
     "VIX": {
       "symbol": "^VIX",
       "value": 15.46,
       "previousClose": 14.9,
+      "regularClose": 15.46,
+      "regularCloseDate": "2026-08-10",
       "change": 0.56,
       "changePercent": 3.7584,
-      "asOf": "2026-08-10",
+      "asOf": "2026-08-10T15:10:00-05:00",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / daily close; NOT REAL-TIME"
+      "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
     "US10Y": {
       "symbol": "^TNX",
       "value": 4.699,
       "previousClose": 4.66,
+      "regularClose": 4.699,
+      "regularCloseDate": "2026-08-10",
       "change": 0.039,
       "changePercent": 0.8369,
-      "asOf": "2026-08-10",
+      "asOf": "2026-08-10T13:55:00-05:00",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / daily close; NOT REAL-TIME"
+      "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
     "HSI": {
       "symbol": "^HSI",
-      "value": 25937.4902,
-      "previousClose": 25668.0293,
-      "change": 269.4609,
-      "changePercent": 1.0498,
-      "asOf": "2026-08-10",
+      "value": 25778.7402,
+      "previousClose": 25937.4902,
+      "regularClose": 25778.7402,
+      "regularCloseDate": "2026-08-11",
+      "change": -158.75,
+      "changePercent": -0.612,
+      "asOf": "2026-08-11T13:10:00+08:00",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / daily close; NOT REAL-TIME"
+      "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
     "HSTECH": {
       "symbol": "HSTECH.HK",
-      "value": 4919.46,
-      "previousClose": 4919.46,
+      "value": 4860.3999,
+      "previousClose": 4860.3999,
+      "regularClose": 4860.3999,
+      "regularCloseDate": "2026-08-11",
       "change": 0.0,
       "changePercent": 0.0,
-      "asOf": "2026-08-10",
+      "asOf": "2026-08-11T13:10:00+08:00",
       "source": "Yahoo Finance via yfinance",
-      "dataStatus": "Delayed / daily close; NOT REAL-TIME"
+      "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
     "HSIF": {
       "symbol": "HSI AUG-26",
