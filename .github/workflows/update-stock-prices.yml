@@ -3,10 +3,8 @@ name: Update Stock Prices
 on:
   workflow_dispatch:
   schedule:
-    # Broad UTC window so pre-market, regular session and after-hours are covered
-    # across daylight-saving changes. The script labels the actual ET session.
-    - cron: "0,30 8-23 * * 1-5"
-    - cron: "0 0 * * 2-6"
+    # Every 30 minutes on weekdays so US pre-market, regular, after-hours and overseas ETF windows stay fresh.
+    - cron: "0,30 0-23 * * 1-5"
 
 permissions:
   contents: write
