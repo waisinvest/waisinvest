@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-11T20:25:45.507108+00:00",
+  "lastUpdated": "2026-08-11T22:27:44.991981+00:00",
   "marketDates": {
     "US": "2026-08-11",
     "HK": "2026-08-11"
@@ -16,7 +16,7 @@
       "regularCloseDate": "2026-08-11",
       "change": -24.91,
       "changePercent": -0.3213,
-      "asOf": "2026-08-11T16:15:00-04:00",
+      "asOf": "2026-08-11T16:30:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
@@ -28,7 +28,7 @@
       "regularCloseDate": "2026-08-11",
       "change": -159.912,
       "changePercent": -0.6011,
-      "asOf": "2026-08-11T16:20:00-04:00",
+      "asOf": "2026-08-11T17:15:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
@@ -40,7 +40,7 @@
       "regularCloseDate": "2026-08-11",
       "change": -96.326,
       "changePercent": -0.3252,
-      "asOf": "2026-08-11T16:20:00-04:00",
+      "asOf": "2026-08-11T17:15:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
@@ -52,7 +52,7 @@
       "regularCloseDate": "2026-08-11",
       "change": -184.13,
       "changePercent": -0.3411,
-      "asOf": "2026-08-11T16:15:00-04:00",
+      "asOf": "2026-08-11T16:40:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
@@ -64,19 +64,19 @@
       "regularCloseDate": "2026-08-11",
       "change": 104.611,
       "changePercent": 0.8722,
-      "asOf": "2026-08-11T16:20:00-04:00",
+      "asOf": "2026-08-11T17:15:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
     "VIX": {
       "symbol": "^VIX",
-      "value": 15.26,
+      "value": 15.28,
       "previousClose": 15.46,
       "regularClose": 15.28,
       "regularCloseDate": "2026-08-11",
-      "change": -0.2,
-      "changePercent": -1.2937,
-      "asOf": "2026-08-11T15:05:00-05:00",
+      "change": -0.18,
+      "changePercent": -1.1643,
+      "asOf": "2026-08-11T15:10:00-05:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
