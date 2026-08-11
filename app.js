@@ -43,6 +43,7 @@ const topPicks = stockUniverse
     score: stock.evidenceConfidence,
     entry: Number(stock.entry) || null,
     target: Number(stock.target) || null,
+    earnings: stock.earnings || "NEXT DATE · NOT YET CONFIRMED",
     note: stock.note
   }));
 
@@ -134,6 +135,7 @@ function renderCards(items,target){
         <div><span>Target</span><b>${escapeHTML(targetText)}</b></div>
         <div><span>Planned Upside</span><b>${escapeHTML(upsideText)}</b></div>
         <div><span>Risk</span><b>${escapeHTML(x.risk)}</b></div>
+        ${isGem?'':`<div><span>Earnings</span><b>${escapeHTML(x.earnings||'NEXT DATE · NOT YET CONFIRMED')}</b></div>`}
         <div class="${isGem?`research-stage-cell ${stageMeta.className}`:''}">
           <span>${isGem?'Research Stage':'Rating'}</span>
           <b>${escapeHTML(isGem?stageMeta.label:x.rating)}</b>
@@ -345,6 +347,7 @@ const autoWatchlist = (window.WAIS_MARKET_DATA?.focusStocks || [])
       topPickRank: Number(stock.topPickRank) || null,
       entry: Number(savedItem?.entry ?? stock.entry) || 0,
       target: Number(savedItem?.target ?? stock.target) || 0,
+      earnings: stock.earnings || "NEXT DATE · NOT YET CONFIRMED",
       note: stock.note
     };
   });
@@ -372,7 +375,7 @@ function saveWatchlist(){
   localStorage.setItem('waisWatchlist', JSON.stringify(watchlist));
 }
 
-function renderWatchlist(){ const target=$('watchlistCards'); if(!target)return; $('watchTotal').textContent=watchlist.length; $('watchReady').textContent=watchlist.filter(i=>String(i.status).toUpperCase().includes('READY')).length; $('watchHighRisk').textContent=watchlist.filter(i=>i.risk==='High'||i.risk==='Very High').length; if(!watchlist.length){target.innerHTML='<div class="watch-empty">暫時未有觀察股票。</div>';return;} const sorted=[...watchlist].sort((a,b)=>(Number(a.topPickRank)||999)-(Number(b.topPickRank)||999)||String(a.ticker).localeCompare(String(b.ticker))); target.innerHTML=sorted.map(item=>{ const oi=watchlist.indexOf(item),ticker=String(item.ticker).toUpperCase(),q=quoteFor(ticker),current=q.price,dist=distanceToEntryPct(current,item.entry),sig=getSignalMeta(item.status),sys=autoWatchlist.some(a=>a.ticker.toUpperCase()===ticker); return `<article class="watch-card signal-card ${sig.className}"><div class="watch-card-head"><div><div class="signal-card-head"><span class="signal-chip ${sig.className}">${escapeHTML(sig.label)}</span>${item.topPickRank?`<span class="priority-chip">TOP PICK #${item.topPickRank}</span>`:''}</div><h4>${escapeHTML(item.ticker)}</h4>${item.company?`<small class="company-line">${escapeHTML(item.company)}</small>`:''}</div><span class="tag">${escapeHTML(item.risk)} Risk</span></div><div class="watch-prices"><div><span>Current / Last Close</span><strong>${current!=null?fmtUSD(current):'—'}</strong></div><div><span>Entry</span><strong>${item.entry>0?fmtUSD(item.entry):'—'}</strong></div><div><span>Target</span><strong>${item.target>0?fmtUSD(item.target):'—'}</strong></div></div><div class="watch-meta-grid"><div><span>Price Date</span><strong>${escapeHTML(q.asOf||'—')}</strong></div><div><span>Distance to Entry</span><strong>${dist==null?'—':`${dist>=0?'+':''}${dist.toFixed(1)}%`}</strong></div><div><span>WAIS Score</span><strong>${item.score??'—'}/100</strong></div></div>${item.note?`<p class="watch-note">${escapeHTML(item.note)}</p>`:''}${sys?'':`<div class="watch-actions"><button class="danger-btn" type="button" onclick="removeWatchItem(${oi})">Remove</button></div>`}</article>`;}).join(''); }
+function renderWatchlist(){ const target=$('watchlistCards'); if(!target)return; $('watchTotal').textContent=watchlist.length; $('watchReady').textContent=watchlist.filter(i=>String(i.status).toUpperCase().includes('READY')).length; $('watchHighRisk').textContent=watchlist.filter(i=>i.risk==='High'||i.risk==='Very High').length; if(!watchlist.length){target.innerHTML='<div class="watch-empty">暫時未有觀察股票。</div>';return;} const sorted=[...watchlist].sort((a,b)=>(Number(a.topPickRank)||999)-(Number(b.topPickRank)||999)||String(a.ticker).localeCompare(String(b.ticker))); target.innerHTML=sorted.map(item=>{ const oi=watchlist.indexOf(item),ticker=String(item.ticker).toUpperCase(),q=quoteFor(ticker),current=q.price,dist=distanceToEntryPct(current,item.entry),sig=getSignalMeta(item.status),sys=autoWatchlist.some(a=>a.ticker.toUpperCase()===ticker); return `<article class="watch-card signal-card ${sig.className}"><div class="watch-card-head"><div><div class="signal-card-head"><span class="signal-chip ${sig.className}">${escapeHTML(sig.label)}</span>${item.topPickRank?`<span class="priority-chip">TOP PICK #${item.topPickRank}</span>`:''}</div><h4>${escapeHTML(item.ticker)}</h4>${item.company?`<small class="company-line">${escapeHTML(item.company)}</small>`:''}</div><span class="tag">${escapeHTML(item.risk)} Risk</span></div><div class="watch-prices"><div><span>Current / Last Close</span><strong>${current!=null?fmtUSD(current):'—'}</strong></div><div><span>Entry</span><strong>${item.entry>0?fmtUSD(item.entry):'—'}</strong></div><div><span>Target</span><strong>${item.target>0?fmtUSD(item.target):'—'}</strong></div></div><div class="watch-meta-grid"><div><span>Price Date</span><strong>${escapeHTML(q.asOf||'—')}</strong></div><div><span>Distance to Entry</span><strong>${dist==null?'—':`${dist>=0?'+':''}${dist.toFixed(1)}%`}</strong></div><div><span>WAIS Score</span><strong>${item.score??'—'}/100</strong></div><div><span>Earnings</span><strong>${escapeHTML(item.earnings||'NEXT DATE · NOT YET CONFIRMED')}</strong></div></div>${item.note?`<p class="watch-note">${escapeHTML(item.note)}</p>`:''}${sys?'':`<div class="watch-actions"><button class="danger-btn" type="button" onclick="removeWatchItem(${oi})">Remove</button></div>`}</article>`;}).join(''); }
 
 window.removeWatchItem = index => {
   watchlist.splice(index,1);
