@@ -6,7 +6,7 @@
 
   d.executionSystem = {
     version: 'WAIS EXECUTION v1.3',
-    updatedAt: '2026-08-12T18:33:00-04:00',
+    updatedAt: '2026-08-12T19:05:00-04:00',
     principle: 'Keep the established WAIS research architecture, strengthen it with earlier technical discovery, price intelligence and daily universe governance.',
     stages: [
       'EARLY DISCOVERY',
@@ -57,8 +57,6 @@
 
   const byTicker = Object.fromEntries((d.focusStocks || []).map(s => [String(s.ticker || '').toUpperCase(), s]));
 
-  // Sanitized current execution states based on the latest available WAIS quote snapshot.
-  // These labels do not expose the private scoring formula and do not override a formal READY 1 decision.
   const stageUpdates = {
     GFS: {
       executionStage: 'CANDIDATE+ · TECH TRANSITION',
@@ -121,15 +119,17 @@
       const stock = byTicker[ticker];
       if (!stock?.executionStage) return;
 
-      const old = card.querySelector('.execution-stage-public');
-      if (old) old.remove();
       const head = card.querySelector('.signal-card-head, .watch-card-head');
       if (!head) return;
 
-      const badge = document.createElement('span');
-      badge.className = 'execution-stage-public';
-      badge.innerHTML = `<b>${escapeHTML(stock.executionStage)}</b><small>${escapeHTML(stock.executionAction || '')}</small>`;
-      head.appendChild(badge);
+      let badge = card.querySelector('.execution-stage-public');
+      if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'execution-stage-public';
+        head.appendChild(badge);
+      }
+      const next = `<b>${escapeHTML(stock.executionStage)}</b><small>${escapeHTML(stock.executionAction || '')}</small>`;
+      if (badge.innerHTML !== next) badge.innerHTML = next;
     });
   }
 
@@ -146,7 +146,17 @@
     ['topPicksGrid','watchlistCards'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
-      new MutationObserver(decorateExecutionStages).observe(el, { childList: true, subtree: true });
+      // Observe only replacement/addition of cards at the grid root. Do not observe subtree,
+      // because decorating a badge itself is a DOM mutation and previously caused a feedback loop.
+      let scheduled = false;
+      new MutationObserver(() => {
+        if (scheduled) return;
+        scheduled = true;
+        requestAnimationFrame(() => {
+          scheduled = false;
+          decorateExecutionStages();
+        });
+      }).observe(el, { childList: true, subtree: false });
     });
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
