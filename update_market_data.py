@@ -11,21 +11,14 @@ OUTPUT_PATH = Path("market-indicators.json")
 EVENTS_PATH = Path("weekly-events.json")
 
 MARKET_SYMBOLS = {
-    "SP500": "^GSPC",
-    "NASDAQ": "^IXIC",
-    "NASDAQ100": "^NDX",
-    "DOW": "^DJI",
-    "SOX": "^SOX",
-    "VIX": "^VIX",
-    "US10Y": "^TNX",
-    "HSI": "^HSI",
-    "HSTECH": "HSTECH.HK",
+    "SP500": "^GSPC", "NASDAQ": "^IXIC", "NASDAQ100": "^NDX", "DOW": "^DJI",
+    "SOX": "^SOX", "VIX": "^VIX", "US10Y": "^TNX", "HSI": "^HSI", "HSTECH": "HSTECH.HK",
 }
-
 MARKET_GROUP = {
-    "SP500": "US", "NASDAQ": "US", "NASDAQ100": "US", "DOW": "US",
-    "SOX": "US", "VIX": "US", "US10Y": "US", "HSI": "HK", "HSTECH": "HK",
+    "SP500":"US", "NASDAQ":"US", "NASDAQ100":"US", "DOW":"US", "SOX":"US", "VIX":"US", "US10Y":"US",
+    "HSI":"HK", "HSTECH":"HK",
 }
+MARKET_ZONE = {"US":"America/New_York", "HK":"Asia/Hong_Kong"}
 
 
 def load_json(path, default):
@@ -42,113 +35,9 @@ def save_json(path, data):
 
 
 def fetch_text(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 WAIS-Invest/1.0"})
+    req = urllib.request.Request(url, headers={"User-Agent":"Mozilla/5.0 WAIS-Invest/1.0"})
     with urllib.request.urlopen(req, timeout=15) as r:
         return r.read().decode("utf-8", errors="ignore")
-
-
-def update_hsi_futures(indicators):
-    """Refresh spot-month HSI futures from ET Net's HKEX-authorized public RT page.
-
-    This is a public-display fallback, not an exchange API and not for redistribution.
-    The source timestamp and session are preserved so WAIS never presents an old quote as new.
-    """
-    now_hk = datetime.now(ZoneInfo("Asia/Hong_Kong"))
-    contract = now_hk.strftime("%Y%m")
-    url = f"https://www.etnet.com.hk/www/eng/futures/index.php?month={contract}&subtype=HSI"
-    text = fetch_text(url)
-    compact = re.sub(r"\s+", " ", text)
-
-    regular = re.search(
-        rf"HSI\(0?{now_hk.month}/\d{{4}}\) Regular.*?([0-9]{{2}},[0-9]{{3}}).*?([+-][0-9,]+)\s*\(([+-][0-9.]+)%\).*?C[^0-9]*([0-9]{{2}},[0-9]{{3}})",
-        compact,
-        re.I,
-    )
-    at = re.search(
-        rf"HSI\(0?{now_hk.month}/\d{{4}}\) AT.*?([0-9]{{2}},[0-9]{{3}}).*?([+-][0-9,]+)\s*\(([+-][0-9.]+)%\)",
-        compact,
-        re.I,
-    )
-    stamp = re.search(r"Futures are real time updated\.\s*Last updated:\s*(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2})", compact, re.I)
-    expiry = re.search(r"Expiry Date\s*\|\s*(\d{2}/\d{2}/\d{4})", compact, re.I)
-
-    if not regular or not stamp:
-        raise RuntimeError("ET Net HSI futures fields not found")
-
-    regular_value = float(regular.group(1).replace(",", ""))
-    regular_change = float(regular.group(2).replace(",", ""))
-    regular_pct = float(regular.group(3))
-    previous_close = float(regular.group(4).replace(",", ""))
-    quote_value = regular_value
-    quote_change = regular_change
-    quote_pct = regular_pct
-    session = "Regular"
-
-    # During/after the after-hours session, ET Net exposes a separate AT quote.
-    if at:
-        at_value = float(at.group(1).replace(",", ""))
-        at_change = float(at.group(2).replace(",", ""))
-        at_pct = float(at.group(3))
-        if now_hk.hour >= 17 or now_hk.hour < 3:
-            quote_value, quote_change, quote_pct = at_value, at_change, at_pct
-            session = "After-Trade"
-
-    as_of_hk = datetime.strptime(stamp.group(1), "%d/%m/%Y %H:%M").replace(tzinfo=ZoneInfo("Asia/Hong_Kong"))
-    age_minutes = max(0, int((now_hk - as_of_hk).total_seconds() // 60))
-    freshness = "LIVE" if age_minutes <= 5 else ("RECENT" if age_minutes <= 20 else "DELAYED")
-
-    indicators["HSIF"] = {
-        "symbol": f"HSI-{contract}",
-        "contract": contract,
-        "value": quote_value,
-        "previousClose": previous_close,
-        "regularClose": regular_value,
-        "regularCloseDate": as_of_hk.date().isoformat(),
-        "change": quote_change,
-        "changePercent": quote_pct,
-        "asOf": as_of_hk.isoformat(),
-        "source": "ET Net / HKEX market data public display",
-        "sourceUrl": url,
-        "session": session,
-        "freshness": freshness,
-        "ageMinutes": age_minutes,
-        "expiryDate": expiry.group(1) if expiry else None,
-        "dataStatus": f"{session} HSI spot-month futures; source timestamp preserved; public-display source, not direct exchange API",
-    }
-    print(f"OK HSIF: {quote_value:.0f} ({session}, {freshness}) @ {as_of_hk.isoformat()}")
-
-
-def update_weekly_events():
-    existing = load_json(EVENTS_PATH, {"events": []})
-    today = datetime.now(timezone.utc).date()
-    start = today - timedelta(days=today.weekday())
-    end = start + timedelta(days=13)
-    events = []
-    try:
-        text = fetch_text("https://www.bls.gov/schedule/news_release/bls.ics")
-        text = re.sub(r"\r?\n[ \t]", "", text)
-        for block in text.split("BEGIN:VEVENT")[1:]:
-            s = re.search(r"SUMMARY:(.+)", block)
-            d = re.search(r"DTSTART(?:;[^:]*)?:(\d{8})T?(\d{6})?", block)
-            if not s or not d:
-                continue
-            summary = s.group(1).strip()
-            if "Consumer Price Index" in summary:
-                name = "美國 CPI"
-            elif "Producer Price Index" in summary:
-                name = "美國 PPI"
-            else:
-                continue
-            day = datetime.strptime(d.group(1), "%Y%m%d").date()
-            if start <= day <= end:
-                events.append({"dateISO": day.isoformat(), "date": day.strftime("%m月%d日"), "event": name, "time": "08:30 ET", "source": "U.S. Bureau of Labor Statistics"})
-    except Exception as exc:
-        print(f"Weekly event refresh warning: {exc}")
-    if events:
-        events.sort(key=lambda x: (x["dateISO"], x["event"]))
-        save_json(EVENTS_PATH, {"lastUpdated": datetime.now(timezone.utc).isoformat(), "window": {"from": start.isoformat(), "to": end.isoformat()}, "dataStatus": "Current week + next week official release schedule; verify again before trading", "events": events})
-    elif not EVENTS_PATH.exists():
-        save_json(EVENTS_PATH, existing)
 
 
 def latest_intraday(ticker):
@@ -159,89 +48,147 @@ def latest_intraday(ticker):
     ts = c.index[-1]
     if getattr(ts, "tzinfo", None) is None:
         ts = ts.tz_localize("UTC")
-    current_session_date = ts.date()
-    previous_session_close = None
-    session_dates = sorted({idx.date() for idx in c.index if idx.date() < current_session_date})
-    if session_dates:
-        previous_session_date = session_dates[-1]
-        previous_session = c[[idx.date() == previous_session_date for idx in c.index]]
-        if not previous_session.empty:
-            previous_session_close = float(previous_session.iloc[-1])
-    return float(c.iloc[-1]), ts.isoformat(), previous_session_close
+    return float(c.iloc[-1]), ts
+
+
+def update_hsi_futures(indicators):
+    now_hk = datetime.now(ZoneInfo("Asia/Hong_Kong"))
+    contract = now_hk.strftime("%Y%m")
+    url = f"https://www.etnet.com.hk/www/eng/futures/index.php?month={contract}&subtype=HSI"
+    compact = re.sub(r"\s+", " ", fetch_text(url))
+    regular = re.search(rf"HSI\(0?{now_hk.month}/\d{{4}}\) Regular.*?([0-9]{{2}},[0-9]{{3}}).*?([+-][0-9,]+)\s*\(([+-][0-9.]+)%\).*?C[^0-9]*([0-9]{{2}},[0-9]{{3}})", compact, re.I)
+    at = re.search(rf"HSI\(0?{now_hk.month}/\d{{4}}\) AT.*?([0-9]{{2}},[0-9]{{3}}).*?([+-][0-9,]+)\s*\(([+-][0-9.]+)%\)", compact, re.I)
+    stamp = re.search(r"Futures are real time updated\.\s*Last updated:\s*(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2})", compact, re.I)
+    expiry = re.search(r"Expiry Date\s*\|\s*(\d{2}/\d{2}/\d{4})", compact, re.I)
+    if not regular or not stamp:
+        raise RuntimeError("ET Net HSI futures fields not found")
+
+    as_of_hk = datetime.strptime(stamp.group(1), "%d/%m/%Y %H:%M").replace(tzinfo=ZoneInfo("Asia/Hong_Kong"))
+    regular_value = float(regular.group(1).replace(",", ""))
+    regular_change = float(regular.group(2).replace(",", ""))
+    regular_pct = float(regular.group(3))
+    previous_close = float(regular.group(4).replace(",", ""))
+    quote_value, quote_change, quote_pct, session = regular_value, regular_change, regular_pct, "Regular"
+
+    # Choose the AT quote from the SOURCE timestamp, never from the current clock. This prevents a
+    # stale 03:00 page from being relabelled as a new regular-session quote later in the day.
+    if at and (as_of_hk.hour >= 17 or as_of_hk.hour < 3):
+        quote_value = float(at.group(1).replace(",", ""))
+        quote_change = float(at.group(2).replace(",", ""))
+        quote_pct = float(at.group(3))
+        session = "After-Trade"
+
+    age_minutes = max(0, int((now_hk - as_of_hk).total_seconds() // 60))
+    freshness = "LIVE" if age_minutes <= 5 else ("RECENT" if age_minutes <= 20 else "DELAYED")
+    indicators["HSIF"] = {
+        "symbol": f"HSI-{contract}", "contract": contract, "value": quote_value,
+        "previousClose": previous_close, "regularClose": regular_value,
+        "regularCloseDate": as_of_hk.date().isoformat(), "change": quote_change,
+        "changePercent": quote_pct, "asOf": as_of_hk.isoformat(),
+        "source": "ET Net / HKEX market data public display", "sourceUrl": url,
+        "session": session, "freshness": freshness, "ageMinutes": age_minutes,
+        "expiryDate": expiry.group(1) if expiry else None,
+        "dataStatus": f"{session} HSI spot-month futures; source timestamp preserved; public-display source, not direct exchange API",
+    }
+    print(f"OK HSIF: {quote_value:.0f} ({session}, {freshness}) @ {as_of_hk.isoformat()}")
+
+
+def update_weekly_events():
+    existing = load_json(EVENTS_PATH, {"events":[]})
+    today = datetime.now(timezone.utc).date()
+    start = today - timedelta(days=today.weekday())
+    end = start + timedelta(days=13)
+    events = []
+    try:
+        text = re.sub(r"\r?\n[ \t]", "", fetch_text("https://www.bls.gov/schedule/news_release/bls.ics"))
+        for block in text.split("BEGIN:VEVENT")[1:]:
+            s = re.search(r"SUMMARY:(.+)", block)
+            d = re.search(r"DTSTART(?:;[^:]*)?:(\d{8})T?(\d{6})?", block)
+            if not s or not d:
+                continue
+            summary=s.group(1).strip()
+            if "Consumer Price Index" in summary: name="美國 CPI"
+            elif "Producer Price Index" in summary: name="美國 PPI"
+            else: continue
+            day=datetime.strptime(d.group(1), "%Y%m%d").date()
+            if start <= day <= end:
+                events.append({"dateISO":day.isoformat(),"date":day.strftime("%m月%d日"),"event":name,"time":"08:30 ET","source":"U.S. Bureau of Labor Statistics"})
+    except Exception as exc:
+        print(f"Weekly event refresh warning: {exc}")
+    if events:
+        events.sort(key=lambda x:(x["dateISO"],x["event"]))
+        save_json(EVENTS_PATH,{"lastUpdated":datetime.now(timezone.utc).isoformat(),"window":{"from":start.isoformat(),"to":end.isoformat()},"dataStatus":"Current week + next week official release schedule; verify again before trading","events":events})
+    elif not EVENTS_PATH.exists():
+        save_json(EVENTS_PATH, existing)
 
 
 def main():
-    existing = load_json(OUTPUT_PATH, {})
-    indicators = existing.get("indicators", {})
-    market_dates = existing.get("marketDates", {"US": None, "HK": None})
-    if not isinstance(market_dates, dict):
-        market_dates = {"US": None, "HK": None}
-    successful = 0
-    failed = []
+    existing=load_json(OUTPUT_PATH,{})
+    indicators=existing.get("indicators",{})
+    market_dates=existing.get("marketDates",{"US":None,"HK":None})
+    if not isinstance(market_dates,dict): market_dates={"US":None,"HK":None}
+    successful=0; failed=[]
 
-    for name, symbol in MARKET_SYMBOLS.items():
+    for name,symbol in MARKET_SYMBOLS.items():
         try:
-            ticker = yf.Ticker(symbol)
-            daily = ticker.history(period="10d", interval="1d", auto_adjust=False, prepost=False, actions=False)
-            closes = daily["Close"].dropna() if not daily.empty else []
-            if len(closes) == 0:
-                raise RuntimeError("no daily close returned")
-            regular_close = float(closes.iloc[-1])
-            regular_date = closes.index[-1].date().isoformat()
-            previous_close = float(closes.iloc[-2]) if len(closes) >= 2 else regular_close
-            value = regular_close
-            as_of = regular_date
-            status = "Completed daily close; intraday unavailable"
-            source = "Yahoo Finance via yfinance"
+            ticker=yf.Ticker(symbol)
+            daily=ticker.history(period="10d",interval="1d",auto_adjust=False,prepost=False,actions=False)
+            closes=daily["Close"].dropna() if not daily.empty else []
+            if len(closes)==0: raise RuntimeError("no daily close returned")
+            regular_close=float(closes.iloc[-1])
+            regular_date=closes.index[-1].date().isoformat()
+            previous_close=float(closes.iloc[-2]) if len(closes)>=2 else regular_close
+            value=regular_close; as_of=regular_date; status="Completed daily close; intraday unavailable"
             try:
-                snap = latest_intraday(ticker)
+                snap=latest_intraday(ticker)
                 if snap:
-                    value, as_of, intraday_previous_close = snap
-                    if intraday_previous_close is not None and intraday_previous_close > 0:
-                        previous_close = intraday_previous_close
-                    status = "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
+                    value, ts=snap
+                    group=MARKET_GROUP[name]
+                    local_ts=ts.tz_convert(MARKET_ZONE[group]) if hasattr(ts,"tz_convert") else ts
+                    as_of=local_ts.isoformat()
+                    status="Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
+                    # If the daily series is one session behind but the intraday timestamp is at/after
+                    # the local cash close, promote the verified snapshot to that day's regular close.
+                    if local_ts.date().isoformat() > regular_date and local_ts.hour >= 16:
+                        previous_close=regular_close
+                        regular_close=float(value)
+                        regular_date=local_ts.date().isoformat()
             except Exception as intraday_exc:
                 print(f"Intraday fallback {name}: {intraday_exc}")
-            change = value - previous_close
-            change_pct = (change / previous_close * 100) if previous_close else 0.0
-            indicators[name] = {
-                "symbol": symbol, "value": round(value, 4), "previousClose": round(previous_close, 4),
-                "regularClose": round(regular_close, 4), "regularCloseDate": regular_date,
-                "change": round(change, 4), "changePercent": round(change_pct, 4), "asOf": as_of,
-                "source": source, "dataStatus": status,
+            change=value-previous_close
+            change_pct=(change/previous_close*100) if previous_close else 0.0
+            indicators[name]={
+                "symbol":symbol,"value":round(value,4),"previousClose":round(previous_close,4),
+                "regularClose":round(regular_close,4),"regularCloseDate":regular_date,
+                "change":round(change,4),"changePercent":round(change_pct,4),"asOf":as_of,
+                "source":"Yahoo Finance via yfinance","dataStatus":status,
             }
-            group = MARKET_GROUP[name]
-            old_date = market_dates.get(group)
-            if not old_date or regular_date > old_date:
-                market_dates[group] = regular_date
-            successful += 1
+            group=MARKET_GROUP[name]
+            old_date=market_dates.get(group)
+            if not old_date or regular_date>old_date: market_dates[group]=regular_date
+            successful+=1
             print(f"OK {name}: {value:.4f} @ {as_of}")
         except Exception as exc:
             failed.append(name)
             print(f"WARNING {name}: {exc}; previous verified value preserved.")
 
     try:
-        update_hsi_futures(indicators)
-        successful += 1
+        update_hsi_futures(indicators); successful+=1
     except Exception as exc:
         failed.append("HSIF")
         print(f"WARNING HSIF: {exc}; previous verified futures quote preserved.")
         if "HSIF" in indicators:
-            indicators["HSIF"]["freshness"] = "FALLBACK"
-            indicators["HSIF"]["dataStatus"] = "Primary futures refresh failed; previous verified quote preserved with original timestamp"
+            indicators["HSIF"]["freshness"]="FALLBACK"
+            indicators["HSIF"]["dataStatus"]="Primary futures refresh failed; previous verified quote preserved with original timestamp"
 
-    save_json(OUTPUT_PATH, {
-        "lastUpdated": datetime.now(timezone.utc).isoformat(),
-        "marketDates": market_dates,
-        "marketStatus": "updated" if successful else "stale_preserved",
-        "dataStatus": "Latest available intraday snapshot when available; HSI futures use timestamped HKEX-authorized public display fallback; NOT all feeds are direct exchange APIs",
-        "failedSymbols": failed,
-        "indicators": indicators,
+    save_json(OUTPUT_PATH,{
+        "lastUpdated":datetime.now(timezone.utc).isoformat(),"marketDates":market_dates,
+        "marketStatus":"updated" if successful else "stale_preserved",
+        "dataStatus":"Latest available intraday snapshot when available; cash-index previous close comes from the official daily series; HSI futures preserve source timestamp/session; NOT all feeds are direct exchange APIs",
+        "failedSymbols":failed,"indicators":indicators,
     })
-    try:
-        update_weekly_events()
-    except Exception as exc:
-        print(f"Weekly events warning: {exc}")
+    try: update_weekly_events()
+    except Exception as exc: print(f"Weekly events warning: {exc}")
     print(f"Completed: {successful} updated, {len(failed)} preserved.")
 
 
