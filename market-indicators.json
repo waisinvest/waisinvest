@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-11T23:33:55.728593+00:00",
+  "lastUpdated": "2026-08-12T00:40:01.776533+00:00",
   "marketDates": {
     "US": "2026-08-11",
     "HK": "2026-08-11"
@@ -96,8 +96,8 @@
       "symbol": "^HSI",
       "value": 25652.8203,
       "previousClose": 25937.4902,
-      "regularClose": 25937.4902,
-      "regularCloseDate": "2026-08-10",
+      "regularClose": 25652.8203,
+      "regularCloseDate": "2026-08-11",
       "change": -284.6699,
       "changePercent": -1.0975,
       "asOf": "2026-08-11T16:05:00+08:00",
@@ -119,18 +119,18 @@
     "HSIF": {
       "symbol": "HSI-202608",
       "contract": "202608",
-      "value": 25628.0,
-      "previousClose": 25949.0,
-      "regularClose": 25628.0,
+      "value": 25533.0,
+      "previousClose": 25628.0,
+      "regularClose": 25533.0,
       "regularCloseDate": "2026-08-12",
-      "change": -321.0,
-      "changePercent": -1.24,
-      "asOf": "2026-08-12T03:00:00+08:00",
+      "change": -95.0,
+      "changePercent": -0.37,
+      "asOf": "2026-08-12T08:39:00+08:00",
       "source": "ET Net / HKEX market data public display",
       "sourceUrl": "https://www.etnet.com.hk/www/eng/futures/index.php?month=202608&subtype=HSI",
       "session": "Regular",
-      "freshness": "DELAYED",
-      "ageMinutes": 273,
+      "freshness": "LIVE",
+      "ageMinutes": 1,
       "expiryDate": null,
       "dataStatus": "Regular HSI spot-month futures; source timestamp preserved; public-display source, not direct exchange API"
     }
