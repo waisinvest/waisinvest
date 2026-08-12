@@ -1,12 +1,14 @@
 {
-  "lastUpdated": "2026-08-12T21:27:48.334828+00:00",
+  "lastUpdated": "2026-08-12T22:53:16.659129+00:00",
   "marketDates": {
     "US": "2026-08-12",
     "HK": "2026-08-12"
   },
   "marketStatus": "updated",
-  "dataStatus": "Latest available intraday snapshot when available; HSI futures use timestamped HKEX-authorized public display fallback; NOT all feeds are direct exchange APIs",
-  "failedSymbols": [],
+  "dataStatus": "Latest available intraday snapshot when available; cash-index previous close comes from the official daily series; HSI futures preserve source timestamp/session; NOT all feeds are direct exchange APIs",
+  "failedSymbols": [
+    "SP500"
+  ],
   "indicators": {
     "SP500": {
       "symbol": "^GSPC",
@@ -23,22 +25,22 @@
     "NASDAQ": {
       "symbol": "^IXIC",
       "value": 26588.488,
-      "previousClose": 26445.445,
+      "previousClose": 26445.4492,
       "regularClose": 26588.4883,
       "regularCloseDate": "2026-08-12",
-      "change": 143.043,
+      "change": 143.0388,
       "changePercent": 0.5409,
-      "asOf": "2026-08-12T17:10:00-04:00",
+      "asOf": "2026-08-12T17:15:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
     "NASDAQ100": {
       "symbol": "^NDX",
       "value": 29742.604,
-      "previousClose": 29525.479,
+      "previousClose": 29525.4805,
       "regularClose": 29742.6035,
       "regularCloseDate": "2026-08-12",
-      "change": 217.125,
+      "change": 217.1235,
       "changePercent": 0.7354,
       "asOf": "2026-08-12T17:15:00-04:00",
       "source": "Yahoo Finance via yfinance",
@@ -47,10 +49,10 @@
     "DOW": {
       "symbol": "^DJI",
       "value": 53770.27,
-      "previousClose": 53791.85,
+      "previousClose": 53791.8516,
       "regularClose": 53770.2695,
       "regularCloseDate": "2026-08-12",
-      "change": -21.58,
+      "change": -21.5816,
       "changePercent": -0.0401,
       "asOf": "2026-08-12T16:40:00-04:00",
       "source": "Yahoo Finance via yfinance",
@@ -59,10 +61,10 @@
     "SOX": {
       "symbol": "^SOX",
       "value": 12399.376,
-      "previousClose": 12098.472,
+      "previousClose": 12098.4697,
       "regularClose": 12399.376,
       "regularCloseDate": "2026-08-12",
-      "change": 300.904,
+      "change": 300.9063,
       "changePercent": 2.4871,
       "asOf": "2026-08-12T17:15:00-04:00",
       "source": "Yahoo Finance via yfinance",
@@ -76,7 +78,7 @@
       "regularCloseDate": "2026-08-12",
       "change": -0.73,
       "changePercent": -4.7775,
-      "asOf": "2026-08-12T15:10:00-05:00",
+      "asOf": "2026-08-12T16:10:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
@@ -88,7 +90,7 @@
       "regularCloseDate": "2026-08-12",
       "change": -0.002,
       "changePercent": -0.0427,
-      "asOf": "2026-08-12T13:55:00-05:00",
+      "asOf": "2026-08-12T14:55:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
@@ -96,8 +98,8 @@
       "symbol": "^HSI",
       "value": 25440.1699,
       "previousClose": 25652.8203,
-      "regularClose": 25652.8203,
-      "regularCloseDate": "2026-08-11",
+      "regularClose": 25440.1699,
+      "regularCloseDate": "2026-08-12",
       "change": -212.6504,
       "changePercent": -0.829,
       "asOf": "2026-08-12T16:05:00+08:00",
@@ -107,11 +109,11 @@
     "HSTECH": {
       "symbol": "HSTECH.HK",
       "value": 4776.4399,
-      "previousClose": 4824.4199,
+      "previousClose": 4776.4399,
       "regularClose": 4776.4399,
       "regularCloseDate": "2026-08-12",
-      "change": -47.98,
-      "changePercent": -0.9945,
+      "change": 0.0,
+      "changePercent": 0.0,
       "asOf": "2026-08-12T16:05:00+08:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
@@ -130,7 +132,7 @@
       "sourceUrl": "https://www.etnet.com.hk/www/eng/futures/index.php?month=202608&subtype=HSI",
       "session": "Regular",
       "freshness": "DELAYED",
-      "ageMinutes": 147,
+      "ageMinutes": 233,
       "expiryDate": null,
       "dataStatus": "Regular HSI spot-month futures; source timestamp preserved; public-display source, not direct exchange API"
     }
