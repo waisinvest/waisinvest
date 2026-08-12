@@ -48,7 +48,15 @@ def latest_intraday(ticker):
     ts = c.index[-1]
     if getattr(ts, "tzinfo", None) is None:
         ts = ts.tz_localize("UTC")
-    return float(c.iloc[-1]), ts
+    current_date = ts.date()
+    previous_session_close = None
+    prior_dates = sorted({idx.date() for idx in c.index if idx.date() < current_date})
+    if prior_dates:
+        prior_date = prior_dates[-1]
+        prior = c[[idx.date() == prior_date for idx in c.index]]
+        if not prior.empty:
+            previous_session_close = float(prior.iloc[-1])
+    return float(c.iloc[-1]), ts, previous_session_close
 
 
 def update_hsi_futures(indicators):
@@ -70,8 +78,6 @@ def update_hsi_futures(indicators):
     previous_close = float(regular.group(4).replace(",", ""))
     quote_value, quote_change, quote_pct, session = regular_value, regular_change, regular_pct, "Regular"
 
-    # Choose the AT quote from the SOURCE timestamp, never from the current clock. This prevents a
-    # stale 03:00 page from being relabelled as a new regular-session quote later in the day.
     if at and (as_of_hk.hour >= 17 or as_of_hk.hour < 3):
         quote_value = float(at.group(1).replace(",", ""))
         quote_change = float(at.group(2).replace(",", ""))
@@ -142,15 +148,14 @@ def main():
             try:
                 snap=latest_intraday(ticker)
                 if snap:
-                    value, ts=snap
+                    value, ts, intraday_previous_close=snap
                     group=MARKET_GROUP[name]
                     local_ts=ts.tz_convert(MARKET_ZONE[group]) if hasattr(ts,"tz_convert") else ts
                     as_of=local_ts.isoformat()
                     status="Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
-                    # If the daily series is one session behind but the intraday timestamp is at/after
-                    # the local cash close, promote the verified snapshot to that day's regular close.
+                    if group=="HK" and intraday_previous_close is not None and intraday_previous_close>0:
+                        previous_close=intraday_previous_close
                     if local_ts.date().isoformat() > regular_date and local_ts.hour >= 16:
-                        previous_close=regular_close
                         regular_close=float(value)
                         regular_date=local_ts.date().isoformat()
             except Exception as intraday_exc:
@@ -184,7 +189,7 @@ def main():
     save_json(OUTPUT_PATH,{
         "lastUpdated":datetime.now(timezone.utc).isoformat(),"marketDates":market_dates,
         "marketStatus":"updated" if successful else "stale_preserved",
-        "dataStatus":"Latest available intraday snapshot when available; cash-index previous close comes from the official daily series; HSI futures preserve source timestamp/session; NOT all feeds are direct exchange APIs",
+        "dataStatus":"Latest available intraday snapshot when available; US index previous close uses daily series; HK index previous close uses prior intraday session when available; HSI futures preserve source timestamp/session; NOT all feeds are direct exchange APIs",
         "failedSymbols":failed,"indicators":indicators,
     })
     try: update_weekly_events()
