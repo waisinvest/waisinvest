@@ -1,7 +1,8 @@
 import json
-from datetime import datetime, timezone, time
+from datetime import datetime, timezone, time, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
+import statistics
 import yfinance as yf
 
 SYMBOLS={
@@ -35,6 +36,61 @@ def latest_snapshot(ticker):
     et=ts.tz_convert(ET)
     return float(c.iloc[-1]),et,session_for(et)
 
+def income_metrics(h, pos, regular_close, now_utc):
+    """Public-output metrics only. Weekly/monthly funds are normalized to comparable monthly buckets."""
+    if pos.empty or regular_close <= 0:
+        return {}
+    today=now_utc.date()
+    cutoff12=today-timedelta(days=365)
+    trail=pos[[x.date()>=cutoff12 for x in pos.index]]
+    ttm_cash=float(trail.sum()) if not trail.empty else 0.0
+    ttm_yield=ttm_cash/regular_close*100
+
+    cutoff30=today-timedelta(days=30)
+    cash30=float(pos[[x.date()>=cutoff30 for x in pos.index]].sum())
+    rate30=cash30/regular_close*100
+
+    # Aggregate actual distributions into calendar-month buckets so weekly and monthly ETFs
+    # are compared on the same basis. Missing months remain zero and reduce consistency.
+    month_keys=[]
+    y=today.year; m=today.month
+    for _ in range(12):
+        month_keys.append((y,m))
+        m-=1
+        if m==0: y-=1; m=12
+    month_keys=list(reversed(month_keys))
+    buckets=[]
+    for yy,mm in month_keys:
+        buckets.append(sum(float(v) for idx,v in trail.items() if idx.year==yy and idx.month==mm))
+
+    active=[x for x in buckets if x>0]
+    coverage=len(active)/12
+    if len(active)>=2:
+        mean=statistics.fmean(active)
+        cv=statistics.pstdev(active)/mean if mean>0 else 1.0
+    else:
+        cv=1.0
+    consistency=max(0.0,min(100.0,100.0-(55.0*min(cv,1.5))-(30.0*(1.0-coverage))))
+
+    # Median monthly cash flow is resistant to one unusually large distribution.
+    # A modest consistency haircut prevents unstable headline yields from being treated as durable income.
+    median_month=statistics.median(active) if active else 0.0
+    median_annual_yield=(median_month*12/regular_close*100) if regular_close>0 else 0.0
+    stability_factor=0.70+0.30*(consistency/100.0)
+    sustainable=min(ttm_yield,median_annual_yield)*stability_factor
+    sustainable=max(0.0,sustainable)
+
+    return {
+        'trailing12mDistribution':round(ttm_cash,6),
+        'trailing12mDistributionYield':round(ttm_yield,4),
+        'current30dIncomeRate':round(rate30,4),
+        'incomeConsistency':round(consistency,1),
+        'sustainableIncomeYield':round(sustainable,4),
+        'sustainableMonthlyEquivalent':round(sustainable/12,4),
+        'distributionCoverageMonths12m':len(active),
+        'incomeMetricMethod':'TTM actual distributions + rolling 30D cash rate + calendar-month consistency + median-month sustainable-yield normalization; research metric, not a forecast or guarantee'
+    }
+
 def main():
     data=existing();prices=data.get('prices',{});ok=0;failed=[]
     now_utc=datetime.now(timezone.utc)
@@ -59,8 +115,8 @@ def main():
                 div=h['Dividends'].fillna(0);pos=div[div>0]
                 if not pos.empty:
                     r['lastDistribution']=round(float(pos.iloc[-1]),6);r['lastDistributionDate']=pos.index[-1].date().isoformat()
-                    cutoff=now_utc.date().replace(year=now_utc.date().year-1);trail=pos[[x.date()>=cutoff for x in pos.index]]
-                    s=float(trail.sum()) if not trail.empty else 0;count=int(len(trail));r['trailing12mDistribution']=round(s,6);r['trailing12mDistributionYield']=round(s/regular_close*100,4) if regular_close>0 else None;r['distributionCount12m']=count
+                    r.update(income_metrics(h,pos,regular_close,now_utc))
+                    count=int(len(pos[[x.date()>=now_utc.date()-timedelta(days=365) for x in pos.index]]));r['distributionCount12m']=count
                     r['observedFrequency']='Weekly' if count>=40 else ('Monthly' if count>=10 else ('Quarterly/Irregular' if count>=3 else 'Sparse/Unknown'))
                     y=r.get('trailing12mDistributionYield');pr=r.get('priceReturnPeriodPct')
                     if y is not None and y>=25:r['incomeRiskFlag']='VERY HIGH DISTRIBUTION — validate NAV/ROC/total return'
@@ -70,6 +126,6 @@ def main():
                     if y is not None and pr is not None:r['simpleIncomePlusPriceReturnPct']=round(y+pr,4)
             prices[out]=r;ok+=1;print(out,display_price,display_session,display_asof)
         except Exception as e: failed.append(out);print('failed',out,e)
-    OUT.write_text(json.dumps({"lastUpdated":now_utc.isoformat(),"marketStatus":"updated" if ok else "update_failed","dataStatus":"Latest available intraday/extended-hours snapshot when available; regular close retained separately; NOT guaranteed real-time","failedSymbols":failed,"prices":prices},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+    OUT.write_text(json.dumps({"lastUpdated":now_utc.isoformat(),"marketStatus":"updated" if ok else "update_failed","dataStatus":"Latest available intraday/extended-hours snapshot when available; regular close retained separately; NOT guaranteed real-time","incomeMetricsVersion":"WAIS INCOME v1.1 normalized percentages","failedSymbols":failed,"prices":prices},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     if not ok:raise RuntimeError('No prices updated')
 if __name__=='__main__':main()
