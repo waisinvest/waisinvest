@@ -8,8 +8,10 @@ on:
       - "update_market_data.py"
       - "update_stock_prices.py"
   schedule:
-    # Explicit five-minute cadence on weekdays, offset from :00 to reduce GitHub scheduler congestion.
-    - cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * 1-5"
+    # Unattended weekday refresh. A 15-minute staggered cadence is intentionally
+    # used instead of 5-minute cron because GitHub scheduled jobs can be delayed
+    # or dropped during scheduler congestion; off-minute starts reduce contention.
+    - cron: "7,22,37,52 * * * 1-5"
     # Sunday maintenance / economic calendar refresh.
     - cron: "18 12 * * 0"
 
@@ -23,6 +25,7 @@ concurrency:
 jobs:
   refresh-wais-data:
     runs-on: ubuntu-latest
+    timeout-minutes: 12
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v4
