@@ -49,11 +49,8 @@
   }
 
   document.addEventListener('DOMContentLoaded',()=>{
-    setTimeout(applyIncomeMetrics,500);
-    ['weeklyIncomeGrid','monthlyIncomeGrid','tacticalIncomeGrid'].forEach(id=>{
-      const el=document.getElementById(id);
-      if(el) new MutationObserver(()=>setTimeout(applyIncomeMetrics,0)).observe(el,{childList:true,subtree:true});
-    });
-    document.getElementById('incomeYieldFilter')?.addEventListener('change',()=>setTimeout(applyIncomeMetrics,50));
+    setTimeout(applyIncomeMetrics,700);
+    document.getElementById('incomeYieldFilter')?.addEventListener('change',()=>setTimeout(applyIncomeMetrics,80));
+    window.addEventListener('focus',()=>setTimeout(applyIncomeMetrics,80));
   });
 })();
