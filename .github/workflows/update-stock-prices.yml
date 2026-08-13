@@ -1,4 +1,4 @@
-name: Update Stock Prices
+name: MANUAL · Update Stock + Income ETF Prices
 
 on:
   workflow_dispatch:
