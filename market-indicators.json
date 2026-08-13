@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-13T05:36:59.824833+00:00",
+  "lastUpdated": "2026-08-13T09:44:56.392624+00:00",
   "marketDates": {
-    "US": "2026-08-12",
+    "US": "2026-08-13",
     "HK": "2026-08-13"
   },
   "marketStatus": "updated",
@@ -70,13 +70,13 @@
     },
     "VIX": {
       "symbol": "^VIX",
-      "value": 14.55,
-      "previousClose": 15.28,
-      "regularClose": 14.55,
-      "regularCloseDate": "2026-08-12",
-      "change": -0.73,
-      "changePercent": -4.7775,
-      "asOf": "2026-08-12T16:10:00-04:00",
+      "value": 14.65,
+      "previousClose": 14.55,
+      "regularClose": 14.65,
+      "regularCloseDate": "2026-08-13",
+      "change": 0.1,
+      "changePercent": 0.6873,
+      "asOf": "2026-08-13T05:25:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
@@ -94,45 +94,45 @@
     },
     "HSI": {
       "symbol": "^HSI",
-      "value": 25507.4199,
+      "value": 25396.5098,
       "previousClose": 25440.1699,
-      "regularClose": 25507.4199,
+      "regularClose": 25396.5098,
       "regularCloseDate": "2026-08-13",
-      "change": 67.25,
-      "changePercent": 0.2643,
-      "asOf": "2026-08-13T13:20:00+08:00",
+      "change": -43.6602,
+      "changePercent": -0.1716,
+      "asOf": "2026-08-13T16:05:00+08:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
     "HSTECH": {
       "symbol": "HSTECH.HK",
-      "value": 4835.9199,
+      "value": 4792.3901,
       "previousClose": 4776.4399,
-      "regularClose": 4835.9199,
+      "regularClose": 4792.3901,
       "regularCloseDate": "2026-08-13",
-      "change": 59.48,
-      "changePercent": 1.2453,
-      "asOf": "2026-08-13T13:20:00+08:00",
+      "change": 15.9502,
+      "changePercent": 0.3339,
+      "asOf": "2026-08-13T16:05:00+08:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
     "HSIF": {
       "symbol": "HSI-202608",
       "contract": "202608",
-      "value": 25457.0,
+      "value": 25392.0,
       "previousClose": 25408.0,
-      "regularClose": 25457.0,
+      "regularClose": 25373.0,
       "regularCloseDate": "2026-08-13",
-      "change": 49.0,
-      "changePercent": 0.19,
-      "asOf": "2026-08-13T13:36:00+08:00",
+      "change": 19.0,
+      "changePercent": 0.07,
+      "asOf": "2026-08-13T17:44:00+08:00",
       "source": "ET Net / HKEX market data public display",
       "sourceUrl": "https://www.etnet.com.hk/www/eng/futures/index.php?month=202608&subtype=HSI",
-      "session": "Regular",
+      "session": "After-Trade",
       "freshness": "LIVE",
       "ageMinutes": 0,
       "expiryDate": null,
-      "dataStatus": "Regular HSI spot-month futures; source timestamp preserved; public-display source, not direct exchange API"
+      "dataStatus": "After-Trade HSI spot-month futures; source timestamp preserved; public-display source, not direct exchange API"
     }
   }
 }
