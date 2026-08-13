@@ -8,10 +8,11 @@ on:
       - "update_market_data.py"
       - "update_stock_prices.py"
   schedule:
-    # Unattended weekday refresh. A 15-minute staggered cadence is intentionally
-    # used instead of 5-minute cron because GitHub scheduled jobs can be delayed
-    # or dropped during scheduler congestion; off-minute starts reduce contention.
-    - cron: "7,22,37,52 * * * 1-5"
+    # Fast market-data layer: target every 5 minutes on weekdays.
+    # This refreshes market indicators, stock prices and income-ETF data only.
+    # It does NOT automatically promote/downgrade READY 1 / CANDIDATE+ / CANDIDATE states;
+    # those remain governed by WAIS decision logic and evidence confirmation.
+    - cron: "2,7,12,17,22,27,32,37,42,47,52,57 * * * 1-5"
     # Sunday maintenance / economic calendar refresh.
     - cron: "18 12 * * 0"
 
