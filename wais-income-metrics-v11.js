@@ -15,37 +15,33 @@
       const sustainable=Number(q.sustainableIncomeYield);
       const consistency=Number(q.incomeConsistency);
 
+      // Current 30D Income Rate is the primary live income metric because it reacts to
+      // the rolling 30-day distribution window and the latest regular-close price.
       const hero=card.querySelector('.yield-hero');
       if(hero){
         const label=hero.querySelector('span');
         const strong=hero.querySelector('strong');
         const small=hero.querySelector('small');
-        if(label) label.textContent='WAIS SUSTAINABLE INCOME YIELD*';
-        if(strong) strong.textContent=pct(sustainable);
-        if(small) small.textContent=`30D ${pct(rate30)} · Consistency ${num(consistency)}/100`;
+        if(label) label.textContent='CURRENT 30D INCOME RATE*';
+        if(strong) strong.textContent=pct(rate30);
+        if(small) small.textContent=`Sustainable ${pct(sustainable)} · Consistency ${num(consistency)}/100`;
       }
 
       const rows=[...card.querySelectorAll('.stock-meta > div')];
       const byLabel=(text)=>rows.find(r=>r.querySelector('span')?.textContent?.includes(text));
-      const annual=byLabel('Annualized T12M Dist. Yield');
+      const annual=byLabel('Annualized T12M Dist. Yield') || byLabel('TTM Income Yield');
       if(annual){ annual.querySelector('span').textContent='TTM Income Yield*'; annual.querySelector('b').textContent=pct(ttm); }
-      const monthly=byLabel('Est. Monthly Cash Yield');
-      if(monthly){ monthly.querySelector('span').textContent='Current 30D Income Rate*'; monthly.querySelector('b').textContent=pct(rate30); }
-      const weekly=rows.find(r=>/Est\. Weekly Cash Yield|Distribution Frequency/.test(r.querySelector('span')?.textContent||''));
+      const monthly=byLabel('Est. Monthly Cash Yield') || byLabel('Current 30D Income Rate');
+      if(monthly){ monthly.querySelector('span').textContent='WAIS Sustainable Income Yield*'; monthly.querySelector('b').textContent=pct(sustainable); }
+      const weekly=rows.find(r=>/Est\. Weekly Cash Yield|Distribution Frequency|Income Consistency/.test(r.querySelector('span')?.textContent||''));
       if(weekly){ weekly.querySelector('span').textContent='Income Consistency*'; weekly.querySelector('b').textContent=`${num(consistency)}/100`; }
 
-      if(!byLabel('Sustainable Income Yield')){
-        const meta=card.querySelector('.stock-meta');
-        if(meta){
-          const row=document.createElement('div');
-          row.innerHTML=`<span>Sustainable Income Yield*</span><b>${pct(sustainable)}</b>`;
-          meta.insertBefore(row,meta.children[5]||null);
-        }
-      }
+      const duplicate=[...card.querySelectorAll('.stock-meta > div')].filter(r=>r.querySelector('span')?.textContent==='Sustainable Income Yield*');
+      duplicate.slice(1).forEach(el=>el.remove());
     });
 
     const note=document.getElementById('incomeSystemNote');
-    if(note) note.textContent='WAIS Income v1.1：Percentage 以四個不同用途顯示：TTM Income Yield = 過去12個月實際分派率；Current 30D Income Rate = 最近30日收入速度；Sustainable Income Yield = 以月度分派中位數及一致性修正後的研究性可持續收入率；Income Consistency = 0–100 的分派穩定度。Weekly / Monthly ETF 先轉成相同月度桶比較。5%+ screen 以 Sustainable Income Yield 為核心門檻之一，但不等於買入訊號；READY 1、NAV、Total Return、ROC及風險門檻仍然獨立。';
+    if(note) note.textContent='WAIS Income：Current 30D Income Rate 顯示最近30日實際收入速度；TTM Income Yield 顯示過去12個月實際分派；WAIS Sustainable Income Yield 用作可持續性研究比較；Income Consistency 評估分派穩定度。Income READY 仍須同時通過價格、NAV、Total Return、distribution sustainability、流動性與風險門檻。';
   }
 
   document.addEventListener('DOMContentLoaded',()=>{
@@ -53,4 +49,6 @@
     document.getElementById('incomeYieldFilter')?.addEventListener('change',()=>setTimeout(applyIncomeMetrics,80));
     window.addEventListener('focus',()=>setTimeout(applyIncomeMetrics,80));
   });
+  window.addEventListener('wais:quotes-updated',()=>setTimeout(applyIncomeMetrics,80));
+  window.WAIS_APPLY_INCOME_METRICS=applyIncomeMetrics;
 })();
