@@ -1,4 +1,4 @@
-name: Update Market Data
+name: MANUAL · Update Market Data
 
 on:
   workflow_dispatch:
