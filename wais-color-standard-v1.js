@@ -1,12 +1,12 @@
-// WAIS UNIVERSAL COLOR STANDARD v1.0
+// WAIS UNIVERSAL COLOR STANDARD v1.1
 // Single source of truth for public decision-stage colours across stocks, Hidden Gems, Income ETFs and dashboard actions.
-// This file is presentation-only. It contains no proprietary scoring weights or private portfolio logic.
+// Presentation-only. No proprietary scoring weights or private portfolio logic are exposed here.
 (function(){
   const STANDARD={
     GREEN:{meaning:'ACTION CONFIRMED / READY / ACTIVE MANAGEMENT'},
     YELLOW:{meaning:'WAIT / CANDIDATE+ / NEAR ENTRY / TECH READY PENDING CONFIRMATION'},
     BLUE:{meaning:'WATCH / CANDIDATE / RESEARCH / VALIDATING / DISCOVERY'},
-    PURPLE:{meaning:'DEFENSE / PROTECT / TRIM'},
+    PURPLE:{meaning:'DEFENSE / PROTECT / TRIM / MOSTLY CASH'},
     RED:{meaning:'EXIT / REJECT / STOP / PHASE OUT / AVOID'},
     GREY:{meaning:'NO SIGNAL / DATA INSUFFICIENT'}
   };
@@ -17,13 +17,14 @@
   function colorForStatus(status=''){
     const s=cleanText(status);
     if(!s || /NO SIGNAL|NONE|DATA PENDING|INSUFFICIENT|UNKNOWN/.test(s)) return 'grey';
-    // Terminal / risk actions take priority over words such as READY contained elsewhere.
+    // Terminal actions always override other words in the label.
     if(/EXIT|REJECT|STOP|PHASE OUT|REMOVE|AVOID/.test(s)) return 'red';
-    if(/DEFENSE|DEFENSIVE|PROTECT|TRIM/.test(s)) return 'purple';
-    // Near-ready states must never become green merely because their label contains the word READY.
+    // Portfolio/risk protection is purple, not red.
+    if(/DEFENSE|DEFENSIVE|PROTECT|TRIM|MOSTLY CASH/.test(s)) return 'purple';
+    // Near-ready states must never become green merely because the text contains READY.
     if(/CANDIDATE\+|READY WATCH|NEAR ENTRY|TECH READY|ENTRY WATCH|EVENT WATCH|WAIT|CAUTIOUS|PENDING CONFIRMATION/.test(s)) return 'yellow';
-    // Green is reserved for confirmed actionable / already-managed states.
-    if(/(^|\b)READY 1(\b|$)|READY INCOME 1|\bBUY\b|\bADD\b|FIRST TRANCHE|\bHOLD\b|\bMANAGE\b/.test(s)) return 'green';
+    // Green is reserved for an explicitly confirmed action state.
+    if(/(^|\b)READY 1(\b|$)|READY INCOME 1|^READY$|\bBUY\b|\bADD\b|FIRST TRANCHE|\bHOLD\b|\bMANAGE\b/.test(s)) return 'green';
     if(/CANDIDATE|WATCH|RESEARCH|DISCOVERY|VALIDAT|SCOUT|EARLY/.test(s)) return 'blue';
     return 'grey';
   }
@@ -35,7 +36,6 @@
     el.dataset.waisCanonicalColour=colorForStatus(status);
   }
 
-  // Replace the legacy status mapper whenever app.js has already defined it.
   function installGlobalMappers(){
     window.getSignalMeta=function(status=''){
       const color=colorForStatus(status);
@@ -51,12 +51,11 @@
   }
 
   function normalizeGeneralSignals(){
-    // Stock / dashboard chips: classify from the visible decision label.
     document.querySelectorAll('.signal-chip,.status-text,.pill').forEach(el=>{
       const txt=cleanText(el.textContent);
       if(txt) applyColour(el,txt);
     });
-    // Hidden Gems: VALIDATING and RESEARCH are both BLUE under the universal standard.
+    // Hidden Gems: VALIDATING and RESEARCH are BLUE under the universal standard.
     document.querySelectorAll('.research-stage-chip,.research-stage-cell').forEach(el=>applyColour(el,el.textContent));
   }
 
@@ -74,7 +73,6 @@
       applyColour(card.querySelector('.today-action'),status);
     });
 
-    // Preserve the existing functional stage keys, but restore the original WAIS colour language.
     const navMap={
       ready:{label:'GREEN · READY INCOME 1',status:'READY INCOME 1'},
       watch:{label:'YELLOW · WATCH INCOME',status:'CANDIDATE+ / NEAR ENTRY'},
@@ -98,7 +96,26 @@
     normalizeGeneralSignals();
     normalizeIncome();
   }
-  function schedule(){setTimeout(normalizeAll,60);setTimeout(normalizeAll,260);setTimeout(normalizeAll,700);}
+  let scheduled=false;
+  function schedule(){
+    if(scheduled) return;
+    scheduled=true;
+    setTimeout(()=>{scheduled=false;normalizeAll();},50);
+    setTimeout(normalizeAll,260);
+    setTimeout(normalizeAll,750);
+  }
+  function installRenderObserver(){
+    if(window.__WAIS_COLOR_OBSERVER__) return;
+    const observer=new MutationObserver(mutations=>{
+      // Observe only DOM additions/removals. Class/style changes performed by normalizeAll do not retrigger this observer.
+      if(mutations.some(m=>m.type==='childList'&&(m.addedNodes.length||m.removedNodes.length))) schedule();
+    });
+    ['dashboard','top-picks','hidden-gems','income','watchlist','portfolio'].forEach(id=>{
+      const node=document.getElementById(id);
+      if(node) observer.observe(node,{childList:true,subtree:true});
+    });
+    window.__WAIS_COLOR_OBSERVER__=observer;
+  }
 
   const css=document.createElement('style');
   css.id='wais-universal-colour-standard';
@@ -117,17 +134,22 @@
     #income .income-card.wais-color-red{border-color:rgba(228,84,84,.66)!important}
     #income .income-card.wais-color-grey{border-color:rgba(135,145,160,.46)!important}
 
-    /* Retire the temporary Cyan / Orange / Violet visual meanings without breaking their functional stage keys. */
+    /* Temporary Cyan / Orange / Violet decision meanings are retired. Functional stage keys remain intact. */
     .income-stage-watch{color:#ffe18b!important;border-color:rgba(231,190,72,.66)!important;background:rgba(198,151,42,.15)!important}
     .income-stage-candidate,.income-stage-research{color:#a9d8ff!important;border-color:rgba(86,161,220,.62)!important;background:rgba(57,126,185,.14)!important}
     .income-stage-defense{color:#ffaaa9!important;border-color:rgba(228,84,84,.66)!important;background:rgba(185,55,55,.14)!important}
     .stage-validating,.stage-research,.stage-watchlist{color:#a9d8ff!important;border-color:rgba(86,161,220,.62)!important;background:rgba(57,126,185,.14)!important}
     .signal-orange{color:#ffe18b!important;border-color:rgba(231,190,72,.66)!important;background:rgba(198,151,42,.15)!important}
     .signal-purple{color:#d6b9ff!important;border-color:rgba(157,105,221,.64)!important;background:rgba(123,76,182,.14)!important}
+    .level-defensive .orange-dot{background:#9d69dd!important;box-shadow:0 0 0 4px rgba(157,105,221,.12)!important}
   `;
   document.head.appendChild(css);
 
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(normalizeAll,900));
+  document.addEventListener('DOMContentLoaded',()=>{
+    setTimeout(()=>{normalizeAll();installRenderObserver();},900);
+    setTimeout(normalizeAll,1600);
+  });
+  window.addEventListener('load',()=>setTimeout(()=>{normalizeAll();installRenderObserver();},120));
   window.addEventListener('wais:quotes-updated',schedule);
   window.addEventListener('focus',schedule);
   document.addEventListener('click',e=>{if(e.target.closest?.('.income-stage-btn,[data-jump],.nav-item')) schedule();});
