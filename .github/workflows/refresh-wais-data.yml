@@ -8,9 +8,9 @@ on:
       - "update_market_data.py"
       - "update_stock_prices.py"
   schedule:
-    # Fast data layer: target every 5 minutes on weekdays.
-    # GitHub schedule timing is best-effort; runtime freshness guard flags missed cycles.
-    - cron: "*/5 * * * 1-5"
+    # Fast data layer: target every 5 minutes on weekdays, offset from :00 to reduce GitHub scheduler congestion.
+    # GitHub scheduled workflows are best-effort, so runtime freshness guards remain authoritative.
+    - cron: "2,7,12,17,22,27,32,37,42,47,52,57 * * * 1-5"
     # Sunday maintenance / economic calendar refresh.
     - cron: "18 12 * * 0"
 
