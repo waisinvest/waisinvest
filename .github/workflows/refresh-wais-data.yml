@@ -1,4 +1,4 @@
-name: Refresh WAIS Data
+name: AUTO · Refresh WAIS Data (5-min target)
 
 on:
   workflow_dispatch:
@@ -8,11 +8,9 @@ on:
       - "update_market_data.py"
       - "update_stock_prices.py"
   schedule:
-    # Fast market-data layer: target every 5 minutes on weekdays.
-    # This refreshes market indicators, stock prices and income-ETF data only.
-    # It does NOT automatically promote/downgrade READY 1 / CANDIDATE+ / CANDIDATE states;
-    # those remain governed by WAIS decision logic and evidence confirmation.
-    - cron: "2,7,12,17,22,27,32,37,42,47,52,57 * * * 1-5"
+    # Fast data layer: target every 5 minutes on weekdays.
+    # GitHub schedule timing is best-effort; runtime freshness guard flags missed cycles.
+    - cron: "*/5 * * * 1-5"
     # Sunday maintenance / economic calendar refresh.
     - cron: "18 12 * * 0"
 
