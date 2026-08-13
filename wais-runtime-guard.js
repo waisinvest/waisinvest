@@ -110,12 +110,31 @@
     window.dispatchEvent(new CustomEvent('wais:quotes-updated', { detail: data }));
   }
 
+  function riskPosture(score){
+    const n=Number(score);
+    if(!Number.isFinite(n)) return 'WATCH';
+    if(n<=20) return 'AGGRESSIVE';
+    if(n<=40) return 'SELECTIVE';
+    if(n<=60) return 'CAUTIOUS';
+    if(n<=80) return 'DEFENSIVE';
+    return 'CRISIS';
+  }
+
   function renderSystemState() {
     const d=window.WAIS_MARKET_DATA||{};
+    const action=String(d.marketMode||'WAIT').toUpperCase();
+    const posture=riskPosture(d.riskScore);
     set('riskScoreMetric', d.riskScore ?? '—');
     set('cashMetric', d.recommendedCash ?? '—');
-    set('marketMode', d.marketMode || 'WAIT');
-    set('defenseStatus', d.defenseStatus || (Number(d.riskScore)>60?'DEFENSIVE':'WATCH'));
+    set('marketMode', action);
+    // Weekly Action Plan must show the actionable mode, not a second risk label.
+    set('actionPill', action);
+    // The right-hand metric is a risk posture, distinct from the actionable WAIT/BUY mode.
+    set('defenseStatus', posture);
+    const postureEl=$('defenseStatus');
+    const postureCard=postureEl?.closest('.metric-card');
+    const postureLabel=postureCard?.querySelector(':scope > span');
+    if(postureLabel) postureLabel.textContent='Risk Posture';
     const p=$('riskProgress'); if(p && Number.isFinite(Number(d.riskScore))) p.style.width=`${Math.max(0,Math.min(100,Number(d.riskScore)))}%`;
   }
 
