@@ -1,4 +1,4 @@
-// WAIS runtime freshness guard: cache-safe reads, visible freshness labels and stale-data protection.
+// WAIS runtime freshness guard: cache-safe reads, concise session labels and stale-data protection.
 (() => {
   const REFRESH_MS = 5 * 60 * 1000;
   const STALE_MINUTES = 35;
@@ -15,11 +15,33 @@
   const fmt = (n, digits=2) => Number.isFinite(Number(n)) ? Number(n).toLocaleString('en-US',{maximumFractionDigits:digits,minimumFractionDigits:digits}) : '—';
   const fmtPct = n => Number.isFinite(Number(n)) ? `${Number(n)>=0?'+':''}${Number(n).toFixed(2)}%` : '—';
   const set = (id, value) => { const el=$(id); if(el) el.textContent=value; };
+  const zonedParts = (value, zone) => {
+    const t=parseTime(value); if(t==null) return null;
+    const parts=new Intl.DateTimeFormat('en-CA',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(t));
+    return Object.fromEntries(parts.map(x=>[x.type,x.value]));
+  };
   const dateInZone = (value, zone) => {
-    const t=parseTime(value); if(t==null) return '—';
-    const parts=new Intl.DateTimeFormat('en-CA',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(t));
-    const obj=Object.fromEntries(parts.map(x=>[x.type,x.value]));
-    return `${obj.year}/${obj.month}/${obj.day}`;
+    const p=zonedParts(value,zone); return p?`${p.year}/${p.month}/${p.day}`:'—';
+  };
+  const todayInZone = zone => dateInZone(new Date().toISOString(),zone);
+  const nowMinutesInZone = zone => {
+    const p=zonedParts(new Date().toISOString(),zone); return p?Number(p.hour)*60+Number(p.minute):null;
+  };
+  const marketSession = (key,q,zone,qDate) => {
+    const explicit=String(q?.session||'').trim().toUpperCase();
+    if(explicit && explicit!=='LATEST') return explicit;
+    const status=String(q?.dataStatus||'');
+    if(/completed.*close|daily close/i.test(status) && !/snapshot/i.test(status)) return 'CLOSE';
+    if(qDate!==todayInZone(zone)) return 'CLOSE';
+    const m=nowMinutesInZone(zone);
+    if(m==null) return 'SNAPSHOT';
+    if(key==='HSI'||key==='HSTECH'){
+      if((m>=570&&m<720)||(m>=780&&m<960)) return 'REGULAR';
+      if(m>=720&&m<780) return 'MIDDAY';
+      return 'CLOSE';
+    }
+    if(m>=570&&m<960) return 'REGULAR';
+    return 'CLOSE';
   };
 
   const mobileStyle=document.createElement('style');
@@ -35,16 +57,16 @@
   document.head.appendChild(mobileStyle);
 
   const map = {
-    SP500:['sp500Value','sp500Change','America/New_York','US'],
-    NASDAQ100:['nasdaq100Value','nasdaq100Change','America/New_York','US'],
-    SOX:['soxValue','soxChange','America/New_York','US'],
-    VIX:['vixValue','vixChange','America/New_York','US'],
-    US10Y:['us10yValue','us10yChange','America/New_York','US'],
-    NASDAQ:['nasdaqValue','nasdaqChange','America/New_York','US'],
-    DOW:['dowValue','dowChange','America/New_York','US'],
-    HSI:['hsiValue','hsiChange','Asia/Hong_Kong','HK'],
-    HSTECH:['hstechValue','hstechChange','Asia/Hong_Kong','HK'],
-    HSIF:['hsifValue','hsifChange','Asia/Hong_Kong','HK FUTURES']
+    SP500:['sp500Value','sp500Change','America/New_York'],
+    NASDAQ100:['nasdaq100Value','nasdaq100Change','America/New_York'],
+    SOX:['soxValue','soxChange','America/New_York'],
+    VIX:['vixValue','vixChange','America/New_York'],
+    US10Y:['us10yValue','us10yChange','America/New_York'],
+    NASDAQ:['nasdaqValue','nasdaqChange','America/New_York'],
+    DOW:['dowValue','dowChange','America/New_York'],
+    HSI:['hsiValue','hsiChange','Asia/Hong_Kong'],
+    HSTECH:['hstechValue','hstechChange','Asia/Hong_Kong'],
+    HSIF:['hsifValue','hsifChange','Asia/Hong_Kong']
   };
 
   function renderIndicators(data) {
@@ -57,28 +79,28 @@
         const age=ageMinutes(q.asOf);
         const stale=!Number.isFinite(age) || age>FUTURES_MAX_AGE_MIN || /fallback/i.test(String(q.freshness||''));
         if(stale){
-          set(vId,'—'); set(cId,'STALE FUTURES · NOT USED');
-          if(desc) desc.textContent=`恒指期貨報價已過時（最後 ${qDate}）；WAIS 不會把舊價當最新訊號。`;
+          set(vId,'—'); set(cId,'STALE');
+          if(desc) desc.textContent=`Last ${qDate}`;
         }else{
-          set(vId,fmt(q.value)); set(cId,`${fmtPct(q.changePercent)} · ${String(q.session||'LATEST').toUpperCase()}`);
-          if(desc) desc.textContent=`恒指期貨 ${q.session||'Latest'} · ${qDate} · ${String(q.freshness||'LATEST').toUpperCase()}`;
+          const session=String(q.session||'LATEST').toUpperCase();
+          set(vId,fmt(q.value)); set(cId,`${fmtPct(q.changePercent)} · ${session}`);
+          if(desc) desc.textContent=`${String(q.contractMonth||'').toUpperCase()} · ${qDate}`.replace(/^ · /,'');
         }
       }else{
-        const closeDate=String(q.regularCloseDate||'');
-        const isClose=closeDate && closeDate===qDate.replaceAll('/','-');
+        const session=marketSession(key,q,zone,qDate);
         set(vId,fmt(q.value));
-        set(cId,`${fmtPct(q.changePercent)} · ${isClose?'CLOSE':'SNAPSHOT'} ${qDate}`);
+        set(cId,`${fmtPct(q.changePercent)} · ${session}`);
         if(desc){
-          const base=desc.dataset.waisBase || desc.textContent || '';
-          desc.dataset.waisBase=base.replace(/ · (CLOSE|SNAPSHOT).*$/,'');
-          desc.textContent=`${desc.dataset.waisBase} · ${isClose?'CLOSE':'SNAPSHOT'} ${qDate}`;
+          const base=(desc.dataset.waisBase||desc.textContent||'').replace(/ · (CLOSE|SNAPSHOT|REGULAR|MIDDAY).*$/,'').replace(/ · \d{4}\/\d{2}\/\d{2}$/,'');
+          desc.dataset.waisBase=base;
+          desc.textContent=`${base} · ${qDate}`;
         }
       }
       if(v) v.title=`${q.source||'Unknown source'} · ${q.asOf||'unknown time'} · ${q.dataStatus||''}`;
       if(c) c.title=v?.title||'';
     });
     const stamp=data?.lastUpdated;
-    set('marketIndicatorsUpdated', `VERIFIED DATA FILE · ${stamp ? new Date(stamp).toLocaleString('en-CA',{timeZone:'America/New_York'})+' ET' : 'time unavailable'}`);
+    set('marketIndicatorsUpdated', `VERIFIED DATA · ${stamp ? new Date(stamp).toLocaleString('en-CA',{timeZone:'America/New_York'})+' ET' : 'time unavailable'}`);
     set('marketIndicatorsTitle', '全球市場最新可確認指標');
   }
 
@@ -108,9 +130,9 @@
       renderSystemState();
       if(staleIndicators || staleStocks){
         const staleParts=[];
-        if(staleIndicators) staleParts.push('market indicators');
-        if(staleStocks) staleParts.push('stock/ETF quotes');
-        set('marketIndicatorsUpdated', `⚠ AUTO DATA STALE · ${staleParts.join(' + ')} · waiting for next scheduled refresh`);
+        if(staleIndicators) staleParts.push('market');
+        if(staleStocks) staleParts.push('stocks/ETFs');
+        set('marketIndicatorsUpdated', `⚠ STALE · ${staleParts.join(' + ')}`);
       }
       window.WAIS_DATA_HEALTH = {
         ok:!(staleIndicators||staleStocks),reason,checkedAt:new Date().toISOString(),
@@ -121,7 +143,7 @@
     } catch(error) {
       console.error('[WAIS] runtime data refresh failed', error);
       window.WAIS_DATA_HEALTH={ok:false,reason,error:String(error),checkedAt:new Date().toISOString()};
-      set('marketIndicatorsUpdated','⚠ AUTO DATA REFRESH FAILED · last displayed values may be stale');
+      set('marketIndicatorsUpdated','⚠ DATA REFRESH FAILED');
     } finally { busy=false; }
   }
 
