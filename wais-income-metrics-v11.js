@@ -3,6 +3,13 @@
 (function(){
   function pct(v,d=2){ const n=Number(v); return Number.isFinite(n)?`${n.toFixed(d)}%`:'—'; }
   function num(v,d=0){ const n=Number(v); return Number.isFinite(n)?n.toFixed(d):'—'; }
+  function cash10kFrom30dRate(v,currency='USD'){
+    const n=Number(v);
+    if(!Number.isFinite(n)) return '—';
+    const cash=10000*n/100;
+    const c=String(currency||'USD').toUpperCase();
+    return `≈ ${c} ${cash.toLocaleString('en-US',{maximumFractionDigits:0,minimumFractionDigits:0})} / $10k / 30D`;
+  }
 
   function applyIncomeMetrics(){
     if(typeof livePrices==='undefined') return;
@@ -14,6 +21,7 @@
       const rate30=Number(q.current30dIncomeRate);
       const sustainable=Number(q.sustainableIncomeYield);
       const consistency=Number(q.incomeConsistency);
+      const currency=String(q.currency||'USD').toUpperCase();
 
       // Current 30D Income Rate is the primary live income metric because it reacts to
       // the rolling 30-day distribution window and the latest regular-close price.
@@ -24,7 +32,9 @@
         const small=hero.querySelector('small');
         if(label) label.textContent='CURRENT 30D INCOME RATE*';
         if(strong) strong.textContent=pct(rate30);
-        if(small) small.textContent=`Sustainable ${pct(sustainable)} · Consistency ${num(consistency)}/100`;
+        // Make the hero directly actionable: show the rolling 30-day cash equivalent per $10k.
+        // Sustainability and consistency remain available in the detail rows below.
+        if(small) small.textContent=cash10kFrom30dRate(rate30,currency);
       }
 
       const rows=[...card.querySelectorAll('.stock-meta > div')];
@@ -41,7 +51,7 @@
     });
 
     const note=document.getElementById('incomeSystemNote');
-    if(note) note.textContent='WAIS Income：Current 30D Income Rate 顯示最近30日實際收入速度；TTM Income Yield 顯示過去12個月實際分派；WAIS Sustainable Income Yield 用作可持續性研究比較；Income Consistency 評估分派穩定度。Income READY 仍須同時通過價格、NAV、Total Return、distribution sustainability、流動性與風險門檻。';
+    if(note) note.textContent='WAIS Income：Current 30D Income Rate 顯示最近30日實際收入速度；其下方 $10k / 30D 為按目前30日收入率換算的現金等值。TTM Income Yield、WAIS Sustainable Income Yield 及 Income Consistency 保留在詳細資料作可持續性與穩定度研究。Income READY 仍須同時通過價格、NAV、Total Return、distribution sustainability、流動性與風險門檻。';
   }
 
   document.addEventListener('DOMContentLoaded',()=>{
