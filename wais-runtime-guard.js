@@ -1,6 +1,7 @@
 // WAIS runtime freshness guard: cache-safe reads, visible freshness labels and stale-data protection.
 (() => {
   const REFRESH_MS = 5 * 60 * 1000;
+  const STALE_MINUTES = 35;
   const FUTURES_MAX_AGE_MIN = 60;
   let busy = false;
   const $ = id => document.getElementById(id);
@@ -21,8 +22,6 @@
     return `${obj.year}/${obj.month}/${obj.day}`;
   };
 
-  // Samsung/Android Chromium stability patch for long pages: sticky blur layers can blank the
-  // compositor while scrolling. Disable those effects only on mobile without changing desktop layout.
   const mobileStyle=document.createElement('style');
   mobileStyle.textContent=`@media(max-width:820px){
     html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;background-attachment:scroll!important}
@@ -102,10 +101,23 @@
     if(busy) return; busy=true;
     try {
       const [indicators, stocks] = await Promise.all([fetchJSON('market-indicators.json'), fetchJSON('stock-prices.json')]);
+      const staleIndicators = ageMinutes(indicators?.lastUpdated) > STALE_MINUTES;
+      const staleStocks = ageMinutes(stocks?.lastUpdated) > STALE_MINUTES;
       renderIndicators(indicators);
       exposeFreshQuotes(stocks);
       renderSystemState();
-      window.WAIS_DATA_HEALTH = {ok:true,reason,checkedAt:new Date().toISOString(),indicatorsUpdatedAt:indicators.lastUpdated||null,stocksUpdatedAt:stocks.lastUpdated||null,failedSymbols:indicators.failedSymbols||[]};
+      if(staleIndicators || staleStocks){
+        const staleParts=[];
+        if(staleIndicators) staleParts.push('market indicators');
+        if(staleStocks) staleParts.push('stock/ETF quotes');
+        set('marketIndicatorsUpdated', `⚠ AUTO DATA STALE · ${staleParts.join(' + ')} · waiting for next scheduled refresh`);
+      }
+      window.WAIS_DATA_HEALTH = {
+        ok:!(staleIndicators||staleStocks),reason,checkedAt:new Date().toISOString(),
+        indicatorsUpdatedAt:indicators.lastUpdated||null,stocksUpdatedAt:stocks.lastUpdated||null,
+        staleIndicators,staleStocks,staleThresholdMinutes:STALE_MINUTES,
+        failedSymbols:[...(indicators.failedSymbols||[]),...(stocks.failedSymbols||[])]
+      };
     } catch(error) {
       console.error('[WAIS] runtime data refresh failed', error);
       window.WAIS_DATA_HEALTH={ok:false,reason,error:String(error),checkedAt:new Date().toISOString()};
