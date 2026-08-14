@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-14T20:05:13.279289+00:00",
+  "lastUpdated": "2026-08-14T21:02:56.352633+00:00",
   "marketDates": {
     "US": "2026-08-14",
     "HK": "2026-08-14"
@@ -16,7 +16,7 @@
       "regularCloseDate": "2026-08-14",
       "change": -13.2302,
       "changePercent": -0.1696,
-      "asOf": "2026-08-14T16:00:00-04:00",
+      "asOf": "2026-08-14T16:35:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
@@ -28,7 +28,7 @@
       "regularCloseDate": "2026-08-14",
       "change": -73.8653,
       "changePercent": -0.2756,
-      "asOf": "2026-08-14T16:00:00-04:00",
+      "asOf": "2026-08-14T17:00:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
@@ -40,7 +40,7 @@
       "regularCloseDate": "2026-08-14",
       "change": -38.36,
       "changePercent": -0.1275,
-      "asOf": "2026-08-14T16:00:00-04:00",
+      "asOf": "2026-08-14T17:00:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
@@ -52,7 +52,7 @@
       "regularCloseDate": "2026-08-14",
       "change": -107.5783,
       "changePercent": -0.1998,
-      "asOf": "2026-08-14T16:00:00-04:00",
+      "asOf": "2026-08-14T16:40:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
@@ -64,19 +64,19 @@
       "regularCloseDate": "2026-08-14",
       "change": -38.95,
       "changePercent": -0.3127,
-      "asOf": "2026-08-14T16:00:00-04:00",
+      "asOf": "2026-08-14T17:00:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
     "VIX": {
       "symbol": "^VIX",
-      "value": 14.19,
+      "value": 14.25,
       "previousClose": 14.63,
-      "regularClose": 14.19,
+      "regularClose": 14.25,
       "regularCloseDate": "2026-08-14",
-      "change": -0.44,
-      "changePercent": -3.0075,
-      "asOf": "2026-08-14T15:50:00-04:00",
+      "change": -0.38,
+      "changePercent": -2.5974,
+      "asOf": "2026-08-14T16:10:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
@@ -130,7 +130,7 @@
       "sourceUrl": "https://www.etnet.com.hk/www/eng/futures/index.php?month=202608&subtype=HSI",
       "session": "Regular",
       "freshness": "DELAYED",
-      "ageMinutes": 65,
+      "ageMinutes": 122,
       "expiryDate": null,
       "dataStatus": "Regular HSI spot-month futures; source timestamp preserved; public-display source, not direct exchange API"
     }
