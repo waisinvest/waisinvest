@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-13T21:29:01.680202+00:00",
+  "lastUpdated": "2026-08-14T00:02:33.160032+00:00",
   "marketDates": {
     "US": "2026-08-13",
     "HK": "2026-08-13"
@@ -130,7 +130,7 @@
       "sourceUrl": "https://www.etnet.com.hk/www/eng/futures/index.php?month=202608&subtype=HSI",
       "session": "Regular",
       "freshness": "DELAYED",
-      "ageMinutes": 149,
+      "ageMinutes": 302,
       "expiryDate": null,
       "dataStatus": "Regular HSI spot-month futures; source timestamp preserved; public-display source, not direct exchange API"
     }
