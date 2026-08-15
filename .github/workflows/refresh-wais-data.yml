@@ -41,11 +41,56 @@ jobs:
       - name: Install dependency
         run: python -m pip install --upgrade yfinance
 
-      - name: Update market data
-        run: python update_market_data.py
+      - name: Update market data without stopping the pipeline
+        shell: bash
+        run: |
+          set +e
+          python update_market_data.py
+          rc=$?
+          if [ "$rc" -ne 0 ]; then
+            echo "::warning::Market-data refresh failed. WAIS will preserve the last-known-good files and continue with other sources."
+          fi
+          exit 0
 
-      - name: Update stock and expanded income ETF data
-        run: python update_income_research_universe.py
+      - name: Update stock and expanded income ETF data without stopping the pipeline
+        shell: bash
+        run: |
+          set +e
+          python update_income_research_universe.py
+          rc=$?
+          if [ "$rc" -ne 0 ]; then
+            echo "::warning::Stock/income refresh failed. WAIS will preserve the last-known-good files and continue publishing any other valid updates."
+          fi
+          exit 0
+
+      - name: Validate outputs and restore last-known-good copies if needed
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          files = ["market-indicators.json", "weekly-events.json", "stock-prices.json"]
+          for name in files:
+              path = Path(name)
+              valid = False
+              if path.exists():
+                  try:
+                      json.loads(path.read_text(encoding="utf-8"))
+                      valid = True
+                  except Exception as exc:
+                      print(f"::warning::{name} is invalid after refresh: {exc}")
+              else:
+                  print(f"::warning::{name} is missing after refresh")
+
+              if not valid:
+                  result = subprocess.run(["git", "checkout", "HEAD", "--", name], check=False)
+                  if result.returncode == 0:
+                      print(f"Restored last-known-good {name} from HEAD.")
+                  else:
+                      print(f"::warning::Could not restore {name}; continuing so unrelated valid sources are not blocked.")
+          PY
 
       - name: Commit and publish safely
         run: |
@@ -53,7 +98,7 @@ jobs:
           git config user.email "wais-data-bot@users.noreply.github.com"
           git add market-indicators.json weekly-events.json stock-prices.json
           if git diff --cached --quiet; then
-            echo "No WAIS data changes to commit."
+            echo "No WAIS data changes to commit. Last-known-good data remains active."
             exit 0
           fi
           git commit -m "Auto refresh WAIS market, stock and expanded income ETF data"
