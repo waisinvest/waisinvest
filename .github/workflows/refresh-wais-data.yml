@@ -7,6 +7,7 @@ on:
       - ".github/workflows/refresh-wais-data.yml"
       - "update_market_data.py"
       - "update_stock_prices.py"
+      - "update_income_research_universe.py"
   schedule:
     # Fast data layer: target every 5 minutes on weekdays, offset from :00 to reduce GitHub scheduler congestion.
     # GitHub scheduled workflows are best-effort, so runtime freshness guards remain authoritative.
@@ -43,8 +44,8 @@ jobs:
       - name: Update market data
         run: python update_market_data.py
 
-      - name: Update stock and income ETF data
-        run: python update_stock_prices.py
+      - name: Update stock and expanded income ETF data
+        run: python update_income_research_universe.py
 
       - name: Commit and publish safely
         run: |
@@ -55,7 +56,7 @@ jobs:
             echo "No WAIS data changes to commit."
             exit 0
           fi
-          git commit -m "Auto refresh WAIS market, stock and income ETF data"
+          git commit -m "Auto refresh WAIS market, stock and expanded income ETF data"
           for attempt in 1 2 3 4; do
             git pull --rebase origin main
             if git push origin HEAD:main; then
