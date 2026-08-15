@@ -29,5 +29,9 @@ jobs:
         run: |
           node --check app.js
           node --check auto-refresh.js
+          node --check market-data.js
+          node --check market-data-override.js
+          node --check wais-research-integrity-v1.js
           node --check wais-runtime-guard.js
           node --check wais-public-state.js
+          node --check wais-execution-v13.js
