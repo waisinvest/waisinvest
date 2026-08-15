@@ -1,11 +1,11 @@
 {
-  "lastUpdated": "2026-08-15T18:31:09.977947+00:00",
+  "lastUpdated": "2026-08-15T19:30:42.967175+00:00",
   "marketDates": {
     "US": "2026-08-14",
     "HK": "2026-08-14"
   },
   "marketStatus": "updated",
-  "dataStatus": "Latest available intraday snapshot when available; US index previous close uses daily series; HK index previous close uses prior intraday session when available; HSI futures preserve source timestamp/session; NOT all feeds are direct exchange APIs",
+  "dataStatus": "Latest available intraday snapshot when available; US index previous close uses daily series; HK index previous close uses prior intraday session when available; HSI futures preserve source timestamp/session and distinguish market-closed state from stale data; NOT all feeds are direct exchange APIs",
   "failedSymbols": [],
   "indicators": {
     "SP500": {
@@ -129,10 +129,12 @@
       "source": "ET Net / HKEX market data public display",
       "sourceUrl": "https://www.etnet.com.hk/www/eng/futures/index.php?month=202608&subtype=HSI",
       "session": "Regular",
-      "freshness": "DELAYED",
-      "ageMinutes": 1411,
+      "freshness": "MARKET_CLOSED",
+      "ageMinutes": 1470,
+      "marketOpen": false,
+      "freshnessReason": "Market closed; last verified source session preserved",
       "expiryDate": null,
-      "dataStatus": "Regular HSI spot-month futures; source timestamp preserved; public-display source, not direct exchange API"
+      "dataStatus": "Regular HSI spot-month futures; Market closed; last verified source session preserved; source timestamp preserved; public-display source, not direct exchange API"
     }
   }
 }
