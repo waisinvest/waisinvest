@@ -1,35 +1,74 @@
 {
-  "lastUpdated": "2026-08-09T00:00:00-04:00",
+  "lastUpdated": "2026-08-15T13:20:00-04:00",
   "window": {
-    "from": "2026-08-09",
-    "to": "2026-08-16"
+    "from": "2026-08-15",
+    "to": "2026-08-29"
   },
-  "dataStatus": "Current week + next week reviewed seed; auto updater refreshes official events where available",
+  "dataStatus": "Refreshed from official Federal Reserve, U.S. Census Bureau, U.S. Bureau of Economic Analysis and NVIDIA Investor Relations schedules. Times are ET. This is an event calendar, not a real-time market feed.",
   "events": [
     {
-      "dateISO": "2026-08-12",
-      "date": "08月12日",
-      "event": "美國 CPI",
+      "dateISO": "2026-08-18",
+      "date": "08月18日",
+      "event": "美國新屋動工／建築許可",
       "time": "08:30 ET",
       "referenceMonth": "2026年7月",
-      "source": "U.S. Bureau of Labor Statistics"
+      "source": "U.S. Census Bureau"
     },
     {
-      "dateISO": "2026-08-13",
-      "date": "08月13日",
-      "event": "美國 PPI",
-      "time": "08:30 ET",
+      "dateISO": "2026-08-18",
+      "date": "08月18日",
+      "event": "美國工業生產／產能利用率",
+      "time": "09:15 ET",
       "referenceMonth": "2026年7月",
-      "source": "U.S. Bureau of Labor Statistics"
+      "source": "Federal Reserve"
     },
     {
-      "dateISO": "2026-08-14",
-      "date": "08月14日",
-      "event": "美國零售銷售",
+      "dateISO": "2026-08-19",
+      "date": "08月19日",
+      "event": "FOMC 會議紀要（7月28–29日會議）",
+      "time": "14:00 ET",
+      "referenceMonth": "Federal Reserve",
+      "source": "Federal Reserve"
+    },
+    {
+      "dateISO": "2026-08-20",
+      "date": "08月20日",
+      "event": "美國 Advance Services Report",
+      "time": "10:00 ET",
+      "referenceMonth": "2026年第二季",
+      "source": "U.S. Census Bureau"
+    },
+    {
+      "dateISO": "2026-08-25",
+      "date": "08月25日",
+      "event": "美國新屋銷售",
+      "time": "10:00 ET",
+      "referenceMonth": "2026年7月",
+      "source": "U.S. Census Bureau"
+    },
+    {
+      "dateISO": "2026-08-26",
+      "date": "08月26日",
+      "event": "美國 GDP 第二次估算＋Personal Income and Outlays",
+      "time": "08:30 ET",
+      "referenceMonth": "2026年第二季／2026年7月",
+      "source": "U.S. Bureau of Economic Analysis"
+    },
+    {
+      "dateISO": "2026-08-26",
+      "date": "08月26日",
+      "event": "NVDA Q2 FY2027 業績",
+      "time": "17:00 ET",
+      "referenceMonth": "Fiscal Q2 2027",
+      "source": "NVIDIA Investor Relations"
+    },
+    {
+      "dateISO": "2026-08-27",
+      "date": "08月27日",
+      "event": "美國 Advance Economic Indicators",
       "time": "08:30 ET",
       "referenceMonth": "2026年7月",
       "source": "U.S. Census Bureau"
     }
   ]
 }
-
