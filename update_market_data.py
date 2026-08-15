@@ -67,6 +67,14 @@ def hk_futures_market_open(now_hk):
     return (510 <= minutes <= 980) or (1020 <= minutes <= 1800)
 
 
+def hsi_futures_session(as_of_hk, has_after_trade):
+    """ET Net timestamps the completed overnight session at 03:00 HKT; include that boundary."""
+    if not has_after_trade:
+        return "Regular"
+    minutes = as_of_hk.hour * 60 + as_of_hk.minute
+    return "After-Trade" if (minutes >= 17 * 60 or minutes <= 3 * 60) else "Regular"
+
+
 def update_hsi_futures(indicators):
     now_hk = datetime.now(ZoneInfo("Asia/Hong_Kong"))
     contract = now_hk.strftime("%Y%m")
@@ -75,7 +83,7 @@ def update_hsi_futures(indicators):
     regular = re.search(rf"HSI\(0?{now_hk.month}/\d{{4}}\) Regular.*?([0-9]{{2}},[0-9]{{3}}).*?([+-][0-9,]+)\s*\(([+-][0-9.]+)%\).*?C[^0-9]*([0-9]{{2}},[0-9]{{3}})", compact, re.I)
     at = re.search(rf"HSI\(0?{now_hk.month}/\d{{4}}\) AT.*?([0-9]{{2}},[0-9]{{3}}).*?([+-][0-9,]+)\s*\(([+-][0-9.]+)%\)", compact, re.I)
     stamp = re.search(r"Futures are real time updated\.\s*Last updated:\s*(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2})", compact, re.I)
-    expiry = re.search(r"Expiry Date\s*\|\s*(\d{2}/\d{2}/\d{4})", compact, re.I)
+    expiry = re.search(r"Expiry Date.*?(\d{2}/\d{2}/\d{4})", compact, re.I)
     if not regular or not stamp:
         raise RuntimeError("ET Net HSI futures fields not found")
 
@@ -83,14 +91,20 @@ def update_hsi_futures(indicators):
     regular_value = float(regular.group(1).replace(",", ""))
     regular_change = float(regular.group(2).replace(",", ""))
     regular_pct = float(regular.group(3))
-    previous_close = float(regular.group(4).replace(",", ""))
-    quote_value, quote_change, quote_pct, session = regular_value, regular_change, regular_pct, "Regular"
+    regular_previous_close = float(regular.group(4).replace(",", ""))
+    quote_value, quote_change, quote_pct = regular_value, regular_change, regular_pct
+    session = hsi_futures_session(as_of_hk, at is not None)
+    previous_close = regular_previous_close
 
-    if at and (as_of_hk.hour >= 17 or as_of_hk.hour < 3):
+    if session == "After-Trade" and at:
         quote_value = float(at.group(1).replace(",", ""))
         quote_change = float(at.group(2).replace(",", ""))
         quote_pct = float(at.group(3))
-        session = "After-Trade"
+        previous_close = regular_value
+
+    regular_close_date = as_of_hk.date()
+    if session == "After-Trade" and as_of_hk.hour <= 3:
+        regular_close_date = regular_close_date - timedelta(days=1)
 
     age_minutes = max(0, int((now_hk - as_of_hk).total_seconds() // 60))
     market_open = hk_futures_market_open(now_hk)
@@ -103,7 +117,7 @@ def update_hsi_futures(indicators):
     indicators["HSIF"] = {
         "symbol": f"HSI-{contract}", "contract": contract, "value": quote_value,
         "previousClose": previous_close, "regularClose": regular_value,
-        "regularCloseDate": as_of_hk.date().isoformat(), "change": quote_change,
+        "regularCloseDate": regular_close_date.isoformat(), "change": quote_change,
         "changePercent": quote_pct, "asOf": as_of_hk.isoformat(),
         "source": "ET Net / HKEX market data public display", "sourceUrl": url,
         "session": session, "freshness": freshness, "ageMinutes": age_minutes,
