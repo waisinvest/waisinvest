@@ -15,6 +15,20 @@ def test_market_json_shape():
         assert q.get('source') and q.get('asOf')
         assert isinstance(q.get('value'),(int,float))
 
+def test_hsi_futures_shape_and_freshness_contract():
+    d=load('market-indicators.json')
+    q=d['indicators']['HSIF']
+    for k in ['source','asOf','contract','session','freshness']:
+        assert q.get(k) is not None
+    assert isinstance(q.get('value'),(int,float))
+    assert q['freshness'] in ['LIVE','RECENT','DELAYED','MARKET_CLOSED','FALLBACK']
+
+def test_hsi_futures_generator_handles_market_closed_state():
+    text=(ROOT/'update_market_data.py').read_text(encoding='utf-8')
+    assert 'hk_futures_market_open' in text
+    assert 'MARKET_CLOSED' in text
+    assert 'marketOpen' in text and 'freshnessReason' in text
+
 def test_stock_json_shape():
     d=load('stock-prices.json')
     assert d['prices']
