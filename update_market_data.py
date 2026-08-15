@@ -59,6 +59,14 @@ def latest_intraday(ticker):
     return float(c.iloc[-1]), ts, previous_session_close
 
 
+def hk_futures_market_open(now_hk):
+    """Broad HK index-futures trading windows; weekends are explicitly closed."""
+    if now_hk.weekday() >= 5:
+        return False
+    minutes = now_hk.hour * 60 + now_hk.minute
+    return (510 <= minutes <= 980) or (1020 <= minutes <= 1800)
+
+
 def update_hsi_futures(indicators):
     now_hk = datetime.now(ZoneInfo("Asia/Hong_Kong"))
     contract = now_hk.strftime("%Y%m")
@@ -85,7 +93,13 @@ def update_hsi_futures(indicators):
         session = "After-Trade"
 
     age_minutes = max(0, int((now_hk - as_of_hk).total_seconds() // 60))
-    freshness = "LIVE" if age_minutes <= 5 else ("RECENT" if age_minutes <= 20 else "DELAYED")
+    market_open = hk_futures_market_open(now_hk)
+    if not market_open:
+        freshness = "MARKET_CLOSED"
+        freshness_reason = "Market closed; last verified source session preserved"
+    else:
+        freshness = "LIVE" if age_minutes <= 5 else ("RECENT" if age_minutes <= 20 else "DELAYED")
+        freshness_reason = "Wall-clock freshness applies while HK futures market is open"
     indicators["HSIF"] = {
         "symbol": f"HSI-{contract}", "contract": contract, "value": quote_value,
         "previousClose": previous_close, "regularClose": regular_value,
@@ -93,8 +107,9 @@ def update_hsi_futures(indicators):
         "changePercent": quote_pct, "asOf": as_of_hk.isoformat(),
         "source": "ET Net / HKEX market data public display", "sourceUrl": url,
         "session": session, "freshness": freshness, "ageMinutes": age_minutes,
+        "marketOpen": market_open, "freshnessReason": freshness_reason,
         "expiryDate": expiry.group(1) if expiry else None,
-        "dataStatus": f"{session} HSI spot-month futures; source timestamp preserved; public-display source, not direct exchange API",
+        "dataStatus": f"{session} HSI spot-month futures; {freshness_reason}; source timestamp preserved; public-display source, not direct exchange API",
     }
     print(f"OK HSIF: {quote_value:.0f} ({session}, {freshness}) @ {as_of_hk.isoformat()}")
 
@@ -189,7 +204,7 @@ def main():
     save_json(OUTPUT_PATH,{
         "lastUpdated":datetime.now(timezone.utc).isoformat(),"marketDates":market_dates,
         "marketStatus":"updated" if successful else "stale_preserved",
-        "dataStatus":"Latest available intraday snapshot when available; US index previous close uses daily series; HK index previous close uses prior intraday session when available; HSI futures preserve source timestamp/session; NOT all feeds are direct exchange APIs",
+        "dataStatus":"Latest available intraday snapshot when available; US index previous close uses daily series; HK index previous close uses prior intraday session when available; HSI futures preserve source timestamp/session and distinguish market-closed state from stale data; NOT all feeds are direct exchange APIs",
         "failedSymbols":failed,"indicators":indicators,
     })
     try: update_weekly_events()
