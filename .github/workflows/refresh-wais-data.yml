@@ -12,8 +12,9 @@ on:
     # Fast data layer: target every 5 minutes on weekdays, offset from :00 to reduce GitHub scheduler congestion.
     # GitHub scheduled workflows are best-effort, so runtime freshness guards remain authoritative.
     - cron: "2,7,12,17,22,27,32,37,42,47,52,57 * * * 1-5"
-    # Sunday maintenance / economic calendar refresh.
-    - cron: "18 12 * * 0"
+    # Weekend recovery/health run: retry sources hourly on Saturday/Sunday.
+    # Market-closed data remains the latest valid close; any source that recovers replaces fallback automatically.
+    - cron: "18 * * * 6,0"
 
 permissions:
   contents: write
@@ -48,7 +49,7 @@ jobs:
           python update_market_data.py
           rc=$?
           if [ "$rc" -ne 0 ]; then
-            echo "::warning::Market-data refresh failed. WAIS will preserve the last-known-good files and continue with other sources."
+            echo "::warning::Market-data refresh failed. WAIS will preserve the last-known-good files and continue with other sources. The next scheduled cycle will retry the source."
           fi
           exit 0
 
@@ -59,7 +60,7 @@ jobs:
           python update_income_research_universe.py
           rc=$?
           if [ "$rc" -ne 0 ]; then
-            echo "::warning::Stock/income refresh failed. WAIS will preserve the last-known-good files and continue publishing any other valid updates."
+            echo "::warning::Stock/income refresh failed. WAIS will preserve the last-known-good files and continue publishing any other valid updates. The next scheduled cycle will retry the source."
           fi
           exit 0
 
@@ -87,7 +88,7 @@ jobs:
               if not valid:
                   result = subprocess.run(["git", "checkout", "HEAD", "--", name], check=False)
                   if result.returncode == 0:
-                      print(f"Restored last-known-good {name} from HEAD.")
+                      print(f"Restored last-known-good {name} from HEAD. A later scheduled cycle will retry fresh acquisition.")
                   else:
                       print(f"::warning::Could not restore {name}; continuing so unrelated valid sources are not blocked.")
           PY
@@ -98,7 +99,7 @@ jobs:
           git config user.email "wais-data-bot@users.noreply.github.com"
           git add market-indicators.json weekly-events.json stock-prices.json
           if git diff --cached --quiet; then
-            echo "No WAIS data changes to commit. Last-known-good data remains active."
+            echo "No WAIS data changes to commit. Last-known-good data remains active; future scheduled cycles will keep retrying."
             exit 0
           fi
           git commit -m "Auto refresh WAIS market, stock and expanded income ETF data"
