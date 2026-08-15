@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-15T03:05:11.246500+00:00",
+  "lastUpdated": "2026-08-15T18:31:09.977947+00:00",
   "marketDates": {
     "US": "2026-08-14",
     "HK": "2026-08-14"
@@ -24,7 +24,7 @@
       "symbol": "^IXIC",
       "value": 26729.164,
       "previousClose": 26803.0293,
-      "regularClose": 26729.1641,
+      "regularClose": 26729.1602,
       "regularCloseDate": "2026-08-14",
       "change": -73.8653,
       "changePercent": -0.2756,
@@ -130,7 +130,7 @@
       "sourceUrl": "https://www.etnet.com.hk/www/eng/futures/index.php?month=202608&subtype=HSI",
       "session": "Regular",
       "freshness": "DELAYED",
-      "ageMinutes": 485,
+      "ageMinutes": 1411,
       "expiryDate": null,
       "dataStatus": "Regular HSI spot-month futures; source timestamp preserved; public-display source, not direct exchange API"
     }
