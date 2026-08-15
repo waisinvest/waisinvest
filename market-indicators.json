@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-15T20:06:45.076890+00:00",
+  "lastUpdated": "2026-08-15T23:54:21.516140+00:00",
   "marketDates": {
     "US": "2026-08-14",
     "HK": "2026-08-14"
@@ -130,7 +130,7 @@
       "sourceUrl": "https://www.etnet.com.hk/www/eng/futures/index.php?month=202608&subtype=HSI",
       "session": "After-Trade",
       "freshness": "MARKET_CLOSED",
-      "ageMinutes": 1506,
+      "ageMinutes": 1734,
       "marketOpen": false,
       "freshnessReason": "Market closed; last verified source session preserved",
       "expiryDate": "28/08/2026",
