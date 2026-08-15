@@ -23,11 +23,29 @@ def test_hsi_futures_shape_and_freshness_contract():
     assert isinstance(q.get('value'),(int,float))
     assert q['freshness'] in ['LIVE','RECENT','DELAYED','MARKET_CLOSED','FALLBACK']
 
-def test_hsi_futures_generator_handles_market_closed_state():
+def test_hsi_futures_generator_handles_market_closed_state_and_0300_boundary():
     text=(ROOT/'update_market_data.py').read_text(encoding='utf-8')
     assert 'hk_futures_market_open' in text
     assert 'MARKET_CLOSED' in text
     assert 'marketOpen' in text and 'freshnessReason' in text
+    assert 'hsi_futures_session' in text
+    assert 'minutes <= 3 * 60' in text
+    assert 'previous_close = regular_value' in text
+    assert 'regular_close_date = regular_close_date - timedelta(days=1)' in text
+
+def test_market_data_loader_keeps_current_research_overlay_authoritative():
+    text=(ROOT/'market-data.js').read_text(encoding='utf-8')
+    baseline=text.index('wais-public-state.js')
+    research=text.index('wais-research-integrity-v1.js')
+    assert baseline < research
+
+def test_public_state_is_not_older_than_current_research_audit():
+    public=(ROOT/'wais-public-state.js').read_text(encoding='utf-8')
+    research=(ROOT/'wais-research-integrity-v1.js').read_text(encoding='utf-8')
+    assert "2026-08-15" in public
+    assert "2026-08-15" in research
+    assert "d.marketMode = 'CAUTIOUS'" in public
+    assert 'd.marketMode = "CAUTIOUS"' in research
 
 def test_stock_json_shape():
     d=load('stock-prices.json')
