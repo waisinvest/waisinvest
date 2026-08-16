@@ -1,0 +1,59 @@
+{
+  "version": "WAIS Discovery Ingestion v1.0",
+  "lastChecked": "2026-08-16T00:28:01.785312+00:00",
+  "contract": {
+    "rule": "No new data is not a system failure. Every scheduled cycle retries all configured adapters.",
+    "states": [
+      "LIVE",
+      "LAST_KNOWN_GOOD",
+      "STALE_BUT_USABLE",
+      "UNAVAILABLE"
+    ],
+    "failureIsolation": true,
+    "promotionRule": "Discovery data is evidence input only; Candidate/READY promotion requires separate thesis, valuation, technical, catalyst and risk validation."
+  },
+  "health": {
+    "liveSources": 0,
+    "fallbackSources": 0,
+    "unavailableSources": 3,
+    "failedThisCycle": [
+      "SEC:ALMU",
+      "SEC:AMBQ"
+    ]
+  },
+  "sources": {
+    "SEC:ALMU": {
+      "ticker": "ALMU",
+      "company": "Aeluma, Inc.",
+      "stage": "VALIDATING",
+      "sourceType": "SEC_SUBMISSIONS",
+      "sourceUrl": "https://data.sec.gov/submissions/CIK0001828805.json",
+      "status": "UNAVAILABLE",
+      "checkedAt": "2026-08-16T00:28:01.785312+00:00",
+      "lastSuccessAt": null,
+      "latestFilings": [],
+      "lastError": "HTTP Error 403: Forbidden",
+      "note": "No valid prior snapshot exists yet. This source is isolated and does not stop other research feeds."
+    },
+    "SEC:AMBQ": {
+      "ticker": "AMBQ",
+      "company": "Ambiq Micro, Inc.",
+      "stage": "VALIDATING",
+      "sourceType": "SEC_SUBMISSIONS",
+      "sourceUrl": "https://data.sec.gov/submissions/CIK0001500412.json",
+      "status": "UNAVAILABLE",
+      "checkedAt": "2026-08-16T00:28:01.785312+00:00",
+      "lastSuccessAt": null,
+      "latestFilings": [],
+      "lastError": "HTTP Error 403: Forbidden",
+      "note": "No valid prior snapshot exists yet. This source is isolated and does not stop other research feeds."
+    },
+    "SERENITY": {
+      "sourceType": "SPECIALIST_RESEARCH",
+      "status": "UNAVAILABLE",
+      "checkedAt": "2026-08-16T00:28:01.785312+00:00",
+      "lastSuccessAt": null,
+      "note": "Serenity adapter has no current machine-readable feed in this public workflow. Missing Serenity data does not block other research ingestion."
+    }
+  }
+}
