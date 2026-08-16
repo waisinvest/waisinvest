@@ -1,10 +1,17 @@
 {
   "lastUpdated": "2026-08-16T08:00:00-04:00",
   "window": {
-    "from": "2026-08-16",
-    "to": "2026-08-29"
+    "from": "2026-08-10",
+    "to": "2026-08-23"
   },
-  "dataStatus": "Refreshed from official Federal Reserve, U.S. Census Bureau, U.S. Bureau of Economic Analysis, Fabrinet Investor Relations and NVIDIA Investor Relations schedules. Times are ET. This is an event calendar, not a real-time market feed.",
+  "dataStatus": "Verified multi-source event calendar. Official automated sources merge into existing verified events; narrower source results never overwrite the full calendar.",
+  "sourceHealth": {
+    "BLS": "DATA GAP · LAST-KNOWN-GOOD PRESERVED"
+  },
+  "sourceErrors": [
+    "BLS ICS: HTTP Error 403: Forbidden",
+    "BLS HTML: HTTP Error 403: Forbidden"
+  ],
   "events": [
     {
       "dateISO": "2026-08-17",
@@ -44,38 +51,6 @@
       "event": "美國 Advance Services Report",
       "time": "10:00 ET",
       "referenceMonth": "2026年第二季",
-      "source": "U.S. Census Bureau"
-    },
-    {
-      "dateISO": "2026-08-25",
-      "date": "08月25日",
-      "event": "美國新屋銷售",
-      "time": "10:00 ET",
-      "referenceMonth": "2026年7月",
-      "source": "U.S. Census Bureau"
-    },
-    {
-      "dateISO": "2026-08-26",
-      "date": "08月26日",
-      "event": "美國 GDP 第二次估算＋Personal Income and Outlays",
-      "time": "08:30 ET",
-      "referenceMonth": "2026年第二季／2026年7月",
-      "source": "U.S. Bureau of Economic Analysis"
-    },
-    {
-      "dateISO": "2026-08-26",
-      "date": "08月26日",
-      "event": "NVDA Q2 FY2027 業績",
-      "time": "17:00 ET",
-      "referenceMonth": "Fiscal Q2 2027",
-      "source": "NVIDIA Investor Relations"
-    },
-    {
-      "dateISO": "2026-08-27",
-      "date": "08月27日",
-      "event": "美國 Advance Economic Indicators",
-      "time": "08:30 ET",
-      "referenceMonth": "2026年7月",
       "source": "U.S. Census Bureau"
     }
   ]
