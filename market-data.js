@@ -30,3 +30,5 @@ document.write('<script src="wais-market-closed-fix-v1.js?v=20260815u"></script>
 document.write('<script src="wais-mobile-data-hotfix.js?v=20260815u"></script>');
 document.write('<script src="wais-research-move-format-v1.js?v=20260815u"></script>');
 document.write('<script src="wais-color-standard-v1.js?v=20260815u"></script>');
+// Sidebar priority: Top Picks before Watchlist.
+document.write('<script src="wais-nav-order-v1.js?v=20260815u"></script>');
