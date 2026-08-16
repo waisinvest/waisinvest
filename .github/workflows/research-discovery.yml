@@ -1,0 +1,75 @@
+name: AUTO · WAIS Research Discovery Ingestion
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "update_research_discovery.py"
+      - ".github/workflows/research-discovery.yml"
+      - "wais-discovery-v1.js"
+  schedule:
+    # Weekdays: retry/ingest every hour so a temporary source failure is automatically revisited.
+    - cron: "23 * * * 1-5"
+    # Weekends: keep research/source recovery alive every three hours even while markets are closed.
+    - cron: "23 */3 * * 0,6"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wais-research-ingestion
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Ingest configured research sources with source isolation
+        run: python update_research_discovery.py
+
+      - name: Validate discovery output
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('research-discovery.json')
+          if not p.exists():
+              raise SystemExit('research-discovery.json missing')
+          d=json.loads(p.read_text(encoding='utf-8'))
+          assert d.get('sources'), 'no research sources written'
+          assert d.get('contract',{}).get('failureIsolation') is True
+          print('Discovery output valid:', d.get('health'))
+          PY
+
+      - name: Commit and publish research snapshot safely
+        run: |
+          git config user.name "wais-research-bot"
+          git config user.email "wais-research-bot@users.noreply.github.com"
+          git add research-discovery.json
+          if git diff --cached --quiet; then
+            echo "No research-source changes. All adapters were still retried this cycle."
+            exit 0
+          fi
+          git commit -m "Auto ingest WAIS research discovery sources"
+          for attempt in 1 2 3 4; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then
+              echo "WAIS research snapshot published on attempt ${attempt}."
+              exit 0
+            fi
+            echo "Concurrent main update; retrying (${attempt}/4)."
+            sleep $((attempt * 3))
+          done
+          exit 1
