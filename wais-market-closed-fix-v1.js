@@ -10,15 +10,15 @@
   function hkFuturesOpen(){
     if(isWeekend('Asia/Hong_Kong')) return false;
     const m=minutes('Asia/Hong_Kong');
-    // Broad safety window covering HK index-futures day/evening trading. Outside this, last verified session is valid closed-market data.
     return (m>=510&&m<=980)||(m>=1020&&m<=1800);
   }
   function usMarketsOpen(){
     if(isWeekend('America/New_York')) return false;
     const m=minutes('America/New_York');
-    return m>=240&&m<=1200; // pre-market through after-hours
+    return m>=240&&m<=1200;
   }
   function fmt(n,d=2){const x=Number(n);return Number.isFinite(x)?x.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';}
+  function signed(n,d=2){const x=Number(n);return Number.isFinite(x)?`${x>=0?'+':''}${x.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d})}`:'—';}
   function pct(n){const x=Number(n);return Number.isFinite(x)?`${x>=0?'+':''}${x.toFixed(2)}%`:'—';}
   async function patch(){
     try{
@@ -26,7 +26,7 @@
       const q=data?.indicators?.HSIF;
       if(q && !hkFuturesOpen()){
         if($('hsifValue')) $('hsifValue').textContent=fmt(q.value);
-        if($('hsifChange')) $('hsifChange').textContent=`${pct(q.changePercent)} · MARKET CLOSED`;
+        if($('hsifChange')) $('hsifChange').textContent=`${signed(q.change)} · ${pct(q.changePercent)} · MARKET CLOSED`;
         const desc=$('hsifValue')?.closest('.market-indicator-card')?.querySelector('p');
         if(desc) desc.textContent=`LAST VERIFIED SESSION · ${q.asOf||q.regularCloseDate||'time unavailable'}`;
       }
