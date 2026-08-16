@@ -28,7 +28,7 @@ jobs:
         run: pytest -q tests/test_data_integrity.py
       - name: Python syntax checks
         run: |
-          python -m py_compile update_market_data.py update_stock_prices.py update_income_research_universe.py update_related_routes_data.py
+          python -m py_compile update_market_data.py normalize_event_calendar.py update_stock_prices.py update_income_research_universe.py update_related_routes_data.py
       - name: JavaScript syntax checks
         run: |
           node --check app.js
