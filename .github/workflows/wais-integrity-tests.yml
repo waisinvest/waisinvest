@@ -42,4 +42,5 @@ jobs:
           node --check wais-color-standard-v1.js
           node --check wais-route-intelligence-v1.js
           node --check wais-route-selector-safe-v13.js
+          node --check wais-route-income-links-v1.js
           node --check wais-nav-order-v1.js
