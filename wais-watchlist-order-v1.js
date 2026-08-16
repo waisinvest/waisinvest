@@ -1,4 +1,4 @@
-// WAIS Watchlist visual priority order v1.1
+// WAIS Watchlist visual priority order v1.2
 // Keep TOP PICK #1-#5 first, then arrange the remaining Watchlist by actionable priority.
 // CSS Grid fills row-major, so the visual reading order is LEFT -> RIGHT -> next row.
 (function(){
@@ -40,19 +40,40 @@
   const ordered=[...top,...rest];
   d.watchPriorityOrder=ordered.map(ticker);
   d.watchPriorityPolicy={
-    version:'1.1',
+    version:'1.2',
     readingOrder:'LEFT_TO_RIGHT_THEN_NEXT_ROW',
-    rule:'TOP PICK #1-#5 first. Remaining Watchlist names are ordered by final execution/action stage, then WAIS evidence score. Alphabetic ticker order is only the final tie-breaker.',
+    rule:'TOP PICK #1-#5 first as a dedicated block. Remaining Watchlist names follow as Active Watchlist #6 onward, ordered by final execution/action stage, then WAIS evidence score.',
     stagePriority:['READY / TECH READY','NEAR ENTRY / TECH WATCH / SCOUT','CANDIDATE+','CANDIDATE','WATCH','WAIT','RESEARCH']
   };
   ordered.forEach((s,i)=>{ s.watchPriorityRank=i+1; });
   window.WAIS_MARKET_DATA=d;
+
+  const css=document.createElement('style');
+  css.textContent=`
+    .watch-section-divider{grid-column:1/-1;display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:12px 0 2px;padding:12px 4px 8px;border-bottom:1px solid rgba(136,168,255,.22)}
+    .watch-section-divider b{font-size:16px;letter-spacing:.02em}.watch-section-divider span{font-size:11px;color:#91a0bb}
+    .watch-section-divider.top-block b{color:#dbe5ff}.watch-section-divider.active-block{margin-top:22px}
+    @media(max-width:720px){.watch-section-divider{align-items:flex-start;flex-direction:column;gap:4px}}
+  `;
+  document.head.appendChild(css);
+
+  function makeDivider(kind,count){
+    const div=document.createElement('div');
+    div.className=`watch-section-divider ${kind==='top'?'top-block':'active-block'}`;
+    div.dataset.waisDivider=kind;
+    div.innerHTML=kind==='top'
+      ?`<b>TOP PICKS · #1–#${count}</b><span>最高優先級先行｜由左至右閱讀</span>`
+      :`<b>ACTIVE WATCHLIST · #${top.length+1}–#${ordered.length}</b><span>其餘候選按行動優先級排列｜由左至右閱讀</span>`;
+    return div;
+  }
 
   function applyVisualOrder(){
     const grid=document.getElementById('watchlistCards');
     if(!grid) return;
     const cards=[...grid.querySelectorAll('.watch-card')];
     if(!cards.length) return;
+
+    grid.querySelectorAll('.watch-section-divider').forEach(x=>x.remove());
 
     const orderIndex=new Map(d.watchPriorityOrder.map((t,i)=>[t,i]));
     const sorted=[...cards].sort((a,b)=>{
@@ -61,7 +82,10 @@
       return (orderIndex.get(ta)??999)-(orderIndex.get(tb)??999);
     });
 
+    if(top.length) grid.appendChild(makeDivider('top',top.length));
+
     sorted.forEach((card,index)=>{
+      if(index===top.length && rest.length) grid.appendChild(makeDivider('active',rest.length));
       grid.appendChild(card);
       const t=String(card.querySelector('h4')?.textContent||'').trim().toUpperCase();
       const s=stocks.find(x=>ticker(x)===t);
