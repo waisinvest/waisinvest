@@ -1,11 +1,19 @@
 {
-  "lastUpdated": "2026-08-15T13:20:00-04:00",
+  "lastUpdated": "2026-08-16T08:00:00-04:00",
   "window": {
-    "from": "2026-08-15",
+    "from": "2026-08-16",
     "to": "2026-08-29"
   },
-  "dataStatus": "Refreshed from official Federal Reserve, U.S. Census Bureau, U.S. Bureau of Economic Analysis and NVIDIA Investor Relations schedules. Times are ET. This is an event calendar, not a real-time market feed.",
+  "dataStatus": "Refreshed from official Federal Reserve, U.S. Census Bureau, U.S. Bureau of Economic Analysis, Fabrinet Investor Relations and NVIDIA Investor Relations schedules. Times are ET. This is an event calendar, not a real-time market feed.",
   "events": [
+    {
+      "dateISO": "2026-08-17",
+      "date": "08月17日",
+      "event": "FN · Fabrinet Q4 / FY2026 業績",
+      "time": "17:00 ET",
+      "referenceMonth": "Fiscal Q4 / FY2026",
+      "source": "Fabrinet Investor Relations"
+    },
     {
       "dateISO": "2026-08-18",
       "date": "08月18日",
