@@ -72,3 +72,12 @@ def test_runtime_guard_cache_busting_and_stale_protection():
     assert "cache: 'no-store'" in text
     assert 'STALE_MINUTES' in text
     assert 'staleIndicators' in text and 'staleStocks' in text
+
+def test_route_selector_does_not_observe_whole_page_subtree():
+    loader=(ROOT/'market-data.js').read_text(encoding='utf-8')
+    assert 'wais-route-selector-safe-v13.js' in loader
+    text=(ROOT/'wais-route-selector-safe-v13.js').read_text(encoding='utf-8')
+    assert "observeGrid('topPicksGrid')" in text
+    assert "observeGrid('watchlistCards')" in text
+    assert "observe(g,{childList:true,subtree:false})" in text
+    assert "observe(document.body,{childList:true,subtree:true})" not in text
