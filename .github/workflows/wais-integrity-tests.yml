@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - "*.js"
+      - "*.py"
       - "*.json"
       - "tests/**"
       - ".github/workflows/**"
@@ -25,6 +26,9 @@ jobs:
         run: python -m pip install pytest
       - name: Run data integrity regression suite
         run: pytest -q tests/test_data_integrity.py
+      - name: Python syntax checks
+        run: |
+          python -m py_compile update_market_data.py update_stock_prices.py update_income_research_universe.py update_related_routes_data.py
       - name: JavaScript syntax checks
         run: |
           node --check app.js
@@ -35,3 +39,7 @@ jobs:
           node --check wais-runtime-guard.js
           node --check wais-public-state.js
           node --check wais-execution-v13.js
+          node --check wais-color-standard-v1.js
+          node --check wais-route-intelligence-v1.js
+          node --check wais-route-selector-safe-v13.js
+          node --check wais-nav-order-v1.js
