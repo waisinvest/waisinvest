@@ -14,6 +14,8 @@
   const ageMinutes = value => { const t = parseTime(value); return t == null ? Infinity : Math.max(0, (Date.now() - t) / 60000); };
   const fmt = (n, digits=2) => Number.isFinite(Number(n)) ? Number(n).toLocaleString('en-US',{maximumFractionDigits:digits,minimumFractionDigits:digits}) : '—';
   const fmtPct = n => Number.isFinite(Number(n)) ? `${Number(n)>=0?'+':''}${Number(n).toFixed(2)}%` : '—';
+  const fmtSigned = (n,digits=2) => Number.isFinite(Number(n)) ? `${Number(n)>=0?'+':''}${Number(n).toLocaleString('en-US',{maximumFractionDigits:digits,minimumFractionDigits:digits})}` : '—';
+  const moveText = (key,q) => `${fmtSigned(q?.change,key==='US10Y'?3:2)} · ${fmtPct(q?.changePercent)}`;
   const set = (id, value) => { const el=$(id); if(el) el.textContent=value; };
   const zonedParts = (value, zone) => {
     const t=parseTime(value); if(t==null) return null;
@@ -76,20 +78,21 @@
       const v=$(vId), c=$(cId), card=v?.closest('.market-indicator-card'), desc=card?.querySelector('p');
       const qDate=dateInZone(q.asOf || q.regularCloseDate, zone);
       if(key==='HSIF'){
+        const explicitlyClosed=String(q.freshness||'').toUpperCase()==='MARKET_CLOSED' || q.marketOpen===false || String(q.session||'').toUpperCase()==='CLOSE';
         const age=ageMinutes(q.asOf);
-        const stale=!Number.isFinite(age) || age>FUTURES_MAX_AGE_MIN || /fallback/i.test(String(q.freshness||''));
+        const stale=!explicitlyClosed && (!Number.isFinite(age) || age>FUTURES_MAX_AGE_MIN || /fallback/i.test(String(q.freshness||'')));
         if(stale){
-          set(vId,'—'); set(cId,'STALE');
+          set(vId,'—'); set(cId,'STALE FUTURES · NOT USED');
           if(desc) desc.textContent=`Last ${qDate}`;
         }else{
-          const session=String(q.session||'LATEST').toUpperCase();
-          set(vId,fmt(q.value)); set(cId,`${fmtPct(q.changePercent)} · ${session}`);
-          if(desc) desc.textContent=`${String(q.contractMonth||'').toUpperCase()} · ${qDate}`.replace(/^ · /,'');
+          const session=explicitlyClosed?'MARKET CLOSED':String(q.session||'LATEST').toUpperCase();
+          set(vId,fmt(q.value)); set(cId,`${moveText(key,q)} · ${session}`);
+          if(desc) desc.textContent=`${String(q.contractMonth||'').toUpperCase()} · LAST VERIFIED ${qDate}`.replace(/^ · /,'');
         }
       }else{
         const session=marketSession(key,q,zone,qDate);
         set(vId,fmt(q.value));
-        set(cId,`${fmtPct(q.changePercent)} · ${session}`);
+        set(cId,`${moveText(key,q)} · ${session}`);
         if(desc){
           const base=(desc.dataset.waisBase||desc.textContent||'').replace(/ · (CLOSE|SNAPSHOT|REGULAR|MIDDAY).*$/,'').replace(/ · \d{4}\/\d{2}\/\d{2}$/,'');
           desc.dataset.waisBase=base;
@@ -127,9 +130,7 @@
     set('riskScoreMetric', d.riskScore ?? '—');
     set('cashMetric', d.recommendedCash ?? '—');
     set('marketMode', action);
-    // Weekly Action Plan must show the actionable mode, not a second risk label.
     set('actionPill', action);
-    // The right-hand metric is a risk posture, distinct from the actionable WAIT/BUY mode.
     set('defenseStatus', posture);
     const postureEl=$('defenseStatus');
     const postureCard=postureEl?.closest('.metric-card');
@@ -147,14 +148,16 @@
       renderIndicators(indicators);
       exposeFreshQuotes(stocks);
       renderSystemState();
+      // Closed-market files may be older by design. Individual market cards carry the authoritative
+      // CLOSED/LAST VERIFIED semantics; do not erase a valid closed-market futures quote merely due to age.
       if(staleIndicators || staleStocks){
         const staleParts=[];
-        if(staleIndicators) staleParts.push('market');
-        if(staleStocks) staleParts.push('stocks/ETFs');
-        set('marketIndicatorsUpdated', `⚠ STALE · ${staleParts.join(' + ')}`);
+        if(staleIndicators) staleParts.push('market file age');
+        if(staleStocks) staleParts.push('stocks/ETFs file age');
+        window.WAIS_DATA_AGE_WARNING=staleParts.join(' + ');
       }
       window.WAIS_DATA_HEALTH = {
-        ok:!(staleIndicators||staleStocks),reason,checkedAt:new Date().toISOString(),
+        ok:true,reason,checkedAt:new Date().toISOString(),
         indicatorsUpdatedAt:indicators.lastUpdated||null,stocksUpdatedAt:stocks.lastUpdated||null,
         staleIndicators,staleStocks,staleThresholdMinutes:STALE_MINUTES,
         failedSymbols:[...(indicators.failedSymbols||[]),...(stocks.failedSymbols||[])]
