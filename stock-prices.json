@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-16T19:50:02.414017+00:00",
+  "lastUpdated": "2026-08-16T20:57:34.715464+00:00",
   "marketStatus": "updated",
   "dataStatus": "Latest available intraday/extended-hours snapshot when available; regular close retained separately; NOT guaranteed real-time",
   "incomeMetricsVersion": "WAIS INCOME v1.1 normalized percentages",
@@ -818,9 +818,9 @@
       "dataStatus": "Completed daily close / Related Route research feed",
       "routeUnderlying": "NVDA",
       "routeType": "income",
-      "avgVolume20d": 33525.0,
-      "avgDollarVolume20d": 409675.51,
-      "realizedVol60dAnnualizedPct": 14.77,
+      "avgVolume20d": 38275.0,
+      "avgDollarVolume20d": 467720.51,
+      "realizedVol60dAnnualizedPct": 15.1,
       "trailing12mDistributionYield": 125.7447,
       "current30dIncomeRate": 4.3126,
       "incomeConsistency": 73.2,
@@ -841,9 +841,9 @@
       "dataStatus": "Completed daily close / Related Route research feed",
       "routeUnderlying": "TSM",
       "routeType": "income",
-      "avgVolume20d": 3345.0,
-      "avgDollarVolume20d": 77269.5,
-      "realizedVol60dAnnualizedPct": 21.49,
+      "avgVolume20d": 2365.0,
+      "avgDollarVolume20d": 54631.5,
+      "realizedVol60dAnnualizedPct": 21.71,
       "trailing12mDistributionYield": 24.9307,
       "current30dIncomeRate": 5.671,
       "incomeConsistency": 62.6,
@@ -1534,9 +1534,9 @@
       "dataStatus": "Completed daily close / Related Route research feed",
       "routeUnderlying": "GOOGL",
       "routeType": "income",
-      "avgVolume20d": 31135.0,
-      "avgDollarVolume20d": 1945937.5,
-      "realizedVol60dAnnualizedPct": 44.81,
+      "avgVolume20d": 31700.0,
+      "avgDollarVolume20d": 1981250.0,
+      "realizedVol60dAnnualizedPct": 49.64,
       "trailing12mDistributionYield": 44.6208,
       "current30dIncomeRate": 2.3664,
       "incomeConsistency": 84.1,
@@ -1634,9 +1634,9 @@
       "dataStatus": "Completed daily close / Related Route research feed",
       "routeUnderlying": "AVGO",
       "routeType": "income",
-      "avgVolume20d": 21105.0,
-      "avgDollarVolume20d": 823728.12,
-      "realizedVol60dAnnualizedPct": 64.29,
+      "avgVolume20d": 21000.0,
+      "avgDollarVolume20d": 819629.97,
+      "realizedVol60dAnnualizedPct": 64.97,
       "trailing12mDistributionYield": 69.1366,
       "current30dIncomeRate": 4.3531,
       "incomeConsistency": 82.2,
@@ -1714,11 +1714,11 @@
       "dataStatus": "Completed daily close / Related Route research feed",
       "routeUnderlying": "AVGO",
       "routeType": "leveraged",
-      "avgVolume20d": 77575.0,
-      "avgDollarVolume20d": 2798363.12,
-      "realizedVol60dAnnualizedPct": 109.27,
+      "avgVolume20d": 79280.0,
+      "avgDollarVolume20d": 2859867.59,
+      "realizedVol60dAnnualizedPct": 110.88,
       "targetDailyMultiple": 2.0,
-      "trackingErrorMeanAbs60dPct": 0.2828
+      "trackingErrorMeanAbs60dPct": 0.2848
     },
     "AVGX": {
       "price": 48.59,
@@ -1748,11 +1748,11 @@
       "dataStatus": "Completed daily close / Related Route research feed",
       "routeUnderlying": "AVGO",
       "routeType": "leveraged",
-      "avgVolume20d": 146230.0,
-      "avgDollarVolume20d": 4128219.26,
-      "realizedVol60dAnnualizedPct": 108.42,
+      "avgVolume20d": 148030.0,
+      "avgDollarVolume20d": 4179035.06,
+      "realizedVol60dAnnualizedPct": 108.81,
       "targetDailyMultiple": 2.0,
-      "trackingErrorMeanAbs60dPct": 0.2219
+      "trackingErrorMeanAbs60dPct": 0.2147
     },
     "AVGC": {
       "price": 26.62,
@@ -1765,11 +1765,11 @@
       "dataStatus": "Completed daily close / Related Route research feed",
       "routeUnderlying": "AVGO",
       "routeType": "leveraged",
-      "avgVolume20d": 565.0,
-      "avgDollarVolume20d": 15040.3,
-      "realizedVol60dAnnualizedPct": 88.15,
+      "avgVolume20d": 560.0,
+      "avgDollarVolume20d": 14907.2,
+      "realizedVol60dAnnualizedPct": 92.35,
       "targetDailyMultiple": 2.0,
-      "trackingErrorMeanAbs60dPct": 0.3966
+      "trackingErrorMeanAbs60dPct": 0.3808
     },
     "TSMU": {
       "price": 70.15,
@@ -1782,11 +1782,11 @@
       "dataStatus": "Completed daily close / Related Route research feed",
       "routeUnderlying": "TSM",
       "routeType": "leveraged",
-      "avgVolume20d": 68515.0,
-      "avgDollarVolume20d": 4806327.35,
-      "realizedVol60dAnnualizedPct": 97.66,
+      "avgVolume20d": 76475.0,
+      "avgDollarVolume20d": 5364721.37,
+      "realizedVol60dAnnualizedPct": 96.96,
       "targetDailyMultiple": 2.0,
-      "trackingErrorMeanAbs60dPct": 0.2958
+      "trackingErrorMeanAbs60dPct": 0.3085
     },
     "TSMG": {
       "price": 39.007,
@@ -1799,11 +1799,11 @@
       "dataStatus": "Completed daily close / Related Route research feed",
       "routeUnderlying": "TSM",
       "routeType": "leveraged",
-      "avgVolume20d": 78520.0,
-      "avgDollarVolume20d": 3062829.64,
-      "realizedVol60dAnnualizedPct": 98.48,
+      "avgVolume20d": 96265.0,
+      "avgDollarVolume20d": 3755008.85,
+      "realizedVol60dAnnualizedPct": 96.79,
       "targetDailyMultiple": 2.0,
-      "trackingErrorMeanAbs60dPct": 0.2572
+      "trackingErrorMeanAbs60dPct": 0.2674
     },
     "TWSC": {
       "price": 22.93,
@@ -1833,9 +1833,9 @@
       "dataStatus": "Completed daily close / Related Route research feed",
       "routeUnderlying": "TSM",
       "routeType": "income",
-      "avgVolume20d": 116875.0,
-      "avgDollarVolume20d": 1829093.71,
-      "realizedVol60dAnnualizedPct": 40.55,
+      "avgVolume20d": 123030.0,
+      "avgDollarVolume20d": 1925419.45,
+      "realizedVol60dAnnualizedPct": 40.59,
       "trailing12mDistributionYield": 52.1342,
       "current30dIncomeRate": 3.4569,
       "incomeConsistency": 71.7,
@@ -1890,11 +1890,11 @@
       "dataStatus": "Completed daily close / Related Route research feed",
       "routeUnderlying": "TSEM",
       "routeType": "leveraged",
-      "avgVolume20d": 4685.0,
-      "avgDollarVolume20d": 104100.7,
-      "realizedVol60dAnnualizedPct": 203.97,
+      "avgVolume20d": 4745.0,
+      "avgDollarVolume20d": 105433.9,
+      "realizedVol60dAnnualizedPct": 226.63,
       "targetDailyMultiple": 2.0,
-      "trackingErrorMeanAbs60dPct": 0.8971
+      "trackingErrorMeanAbs60dPct": 0.8113
     },
     "AXTX": {
       "price": 12.04,
@@ -1924,11 +1924,11 @@
       "dataStatus": "Completed daily close / Related Route research feed",
       "routeUnderlying": "AXTI",
       "routeType": "leveraged",
-      "avgVolume20d": 1141650.0,
-      "avgDollarVolume20d": 7397892.02,
-      "realizedVol60dAnnualizedPct": 341.79,
+      "avgVolume20d": 1142630.0,
+      "avgDollarVolume20d": 7404242.42,
+      "realizedVol60dAnnualizedPct": 342.85,
       "targetDailyMultiple": 2.0,
-      "trackingErrorMeanAbs60dPct": 0.4963
+      "trackingErrorMeanAbs60dPct": 0.4931
     },
     "AXTL": {
       "price": 4.65,
@@ -1965,7 +1965,7 @@
       "trackingErrorMeanAbs60dPct": 0.8668
     }
   },
-  "relatedRoutesLastUpdated": "2026-08-16T19:50:30.872527+00:00",
+  "relatedRoutesLastUpdated": "2026-08-16T20:58:03.262457+00:00",
   "relatedRoutesDataStatus": "Activity / tracking / income research metrics; public data may be delayed; not exchange real-time; route approval remains separate.",
   "relatedRoutesFailedSymbols": [
     "RKXX"
