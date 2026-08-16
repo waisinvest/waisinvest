@@ -1,8 +1,8 @@
 {
-  "version": "WAIS Discovery Ingestion v1.0",
-  "lastChecked": "2026-08-16T00:28:01.785312+00:00",
+  "version": "WAIS Discovery Ingestion v1.1",
+  "lastChecked": "2026-08-16T00:28:52.874376+00:00",
   "contract": {
-    "rule": "No new data is not a system failure. Every scheduled cycle retries all configured adapters.",
+    "rule": "No new data is not a system failure. Every scheduled cycle retries every configured adapter.",
     "states": [
       "LIVE",
       "LAST_KNOWN_GOOD",
@@ -10,48 +10,76 @@
       "UNAVAILABLE"
     ],
     "failureIsolation": true,
-    "promotionRule": "Discovery data is evidence input only; Candidate/READY promotion requires separate thesis, valuation, technical, catalyst and risk validation."
+    "retryPolicy": "Weekdays hourly; weekends every three hours; failed adapters retry on the next cycle.",
+    "promotionRule": "Discovery data is evidence input only; Candidate/READY promotion requires thesis, valuation, technical, catalyst and risk validation.",
+    "overheatRule": "Overheated/expensive is an entry warning, not a research rejection."
   },
   "health": {
-    "liveSources": 0,
+    "liveSources": 2,
     "fallbackSources": 0,
-    "unavailableSources": 3,
-    "failedThisCycle": [
-      "SEC:ALMU",
-      "SEC:AMBQ"
-    ]
+    "unavailableSources": 2,
+    "failedThisCycle": []
   },
   "sources": {
-    "SEC:ALMU": {
+    "IR:ALMU": {
       "ticker": "ALMU",
       "company": "Aeluma, Inc.",
       "stage": "VALIDATING",
-      "sourceType": "SEC_SUBMISSIONS",
-      "sourceUrl": "https://data.sec.gov/submissions/CIK0001828805.json",
-      "status": "UNAVAILABLE",
-      "checkedAt": "2026-08-16T00:28:01.785312+00:00",
-      "lastSuccessAt": null,
-      "latestFilings": [],
-      "lastError": "HTTP Error 403: Forbidden",
-      "note": "No valid prior snapshot exists yet. This source is isolated and does not stop other research feeds."
+      "sourceType": "OFFICIAL_IR_PRESS_RELEASES",
+      "sourceUrl": "https://www.aeluma.com/investors/news-events/press-releases",
+      "status": "LIVE",
+      "checkedAt": "2026-08-16T00:28:52.874376+00:00",
+      "lastSuccessAt": "2026-08-16T00:28:52.874376+00:00",
+      "contentHash": "4e955ba06f58b0b4b2e556314e712fa0c17ae178c2ca6b644cfe511a8de8369e",
+      "contentChanged": false,
+      "recentOfficialItems": [
+        "Aug 04, 2026 7:00am EDT Aeluma Names Jason Taylor Senior Director of Program and Project Management Jul 29, 2026 6:38am EDT Aeluma and Department of Commerce Sign CHIPS Research & Development Office (CRDO) Letter of Intent for up to $30 Million to Accelerate U.S. Leadersh",
+        "Jul 29, 2026 6:38am EDT Aeluma and Department of Commerce Sign CHIPS Research & Development Office (CRDO) Letter of Intent for up to $30 Million to Accelerate U.S. Leadership in AI and Advanced Computing Jul 07, 2026 7:00am EDT Aeluma CEO to Chair Optica Advanced Photonic",
+        "Jul 07, 2026 7:00am EDT Aeluma CEO to Chair Optica Advanced Photonics Congress Industry Program on AI and Quantum Jun 23, 2026 7:00am EDT Aeluma Names Brendan Moran Vice President of Engineering May 28, 2026 7:00am EDT Aeluma Sees Accelerated Timeline for Quantum Commerci",
+        "Jun 23, 2026 7:00am EDT Aeluma Names Brendan Moran Vice President of Engineering May 28, 2026 7:00am EDT Aeluma Sees Accelerated Timeline for Quantum Commercialization May 21, 2026 7:00am EDT Aeluma CEO Jonathan Klamkin to Receive Prestigious Indium Phosphide and Related",
+        "May 28, 2026 7:00am EDT Aeluma Sees Accelerated Timeline for Quantum Commercialization May 21, 2026 7:00am EDT Aeluma CEO Jonathan Klamkin to Receive Prestigious Indium Phosphide and Related Materials Award May 13, 2026 4:30pm EDT Aeluma Announces Third Quarter Fiscal 202",
+        "May 21, 2026 7:00am EDT Aeluma CEO Jonathan Klamkin to Receive Prestigious Indium Phosphide and Related Materials Award May 13, 2026 4:30pm EDT Aeluma Announces Third Quarter Fiscal 2026 Financial Results May 12, 2026 6:10pm EDT Aeluma to Participate in Upcoming Investor",
+        "May 13, 2026 4:30pm EDT Aeluma Announces Third Quarter Fiscal 2026 Financial Results May 12, 2026 6:10pm EDT Aeluma to Participate in Upcoming Investor Conferences Apr 29, 2026 7:00am EDT Aeluma to Announce Third Quarter Fiscal Year 2026 Financial Results on May 13, 2026",
+        "May 12, 2026 6:10pm EDT Aeluma to Participate in Upcoming Investor Conferences Apr 29, 2026 7:00am EDT Aeluma to Announce Third Quarter Fiscal Year 2026 Financial Results on May 13, 2026 Apr 27, 2026 7:00am EDT Aeluma Appoints Willy Rachmady Vice President of Strategic Pa"
+      ],
+      "contentPreview": "Press Releases :: Aeluma, Inc. (ALMU) Skip to main content Skip to section navigation Skip to footer Home About Overview Management Team Board of Directors Certification & Compliance Technology News Overview Press Releases Blog In The News Investors Overview News & Events Company Info Financial Info Stock Data SEC Filings Governance Careers Contact Press Releases Investors Investors Overview News & Events Press Releases IR Calendar Company Info Overview Management Team Contacts FAQ Financial Info Overview Financial Results Income Statement Balance Sheet Cash Flow Stock Data Quote Charts Historical Data Analyst Coverage SEC Filings Overview All SEC Filings Annual Reports Quarterly Reports Section 16 Filings Governance Overview Board of Directors Board Committees Governance Documents News & Events Press Releases IR Calendar Year All Years 2026 2025 2024 2023 2022 2021 Category All Releases",
+      "note": "Official company source. New page content triggers re-validation; it is evidence input, not an automatic Candidate/READY promotion."
     },
-    "SEC:AMBQ": {
+    "IR:AMBQ": {
       "ticker": "AMBQ",
       "company": "Ambiq Micro, Inc.",
       "stage": "VALIDATING",
-      "sourceType": "SEC_SUBMISSIONS",
-      "sourceUrl": "https://data.sec.gov/submissions/CIK0001500412.json",
+      "sourceType": "OFFICIAL_COMPANY_NEWS",
+      "sourceUrl": "https://ambiq.com/news/",
+      "status": "LIVE",
+      "checkedAt": "2026-08-16T00:28:52.874376+00:00",
+      "lastSuccessAt": "2026-08-16T00:28:52.874376+00:00",
+      "contentHash": "1fe088f1c7c5168c03efd75ac342498d2c3e63e372f62216367711325fe82827",
+      "contentChanged": false,
+      "recentOfficialItems": [
+        "August 4, 2026 — Ambiq Micro, Inc. (“Ambiq®”), a technology leader in ultra-low power... heliaPROFILER Apollo AI Jul 30. 26 A Reflection of Ambiq’s First Year as a Public Company One year ago, Ambiq entered a new chapter. On July 30, 2025, we rang the opening bell at the Ne",
+        "July 30, 2025, we rang the opening bell at the New York Stock Exchange and began trading as a public company under the ticker AMBQ. During our first year as a public company, we successfully completed... Jul 29. 26 Ambiq Expands Global Capital Markets Presence Through Sing",
+        "July 30, 2026 – Ambiq Micro, Inc. (NYSE:... Investor Relations AI Edge AI Jul 28. 26 Ambiq Micro to Report Second Quarter 2026 Financial Results AUSTIN, Texas – July 28, 2026 – Ambiq Micro, Inc. (NYSE: AMBQ), a technology leader in ultra-low-power semiconductor solutions f",
+        "July 28, 2026 – Ambiq Micro, Inc. (NYSE: AMBQ), a technology leader in ultra-low-power semiconductor solutions for edge AI, today announced that it will report its second quarter 2026 financial results on Tuesday, August 11, 2026... Investor Relations Jul 27. 26 Ambiq Rele",
+        "August 11, 2026... Investor Relations Jul 27. 26 Ambiq Releases Production-Ready Apollo330 Plus and Apollo510 Lite SoC Series Commercially available SoCs combine ultra-low power performance, scalable edge AI, and new platform enhancements for intelligent devices. AUSTIN, TX,",
+        "July 27, 2026 – Ambiq Micro, Inc. (“Ambiq®”), a technology leader in ultra-low power... Apollo510 Lite Apollo510B Lite Apollo510D Lite Apollo330 Plus Apollo330B Plus apollo330M Plus Edge AI Jun 25. 26 Ambiq Announces Closing of its Upsized Public Offering and Full Exercise",
+        "June 25, 2026 – Ambiq Micro, Inc. (“Ambiq”) (NYSE: AMBQ), a technology leader in ultra-low-power semiconductor solutions for edge AI, today announced the closing of its upsized underwritten public offering of 2,300,000 shares of its... Investor Relations Jun 23. 26 Ambiq A",
+        "June 23, 2026 – Ambiq Micro, Inc. (“Ambiq”) (NYSE: AMBQ), a technology leader in ultra-low-power semiconductor solutions for edge AI, today announced the pricing of its upsized underwritten public offering of 2,000,000 shares of its... Investor Relations Jun 23. 26 Ambiq L"
+      ],
+      "contentPreview": "﻿ News | Ambiq Back to Menu English EN EN - English CN - 简体中文 TW - 繁體中文 JP - 日本語 Products Products SoC SoC Atomiq Atomiq Apollo5 Apollo510 Lite SoC Series Apollo510 Apollo510B Apollo4 Apollo4 Blue Plus Apollo4 Blue Lite Apollo4 Blue Apollo4 Plus Apollo4 Lite Apollo4 Apollo3 Apollo330 Plus SoC Series Apollo3 Blue Plus Apollo3 Blue Apollo3 Blue Thin Apollo3 Apollo2 Apollo2 Thin Apollo2 Apollo Apollo RTC RTC Artasie AM1815 Artasie AM1805 Artasie AM0815 Artasie AM0805 Development Kits harvestKIT ApolloICD AI AI Foundations AI Runtimes heliaAOT heliaCORE heliaRT heliaPROFILER SDK neuralSPOT SDK Solutions AI Developer Kits heartKIT soundKIT compressionKIT sleepKIT AI Demos Applications Applications Healthcare Industrial Edge Smart Remotes Smart Home and Buildings Smartcards Wearables Gaming Hearables Technologies Technologies blueSPOT graphiqSPOT neuralSPOT secureSPOT SPOT turboSPOT Company Co",
+      "note": "Official company source. New page content triggers re-validation; it is evidence input, not an automatic Candidate/READY promotion."
+    },
+    "SEC_PRIMARY": {
+      "sourceType": "SEC_CROSS_CHECK",
       "status": "UNAVAILABLE",
-      "checkedAt": "2026-08-16T00:28:01.785312+00:00",
+      "checkedAt": "2026-08-16T00:28:52.874376+00:00",
       "lastSuccessAt": null,
-      "latestFilings": [],
-      "lastError": "HTTP Error 403: Forbidden",
-      "note": "No valid prior snapshot exists yet. This source is isolated and does not stop other research feeds."
+      "note": "SEC remains a required validation source, but direct automated SEC submissions access from this GitHub runner returned HTTP 403. Official IR ingestion continues; SEC cross-check is performed through a compatible access path when available."
     },
     "SERENITY": {
       "sourceType": "SPECIALIST_RESEARCH",
       "status": "UNAVAILABLE",
-      "checkedAt": "2026-08-16T00:28:01.785312+00:00",
+      "checkedAt": "2026-08-16T00:28:52.874376+00:00",
       "lastSuccessAt": null,
       "note": "Serenity adapter has no current machine-readable feed in this public workflow. Missing Serenity data does not block other research ingestion."
     }
