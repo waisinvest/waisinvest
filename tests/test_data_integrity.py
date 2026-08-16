@@ -84,15 +84,18 @@ def test_route_selector_does_not_observe_whole_page_subtree():
 
 def test_route_intelligence_is_loaded_before_app_navigation_snapshot():
     loader=(ROOT/'market-data.js').read_text(encoding='utf-8')
-    assert 'wais-route-intelligence-v1.js' in loader
-    route=loader.index('wais-route-intelligence-v1.js')
+    assert 'wais-route-registry-v2.js' in loader
+    assert 'wais-route-intelligence-v2.js' in loader
+    registry=loader.index('wais-route-registry-v2.js')
+    route=loader.index('wais-route-intelligence-v2.js')
     selector=loader.index('wais-route-selector-safe-v13.js')
-    assert route < selector
-    text=(ROOT/'wais-route-intelligence-v1.js').read_text(encoding='utf-8')
+    assert registry < route < selector
+    text=(ROOT/'wais-route-intelligence-v2.js').read_text(encoding='utf-8')
     assert 'Route Intelligence' in text
     assert "data-section=\"route-intelligence\"" in text or "dataset.section='route-intelligence'" in text
     assert 'Stock READY ≠ Leveraged READY ≠ Income READY' in text
     assert '⚡' in text
+    assert 'VALIDATING · DATA GAP' in text
 
 def test_universal_colour_contract_is_locked_and_income_metrics_are_neutral():
     text=(ROOT/'wais-color-standard-v1.js').read_text(encoding='utf-8')
@@ -111,3 +114,5 @@ def test_related_route_pipeline_is_wired_into_auto_refresh():
     assert 'trackingErrorMeanAbs60dPct' in script
     assert 'current30dIncomeRate' in script
     assert 'sustainableIncomeYield' in script
+    for ticker in ['GFSG','MRVU','MRVX','COHH','LITX','AAOG','AAOX']:
+        assert ticker in script
