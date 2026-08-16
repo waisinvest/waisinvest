@@ -128,33 +128,92 @@ def update_hsi_futures(indicators):
     print(f"OK HSIF: {quote_value:.0f} ({session}, {freshness}) @ {as_of_hk.isoformat()}")
 
 
+def _bls_name(summary):
+    s=summary.lower()
+    if "consumer price index" in s: return "美國 CPI"
+    if "producer price index" in s: return "美國 PPI"
+    if "import and export price" in s: return "美國進出口價格"
+    if "employment situation" in s: return "美國就業報告"
+    if "job openings and labor turnover" in s: return "美國 JOLTS"
+    return None
+
+
+def _parse_bls_ics(text, start, end):
+    events=[]
+    text=re.sub(r"\r?\n[ \t]", "", text)
+    for block in text.split("BEGIN:VEVENT")[1:]:
+        s=re.search(r"SUMMARY:(.+)", block)
+        d=re.search(r"DTSTART(?:;[^:]*)?:(\d{8})T?(\d{6})?", block)
+        if not s or not d: continue
+        name=_bls_name(s.group(1).strip())
+        if not name: continue
+        day=datetime.strptime(d.group(1), "%Y%m%d").date()
+        if start <= day <= end:
+            events.append({"dateISO":day.isoformat(),"date":day.strftime("%m月%d日"),"event":name,"time":"08:30 ET" if name!="美國 JOLTS" else "10:00 ET","source":"U.S. Bureau of Labor Statistics","sourceType":"OFFICIAL_AUTO"})
+    return events
+
+
+def _parse_bls_html(text, start, end):
+    # Fallback to the official yearly release-calendar HTML if the ICS endpoint blocks GitHub runners.
+    plain=re.sub(r"<[^>]+>", " ", text)
+    plain=re.sub(r"\s+", " ", plain)
+    month_names={m:i for i,m in enumerate(["January","February","March","April","May","June","July","August","September","October","November","December"],1)}
+    pattern=re.compile(r"(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2}),\s+2026\s+(\d{1,2}:\d{2})\s+(AM|PM)\s+([^<]{3,140}?)(?=(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)|NOTE:|$)",re.I)
+    events=[]
+    for m in pattern.finditer(plain):
+        mon=month_names[m.group(1).title()]; day=datetime(2026,mon,int(m.group(2))).date()
+        if not(start<=day<=end): continue
+        summary=m.group(5).strip(); name=_bls_name(summary)
+        if not name: continue
+        hhmm=m.group(3); ap=m.group(4).upper(); h,mi=map(int,hhmm.split(':'))
+        if ap=='PM' and h!=12:h+=12
+        if ap=='AM' and h==12:h=0
+        events.append({"dateISO":day.isoformat(),"date":day.strftime("%m月%d日"),"event":name,"time":f"{h:02d}:{mi:02d} ET","source":"U.S. Bureau of Labor Statistics","sourceType":"OFFICIAL_AUTO_HTML_FALLBACK"})
+    return events
+
+
 def update_weekly_events():
     existing = load_json(EVENTS_PATH, {"events":[]})
     today = datetime.now(timezone.utc).date()
     start = today - timedelta(days=today.weekday())
     end = start + timedelta(days=13)
-    events = []
+    auto_events=[]; source_health={"BLS":"DATA GAP"}; errors=[]
+
     try:
-        text = re.sub(r"\r?\n[ \t]", "", fetch_text("https://www.bls.gov/schedule/news_release/bls.ics"))
-        for block in text.split("BEGIN:VEVENT")[1:]:
-            s = re.search(r"SUMMARY:(.+)", block)
-            d = re.search(r"DTSTART(?:;[^:]*)?:(\d{8})T?(\d{6})?", block)
-            if not s or not d:
-                continue
-            summary=s.group(1).strip()
-            if "Consumer Price Index" in summary: name="美國 CPI"
-            elif "Producer Price Index" in summary: name="美國 PPI"
-            else: continue
-            day=datetime.strptime(d.group(1), "%Y%m%d").date()
-            if start <= day <= end:
-                events.append({"dateISO":day.isoformat(),"date":day.strftime("%m月%d日"),"event":name,"time":"08:30 ET","source":"U.S. Bureau of Labor Statistics"})
+        auto_events=_parse_bls_ics(fetch_text("https://www.bls.gov/schedule/news_release/bls.ics"),start,end)
+        source_health["BLS"]="CHECKED · ICS"
     except Exception as exc:
-        print(f"Weekly event refresh warning: {exc}")
-    if events:
-        events.sort(key=lambda x:(x["dateISO"],x["event"]))
-        save_json(EVENTS_PATH,{"lastUpdated":datetime.now(timezone.utc).isoformat(),"window":{"from":start.isoformat(),"to":end.isoformat()},"dataStatus":"Current week + next week official release schedule; verify again before trading","events":events})
-    elif not EVENTS_PATH.exists():
-        save_json(EVENTS_PATH, existing)
+        errors.append(f"BLS ICS: {exc}")
+        try:
+            auto_events=_parse_bls_html(fetch_text("https://www.bls.gov/schedule/2026/home.htm"),start,end)
+            source_health["BLS"]="CHECKED · HTML FALLBACK"
+        except Exception as exc2:
+            errors.append(f"BLS HTML: {exc2}")
+            source_health["BLS"]="DATA GAP · LAST-KNOWN-GOOD PRESERVED"
+
+    # IMPORTANT: automated BLS events MERGE into the already verified multi-source calendar.
+    # Never replace Fed/Census/BEA/company-IR events with a narrower BLS-only list.
+    keep=[]
+    for e in existing.get("events",[]):
+        date=e.get("dateISO")
+        if not date or start.isoformat() <= date <= end.isoformat():
+            keep.append(e)
+    keyed={}
+    for e in keep+auto_events:
+        key=(e.get("dateISO"),e.get("event"),e.get("time"))
+        keyed[key]=e
+    merged=sorted(keyed.values(),key=lambda x:(x.get("dateISO","9999"),x.get("time","99:99"),x.get("event","")))
+
+    result={
+        "lastUpdated": datetime.now(timezone.utc).isoformat() if auto_events else existing.get("lastUpdated",datetime.now(timezone.utc).isoformat()),
+        "window":{"from":start.isoformat(),"to":end.isoformat()},
+        "dataStatus":"Verified multi-source event calendar. Official automated sources merge into existing verified events; narrower source results never overwrite the full calendar.",
+        "sourceHealth":source_health,
+        "sourceErrors":errors[-3:],
+        "events":merged,
+    }
+    save_json(EVENTS_PATH,result)
+    print(f"Weekly events: {len(merged)} preserved/merged; BLS={source_health['BLS']}; auto additions={len(auto_events)}")
 
 
 def main():
