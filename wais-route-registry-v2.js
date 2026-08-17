@@ -38,7 +38,7 @@
       routeResearchNote:'AVS is a verified -1x daily inverse AVGO route. It is a tactical bearish vehicle, not an automatic hedge or READY signal.'
     }),
     RKLB:route('RKLB',['RKLX','RKX'],['RKLZ'],[],{
-      routeResearchNote:'RKLX and Corgi RKX are verified 2x long RKLB routes. RKLZ is a verified -2x daily short RKLB route. There is no RKXX product.'
+      routeResearchNote:'RKLX and Corgi RKX are verified 2x long RKLB routes. RKLZ is a verified -2x daily short RKLB route. Unverified ticker variants are never admitted to the registry or data pipeline.'
     }),
     TSEM:route('TSEM',['TSEG','TSEU'],[],[],{
       routeResearchNote:'Verified long routes exist. No independently verified live TSEM bearish or income route is currently in the registry.'
