@@ -11,54 +11,63 @@ OUT = Path('stock-prices.json')
 # Product identity is independently verified in the public route registry; this feed supplies
 # activity/tracking/income evidence used to decide VALIDATING vs eligible-for-ranking.
 ROUTES = {
-    # GFS
+    # GFS bullish
     'GFSG': {'underlying':'GFS','type':'leveraged','multiple':2},
-    # NVDA
+    # NVDA bullish / bearish / income
     'NVDL': {'underlying':'NVDA','type':'leveraged','multiple':2},
     'NVDX': {'underlying':'NVDA','type':'leveraged','multiple':2},
     'NVDU': {'underlying':'NVDA','type':'leveraged','multiple':2},
     'NVDB': {'underlying':'NVDA','type':'leveraged','multiple':2},
+    'NVD': {'underlying':'NVDA','type':'bearish','multiple':-2},
+    'NVDD': {'underlying':'NVDA','type':'bearish','multiple':-1},
     'NVDY': {'underlying':'NVDA','type':'income'},
     'NVYY': {'underlying':'NVDA','type':'income'},
     'NYYY': {'underlying':'NVDA','type':'income'},
-    # GOOGL
+    # GOOGL bullish / bearish / income
     'GGLL': {'underlying':'GOOGL','type':'leveraged','multiple':2},
     'GOU': {'underlying':'GOOGL','type':'leveraged','multiple':2},
     'GOOL': {'underlying':'GOOGL','type':'leveraged','multiple':2},
+    'GGLS': {'underlying':'GOOGL','type':'bearish','multiple':-1},
     'GOOY': {'underlying':'GOOGL','type':'income'},
     'GOOW': {'underlying':'GOOGL','type':'income'},
     'GOOP': {'underlying':'GOOGL','type':'income'},
-    # MU
+    # MU bullish / bearish / income
     'MUU': {'underlying':'MU','type':'leveraged','multiple':2},
     'MULL': {'underlying':'MU','type':'leveraged','multiple':2},
     'MIC': {'underlying':'MU','type':'leveraged','multiple':2},
+    'MUD': {'underlying':'MU','type':'bearish','multiple':-1},
+    'MUZ': {'underlying':'MU','type':'bearish','multiple':-2},
     'MUYY': {'underlying':'MU','type':'income'},
     'MUIB': {'underlying':'MU','type':'income'},
-    # AVGO
+    # AVGO bullish / bearish / income
     'AVL': {'underlying':'AVGO','type':'leveraged','multiple':2},
     'AVGU': {'underlying':'AVGO','type':'leveraged','multiple':2},
     'AVGX': {'underlying':'AVGO','type':'leveraged','multiple':2},
     'AVGG': {'underlying':'AVGO','type':'leveraged','multiple':2},
     'AVGC': {'underlying':'AVGO','type':'leveraged','multiple':2},
+    'AVS': {'underlying':'AVGO','type':'bearish','multiple':-1},
     'AVGW': {'underlying':'AVGO','type':'income'},
-    # TSM
+    # TSM bullish / bearish / income
     'TSMX': {'underlying':'TSM','type':'leveraged','multiple':2},
     'TSMU': {'underlying':'TSM','type':'leveraged','multiple':2},
     'TSMG': {'underlying':'TSM','type':'leveraged','multiple':2},
     'TWSC': {'underlying':'TSM','type':'leveraged','multiple':2},
+    'TSMZ': {'underlying':'TSM','type':'bearish','multiple':-1},
+    'STSM': {'underlying':'TSM','type':'bearish','multiple':-2},
     'TSMY': {'underlying':'TSM','type':'income'},
     'TMYY': {'underlying':'TSM','type':'income'},
-    # RKLB / TSEM / AXTI
+    # RKLB bullish / bearish
     'RKLX': {'underlying':'RKLB','type':'leveraged','multiple':2},
     'RKX': {'underlying':'RKLB','type':'leveraged','multiple':2},
-    # RKLZ is a -2x inverse RKLB product and is intentionally excluded from bullish long-route ranking.
+    'RKLZ': {'underlying':'RKLB','type':'bearish','multiple':-2},
+    # TSEM / AXTI bullish
     'TSEG': {'underlying':'TSEM','type':'leveraged','multiple':2},
     'TSEU': {'underlying':'TSEM','type':'leveraged','multiple':2},
     'AXTX': {'underlying':'AXTI','type':'leveraged','multiple':2},
     'AXTU': {'underlying':'AXTI','type':'leveraged','multiple':2},
     'AXTL': {'underlying':'AXTI','type':'leveraged','multiple':2},
     'AXTC': {'underlying':'AXTI','type':'leveraged','multiple':2},
-    # Newly verified live routes from current exchange / issuer / SEC review
+    # Newly verified live bullish routes from current exchange / issuer / SEC review
     'MRVU': {'underlying':'MRVL','type':'leveraged','multiple':2},
     'MRVX': {'underlying':'MRVL','type':'leveraged','multiple':2},
     'COHH': {'underlying':'COHR','type':'leveraged','multiple':2},
@@ -187,7 +196,7 @@ def main():
                 'routeUnderlying':meta['underlying'],'routeType':meta['type'],
                 **activity_metrics(hist,close),
             }
-            if meta['type']=='leveraged':
+            if meta['type'] in {'leveraged','bearish'}:
                 u=meta['underlying']
                 if u not in underlying_cache:
                     uh=yf.Ticker(u).history(period='4mo',interval='1d',auto_adjust=False,prepost=False,actions=False)
@@ -201,7 +210,7 @@ def main():
                     q['trackingErrorMeanAbs60dPct']=round(statistics.fmean(errs)*100,4)
                 else:
                     q['trackingErrorMeanAbs60dPct']=None
-            else:
+            elif meta['type']=='income':
                 q.update(income_metrics(hist,close))
             prices[symbol]=q; updated+=1
         except Exception as exc:
@@ -225,7 +234,7 @@ def main():
             print('stock route metrics failed',symbol,exc); stock_metric_failed.append(symbol)
 
     data['relatedRoutesLastUpdated']=now.isoformat()
-    data['relatedRoutesDataStatus']='Verified-route activity / tracking / income research metrics; public data may be delayed; not exchange real-time; route approval remains separate.'
+    data['relatedRoutesDataStatus']='Verified-route activity / tracking / income research metrics, including bearish/inverse routes; public data may be delayed; not exchange real-time; route approval remains separate.'
     data['relatedRoutesFailedSymbols']=sorted(set(failed))
     data['relatedRouteStockMetricFailures']=sorted(set(stock_metric_failed))
     OUT.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
