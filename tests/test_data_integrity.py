@@ -124,5 +124,20 @@ def test_related_route_pipeline_is_wired_into_auto_refresh():
     assert 'trackingErrorMeanAbs60dPct' in script
     assert 'current30dIncomeRate' in script
     assert 'sustainableIncomeYield' in script
-    for ticker in ['GFSG','MRVU','MRVX','COHH','LITX','AAOG','AAOX']:
+    for ticker in ['GFSG','RKX','MUYY','MUIB','MRVU','MRVX','COHH','LITX','AAOG','AAOX']:
         assert ticker in script
+
+def test_rklb_ticker_and_income_frequency_contract():
+    registry=(ROOT/'wais-route-registry-v2.js').read_text(encoding='utf-8')
+    script=(ROOT/'update_related_routes_data.py').read_text(encoding='utf-8')
+    route=(ROOT/'wais-route-intelligence-v2.js').read_text(encoding='utf-8')
+    assert "RKLB:route('RKLB',['RKLX','RKX']" in registry
+    assert "'RKX': {'underlying':'RKLB'" in script
+    assert "'RKXX': {'underlying':'RKLB'" not in script
+    assert "prices.pop('RKXX',None)" in script
+    assert 'infer_distribution_frequency' in script
+    assert "return 'Weekly'" in script
+    assert 'ttmCoverageStatus' in script
+    assert 'observedFrequency' in route
+    assert 'TTM Coverage' in route
+    assert 'altSummary' in route
