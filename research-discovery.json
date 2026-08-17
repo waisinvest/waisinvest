@@ -1,6 +1,6 @@
 {
   "version": "WAIS Discovery Ingestion v1.1",
-  "lastChecked": "2026-08-17T23:00:53.773522+00:00",
+  "lastChecked": "2026-08-17T23:57:48.729365+00:00",
   "contract": {
     "rule": "No new data is not a system failure. Every scheduled cycle retries every configured adapter.",
     "states": [
@@ -28,8 +28,8 @@
       "sourceType": "OFFICIAL_IR_PRESS_RELEASES",
       "sourceUrl": "https://www.aeluma.com/investors/news-events/press-releases",
       "status": "LIVE",
-      "checkedAt": "2026-08-17T23:00:53.773522+00:00",
-      "lastSuccessAt": "2026-08-17T23:00:53.773522+00:00",
+      "checkedAt": "2026-08-17T23:57:48.729365+00:00",
+      "lastSuccessAt": "2026-08-17T23:57:48.729365+00:00",
       "contentHash": "4e955ba06f58b0b4b2e556314e712fa0c17ae178c2ca6b644cfe511a8de8369e",
       "contentChanged": false,
       "recentOfficialItems": [
@@ -52,8 +52,8 @@
       "sourceType": "OFFICIAL_COMPANY_NEWS",
       "sourceUrl": "https://ambiq.com/news/",
       "status": "LIVE",
-      "checkedAt": "2026-08-17T23:00:53.773522+00:00",
-      "lastSuccessAt": "2026-08-17T23:00:53.773522+00:00",
+      "checkedAt": "2026-08-17T23:57:48.729365+00:00",
+      "lastSuccessAt": "2026-08-17T23:57:48.729365+00:00",
       "contentHash": "1fe088f1c7c5168c03efd75ac342498d2c3e63e372f62216367711325fe82827",
       "contentChanged": false,
       "recentOfficialItems": [
@@ -72,14 +72,14 @@
     "SEC_PRIMARY": {
       "sourceType": "SEC_CROSS_CHECK",
       "status": "UNAVAILABLE",
-      "checkedAt": "2026-08-17T23:00:53.773522+00:00",
+      "checkedAt": "2026-08-17T23:57:48.729365+00:00",
       "lastSuccessAt": null,
       "note": "SEC remains a required validation source, but direct automated SEC submissions access from this GitHub runner returned HTTP 403. Official IR ingestion continues; SEC cross-check is performed through a compatible access path when available."
     },
     "SERENITY": {
       "sourceType": "SPECIALIST_RESEARCH",
       "status": "UNAVAILABLE",
-      "checkedAt": "2026-08-17T23:00:53.773522+00:00",
+      "checkedAt": "2026-08-17T23:57:48.729365+00:00",
       "lastSuccessAt": null,
       "note": "Serenity adapter has no current machine-readable feed in this public workflow. Missing Serenity data does not block other research ingestion."
     }
