@@ -50,7 +50,8 @@ ROUTES = {
     'TMYY': {'underlying':'TSM','type':'income'},
     # RKLB / TSEM / AXTI
     'RKLX': {'underlying':'RKLB','type':'leveraged','multiple':2},
-    'RKXX': {'underlying':'RKLB','type':'leveraged','multiple':2},
+    'RKX': {'underlying':'RKLB','type':'leveraged','multiple':2},
+    # RKLZ is a -2x inverse RKLB product and is intentionally excluded from bullish long-route ranking.
     'TSEG': {'underlying':'TSEM','type':'leveraged','multiple':2},
     'TSEU': {'underlying':'TSEM','type':'leveraged','multiple':2},
     'AXTX': {'underlying':'AXTI','type':'leveraged','multiple':2},
@@ -82,6 +83,24 @@ def pct_returns(series):
     vals=[float(x) for x in series.dropna().tolist()]
     return [(vals[i]/vals[i-1]-1.0) for i in range(1,len(vals)) if vals[i-1] != 0]
 
+def infer_distribution_frequency(pos):
+    dates=sorted(x.date() for x in pos.index)
+    if len(dates)<2:
+        return 'Sparse/Unknown'
+    gaps=[(dates[i]-dates[i-1]).days for i in range(1,len(dates)) if (dates[i]-dates[i-1]).days>0]
+    if not gaps:
+        return 'Sparse/Unknown'
+    median_gap=float(statistics.median(gaps[-16:]))
+    if median_gap<=10:
+        return 'Weekly'
+    if median_gap<=20:
+        return 'Twice Monthly'
+    if median_gap<=45:
+        return 'Monthly'
+    if median_gap<=110:
+        return 'Quarterly/Irregular'
+    return 'Sparse/Unknown'
+
 def income_metrics(hist, close):
     if 'Dividends' not in hist.columns or close <= 0:
         return {}
@@ -111,14 +130,24 @@ def income_metrics(hist, close):
     annual=(median_month*12/close*100) if close>0 else 0.0
     sustainable=max(0.0,min(ttm_yield,annual)*(0.70+0.30*(consistency/100.0)))
     count=len(ttm)
+    frequency=infer_distribution_frequency(ttm)
+    oldest_date=ttm.index[0].date() if count else today
+    history_days=max(0,(today-oldest_date).days)
+    ttm_coverage='FULL_TTM' if history_days>=330 else 'PARTIAL_HISTORY'
+    annual_factor={'Weekly':52,'Twice Monthly':24,'Monthly':12,'Quarterly/Irregular':4}.get(frequency)
+    latest=float(pos.iloc[-1])
+    latest_annualized=(latest*annual_factor/close*100) if annual_factor else None
     return {
         'trailing12mDistributionYield':round(ttm_yield,4),
         'current30dIncomeRate':round(rate30,4),
         'incomeConsistency':round(consistency,1),
         'sustainableIncomeYield':round(sustainable,4),
         'distributionCount12m':count,
-        'observedFrequency':'Weekly' if count>=40 else ('Monthly' if count>=10 else ('Quarterly/Irregular' if count>=3 else 'Sparse/Unknown')),
-        'lastDistribution':round(float(pos.iloc[-1]),6),
+        'observedFrequency':frequency,
+        'distributionHistoryDays':history_days,
+        'ttmCoverageStatus':ttm_coverage,
+        'latestAnnualizedDistributionRateProxy':round(latest_annualized,4) if latest_annualized is not None else None,
+        'lastDistribution':round(latest,6),
         'lastDistributionDate':pos.index[-1].date().isoformat(),
     }
 
@@ -177,6 +206,9 @@ def main():
             prices[symbol]=q; updated+=1
         except Exception as exc:
             print('related route failed',symbol,exc); failed.append(symbol)
+
+    # Remove the previously mistyped RKXX route record after the correct live ticker RKX is used.
+    prices.pop('RKXX',None)
 
     # Enrich the underlying stock records with route-comparison activity metrics. Preserve the
     # existing stock quote/session fields produced by update_stock_prices.py.
