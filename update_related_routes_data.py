@@ -207,9 +207,6 @@ def main():
         except Exception as exc:
             print('related route failed',symbol,exc); failed.append(symbol)
 
-    # Remove the previously mistyped RKXX route record after the correct live ticker RKX is used.
-    prices.pop('RKXX',None)
-
     # Enrich the underlying stock records with route-comparison activity metrics. Preserve the
     # existing stock quote/session fields produced by update_stock_prices.py.
     stock_metric_failed=[]
