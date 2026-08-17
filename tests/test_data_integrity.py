@@ -131,10 +131,14 @@ def test_rklb_ticker_and_income_frequency_contract():
     registry=(ROOT/'wais-route-registry-v2.js').read_text(encoding='utf-8')
     script=(ROOT/'update_related_routes_data.py').read_text(encoding='utf-8')
     route=(ROOT/'wais-route-intelligence-v2.js').read_text(encoding='utf-8')
+    prices=(ROOT/'stock-prices.json').read_text(encoding='utf-8')
+    invalid_symbol='RK'+'XX'
     assert "RKLB:route('RKLB',['RKLX','RKX']" in registry
     assert "'RKX': {'underlying':'RKLB'" in script
-    assert "'RKXX': {'underlying':'RKLB'" not in script
-    assert "prices.pop('RKXX',None)" in script
+    assert invalid_symbol not in registry
+    assert invalid_symbol not in script
+    assert invalid_symbol not in route
+    assert invalid_symbol not in prices
     assert 'infer_distribution_frequency' in script
     assert "return 'Weekly'" in script
     assert 'ttmCoverageStatus' in script
