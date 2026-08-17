@@ -37,9 +37,9 @@ document.write('<script src="wais-research-move-format-v1.js?v=20260816h"></scri
 // Locked decision-colour language applies across stock, income and route pages.
 document.write('<script src="wais-color-standard-v1.js?v=20260816h"></script>');
 // Verified public route registry must load before Route Intelligence / Related Routes render.
-document.write('<script src="wais-route-registry-v2.js?v=20260816h"></script>');
+document.write('<script src="wais-route-registry-v2.js?v=20260816i"></script>');
 // Route Intelligence creates its sidebar/page shell BEFORE app.js snapshots nav/sections.
-document.write('<script src="wais-route-intelligence-v2.js?v=20260816h"></script>');
+document.write('<script src="wais-route-intelligence-v2.js?v=20260816i"></script>');
 // Mobile-safe compact Related Route panel remains the summary view on Top Picks / Watchlist.
 document.write('<script src="wais-route-selector-safe-v13.js?v=20260816h"></script>');
 // Linked Income ETFs and Route Intelligence share the same underlying record and cross-navigation.
