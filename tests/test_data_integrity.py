@@ -93,17 +93,18 @@ def test_route_intelligence_is_loaded_before_app_navigation_snapshot():
     text=(ROOT/'wais-route-intelligence-v2.js').read_text(encoding='utf-8')
     assert 'Route Intelligence' in text
     assert "data-section=\"route-intelligence\"" in text or "dataset.section='route-intelligence'" in text
-    assert 'Stock READY ≠ Leveraged READY ≠ Income READY' in text
-    assert '⚡' in text
+    assert 'Stock READY ≠ Bullish Leveraged READY ≠ Bearish READY ≠ Income READY' in text
+    assert 'BEARISH / INVERSE' in text
     assert 'VALIDATING · DATA GAP' in text
 
 def test_route_intelligence_excludes_stock_only_underlyings():
     registry=(ROOT/'wais-route-registry-v2.js').read_text(encoding='utf-8')
     route=(ROOT/'wais-route-intelligence-v2.js').read_text(encoding='utf-8')
-    assert 'Only underlyings with at least one independently verified leveraged or income product' in registry
+    assert 'Only underlyings with at least one independently verified leveraged-long, bearish/inverse, or income product' in registry
     assert "POWL:route(" not in registry
     assert "MOD:route(" not in registry
     assert 'hasRouteProduct' in route
+    assert 'Array.isArray(r.bearish)' in route
     assert 'Object.keys(rs).filter(t=>hasRouteProduct(rs[t]))' in route
     assert '!hasRouteProduct(routes()[t])' in route
 
@@ -124,8 +125,25 @@ def test_related_route_pipeline_is_wired_into_auto_refresh():
     assert 'trackingErrorMeanAbs60dPct' in script
     assert 'current30dIncomeRate' in script
     assert 'sustainableIncomeYield' in script
-    for ticker in ['GFSG','RKX','MUYY','MUIB','MRVU','MRVX','COHH','LITX','AAOG','AAOX']:
+    for ticker in ['GFSG','RKX','RKLZ','NVD','NVDD','GGLS','MUD','MUZ','AVS','TSMZ','STSM','MUYY','MUIB','MRVU','MRVX','COHH','LITX','AAOG','AAOX']:
         assert ticker in script
+    assert "meta['type'] in {'leveraged','bearish'}" in script
+
+def test_direction_specific_route_contract():
+    registry=(ROOT/'wais-route-registry-v2.js').read_text(encoding='utf-8')
+    route=(ROOT/'wais-route-intelligence-v2.js').read_text(encoding='utf-8')
+    for snippet in [
+        "NVDA:route('NVDA',['NVDL','NVDX','NVDU','NVDB'],['NVD','NVDD']",
+        "GOOGL:route('GOOGL',['GGLL','GOU','GOOL'],['GGLS']",
+        "MU:route('MU',['MUU','MULL','MIC'],['MUD','MUZ']",
+        "AVGO:route('AVGO',['AVL','AVGU','AVGX','AVGG','AVGC'],['AVS']",
+        "RKLB:route('RKLB',['RKLX','RKX'],['RKLZ']",
+        "TSM:route('TSM',['TSMX','TSMU','TSMG','TWSC'],['TSMZ','STSM']",
+    ]:
+        assert snippet in registry
+    assert "candidate(r.bearish,'bearish')" in route
+    assert 'Bearish alternatives' in route
+    assert "type==='bearish'" in route
 
 def test_rklb_ticker_and_income_frequency_contract():
     registry=(ROOT/'wais-route-registry-v2.js').read_text(encoding='utf-8')
@@ -133,8 +151,9 @@ def test_rklb_ticker_and_income_frequency_contract():
     route=(ROOT/'wais-route-intelligence-v2.js').read_text(encoding='utf-8')
     prices=(ROOT/'stock-prices.json').read_text(encoding='utf-8')
     invalid_symbol='RK'+'XX'
-    assert "RKLB:route('RKLB',['RKLX','RKX']" in registry
+    assert "RKLB:route('RKLB',['RKLX','RKX'],['RKLZ']" in registry
     assert "'RKX': {'underlying':'RKLB'" in script
+    assert "'RKLZ': {'underlying':'RKLB','type':'bearish','multiple':-2}" in script
     assert invalid_symbol not in registry
     assert invalid_symbol not in script
     assert invalid_symbol not in route
