@@ -97,6 +97,16 @@ def test_route_intelligence_is_loaded_before_app_navigation_snapshot():
     assert '⚡' in text
     assert 'VALIDATING · DATA GAP' in text
 
+def test_route_intelligence_excludes_stock_only_underlyings():
+    registry=(ROOT/'wais-route-registry-v2.js').read_text(encoding='utf-8')
+    route=(ROOT/'wais-route-intelligence-v2.js').read_text(encoding='utf-8')
+    assert 'Only underlyings with at least one independently verified leveraged or income product' in registry
+    assert "POWL:route(" not in registry
+    assert "MOD:route(" not in registry
+    assert 'hasRouteProduct' in route
+    assert 'Object.keys(rs).filter(t=>hasRouteProduct(rs[t]))' in route
+    assert '!hasRouteProduct(routes()[t])' in route
+
 def test_universal_colour_contract_is_locked_and_income_metrics_are_neutral():
     text=(ROOT/'wais-color-standard-v1.js').read_text(encoding='utf-8')
     for token in ['READY 1 / BUY / ADD','WAIT / CANDIDATE+','WATCH / CANDIDATE / RESEARCH','DEFENSE / PROTECT PROFIT / TRIM','EXIT / REJECT','DATA GAP']:
