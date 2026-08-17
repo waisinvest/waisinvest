@@ -24,6 +24,8 @@ document.write('<script src="wais-income-stage-nav-v22.js?v=20260816h"></script>
 document.write('<script src="wais-income-filter-fix-v25.js?v=20260816h"></script>');
 document.write('<script src="wais-income-sort-v1.js?v=20260816h"></script>');
 document.write('<script src="wais-execution-v13.js?v=20260816h"></script>');
+// Latest verified content-sync state must load after execution-stage defaults and before authoritative watchlist ordering.
+document.write('<script src="wais-evening-state-20260817.js?v=20260817a"></script>');
 // Watchlist order must be calculated after execution-stage patches so the final visible priority is authoritative.
 document.write('<script src="wais-watchlist-order-v1.js?v=20260816h"></script>');
 // Clarify true quote gaps versus intentionally unapproved Entry/Target levels.
