@@ -1,5 +1,6 @@
-// WAIS Route Registry v2.0 — sanitized public route universe.
+// WAIS Route Registry v2.1 — sanitized public route universe.
 // Product existence/listing is research evidence only. It is never a READY or Best approval.
+// Inclusion rule: an underlying appears in Route Intelligence only when at least one independently verified leveraged or income product exists.
 (function(){
   const d=window.WAIS_MARKET_DATA||(window.WAIS_MARKET_DATA={});
   const clean=s=>String(s||'').trim().toUpperCase();
@@ -26,15 +27,6 @@
     GOOGL:route('GOOGL',['GGLL','GOU','GOOL'],['GOOY','GOOW','GOOP']),
     MU:route('MU',['MUU','MULL','MIC'],['MUYY','MUIB']),
     AVGO:route('AVGO',['AVL','AVGU','AVGX','AVGG','AVGC'],['AVGW']),
-    POWL:route('POWL',[],[],{
-      preferred:'STOCK / REVIEW',
-      routeResearchNote:'No independently verified dedicated POWL leveraged or income route was located in the current route review. Do not infer a route from similarly named tickers.'
-    }),
-    MOD:route('MOD',[],[],{
-      preferred:'STOCK / REVIEW',
-      leveragedStatus:'VALIDATING · FILED / LIVE DATA GAP',
-      routeResearchNote:'Leveraged MOD fund filings were located, but a live tradable ticker with sufficient current activity/liquidity evidence was not independently verified in this cycle.'
-    }),
     RKLB:route('RKLB',['RKLX','RKXX'],[],{
       routeResearchNote:'RKLX and RKXX are researched independently. A failed RKXX data pull cannot make RKLX or the stock route READY.'
     }),
@@ -60,11 +52,13 @@
   };
 
   d.routeRegistry={
-    version:'2.0',
-    asOf:'2026-08-16 19:45 ET',
+    version:'2.1',
+    asOf:'2026-08-16 20:48 ET',
+    inclusionRule:'Only underlyings with at least one independently verified leveraged or income product are shown in Route Intelligence. Stock-only names stay in Top Picks / Watchlist.',
     rule:'Stock READY ≠ Leveraged READY ≠ Income READY. Verified product existence is not approval. Best requires sufficient current activity/liquidity/tracking or income/NAV/ROC/total-return evidence; otherwise VALIDATING / DATA GAP.',
-    verifiedCoverage:['GFS/GFSG','COHR/COHH','LITE/LITX','AAOI/AAOG+AAOX','MRVL/MRVU+MRVX'],
-    explicitGaps:['MOD leveraged filing found but live route/activity not independently verified','POWL no dedicated leveraged/income route independently verified','Income route remains absent where no same-underlying product is verified']
+    verifiedCoverage:['GFS/GFSG','NVDA','GOOGL','MU','AVGO','RKLB','TSEM','AXTI','TSM','MRVL/MRVU+MRVX','COHR/COHH','LITE/LITX','AAOI/AAOG+AAOX'],
+    excludedStockOnly:['POWL','MOD'],
+    explicitGaps:['POWL: no dedicated leveraged/income route independently verified — excluded from Route Intelligence','MOD: leveraged filing research exists but no independently verified live tradable route — excluded until verification']
   };
 
   window.WAIS_MARKET_DATA=d;
