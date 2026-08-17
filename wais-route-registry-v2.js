@@ -1,4 +1,4 @@
-// WAIS Route Registry v2.2 — sanitized public route universe.
+// WAIS Route Registry v2.3 — sanitized public route universe.
 // Product existence/listing is research evidence only. It is never a READY or Best approval.
 // Inclusion rule: an underlying appears in Route Intelligence only when at least one independently verified leveraged or income product exists.
 (function(){
@@ -30,7 +30,7 @@
     }),
     AVGO:route('AVGO',['AVL','AVGU','AVGX','AVGG','AVGC'],['AVGW']),
     RKLB:route('RKLB',['RKLX','RKX'],[],{
-      routeResearchNote:'RKLX and Corgi RKX are independently verified 2x long RKLB routes. RKX replaces the incorrect RKXX symbol. RKLZ is a -2x inverse product and is not included in the bullish long-route ranking.'
+      routeResearchNote:'RKLX and Corgi RKX are independently verified 2x long RKLB routes. RKLZ is a -2x inverse product and is not included in the bullish long-route ranking.'
     }),
     TSEM:route('TSEM',['TSEG','TSEU'],[]),
     AXTI:route('AXTI',['AXTX','AXTU','AXTL','AXTC'],[]),
@@ -54,8 +54,8 @@
   };
 
   d.routeRegistry={
-    version:'2.2',
-    asOf:'2026-08-16 21:05 ET',
+    version:'2.3',
+    asOf:'2026-08-16 21:18 ET',
     inclusionRule:'Only underlyings with at least one independently verified leveraged or income product are shown in Route Intelligence. Stock-only names stay in Top Picks / Watchlist.',
     rule:'Stock READY ≠ Leveraged READY ≠ Income READY. Verified product existence is not approval. Best requires sufficient current activity/liquidity/tracking or income/NAV/ROC/total-return evidence; otherwise VALIDATING / DATA GAP.',
     verifiedCoverage:['GFS/GFSG','NVDA','GOOGL','MU/MUYY+MUIB','AVGO','RKLB/RKLX+RKX','TSEM','AXTI','TSM','MRVL/MRVU+MRVX','COHR/COHH','LITE/LITX','AAOI/AAOG+AAOX'],
