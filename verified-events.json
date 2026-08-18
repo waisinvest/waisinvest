@@ -1,5 +1,5 @@
 {
-  "lastVerified": "2026-08-17T19:38:00-04:00",
+  "lastVerified": "2026-08-18T19:15:00-04:00",
   "dataStatus": "WAIS verified event master. Maintained from official central-bank, government-statistics and company-IR sources; automatic source feeds may add/refresh but must never delete unrelated verified events.",
   "events": [
     {"dateISO":"2026-08-17","date":"08月17日","event":"FN · Fabrinet Q4 / FY2026 業績","time":"17:00 ET","referenceMonth":"Fiscal Q4 / FY2026","source":"Fabrinet Investor Relations"},
