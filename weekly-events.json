@@ -2,8 +2,8 @@
   "lastUpdated": "2026-08-16T19:00:00-04:00",
   "lastVerifiedMaster": "2026-08-17T19:38:00-04:00",
   "window": {
-    "from": "2026-08-17",
-    "to": "2026-08-30"
+    "from": "2026-08-18",
+    "to": "2026-08-31"
   },
   "dataStatus": "Rolling 14-day verified calendar. Official auto feeds merge with the WAIS verified-event master; narrower or failed feeds cannot delete unrelated verified events.",
   "sourceHealth": {
@@ -14,14 +14,6 @@
     "BLS HTML: HTTP Error 403: Forbidden"
   ],
   "events": [
-    {
-      "dateISO": "2026-08-17",
-      "date": "08月17日",
-      "event": "FN · Fabrinet Q4 / FY2026 業績",
-      "time": "17:00 ET",
-      "referenceMonth": "Fiscal Q4 / FY2026",
-      "source": "Fabrinet Investor Relations"
-    },
     {
       "dateISO": "2026-08-18",
       "date": "08月18日",
