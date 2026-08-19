@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-19T21:02:36.608756+00:00",
+  "lastUpdated": "2026-08-19T21:58:43.501946+00:00",
   "marketDates": {
     "US": "2026-08-19",
     "HK": "2026-08-19"
@@ -28,7 +28,7 @@
       "regularCloseDate": "2026-08-19",
       "change": 41.3791,
       "changePercent": 0.1574,
-      "asOf": "2026-08-19T17:00:00-04:00",
+      "asOf": "2026-08-19T17:15:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
@@ -40,7 +40,7 @@
       "regularCloseDate": "2026-08-19",
       "change": -64.9379,
       "changePercent": -0.2202,
-      "asOf": "2026-08-19T17:00:00-04:00",
+      "asOf": "2026-08-19T17:15:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
@@ -64,7 +64,7 @@
       "regularCloseDate": "2026-08-19",
       "change": -254.234,
       "changePercent": -2.1199,
-      "asOf": "2026-08-19T17:00:00-04:00",
+      "asOf": "2026-08-19T17:15:00-04:00",
       "source": "Yahoo Finance via yfinance",
       "dataStatus": "Latest available 5-minute snapshot; may be delayed; NOT exchange real-time"
     },
@@ -130,7 +130,7 @@
       "sourceUrl": "https://www.etnet.com.hk/www/eng/futures/index.php?month=202608&subtype=HSI",
       "session": "After-Trade",
       "freshness": "MARKET_CLOSED",
-      "ageMinutes": 122,
+      "ageMinutes": 178,
       "marketOpen": false,
       "freshnessReason": "Market closed; last verified source session preserved",
       "expiryDate": "28/08/2026",
