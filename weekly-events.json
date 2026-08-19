@@ -1,6 +1,6 @@
 {
   "lastUpdated": "2026-08-16T19:00:00-04:00",
-  "lastVerifiedMaster": "2026-08-18T19:15:00-04:00",
+  "lastVerifiedMaster": "2026-08-19T19:46:00-04:00",
   "window": {
     "from": "2026-08-19",
     "to": "2026-09-01"
@@ -69,6 +69,14 @@
       "time": "08:30 ET",
       "referenceMonth": "2026年7月",
       "source": "U.S. Census Bureau"
+    },
+    {
+      "dateISO": "2026-08-27",
+      "date": "08月27日",
+      "event": "MRVL Q2 FY2027 業績",
+      "time": "16:45 ET",
+      "referenceMonth": "Fiscal Q2 2027",
+      "source": "Marvell Investor Relations"
     }
   ]
 }
