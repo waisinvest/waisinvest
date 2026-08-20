@@ -50,5 +50,7 @@ document.write('<script src="wais-route-selector-safe-v13.js?v=20260816h"></scri
 document.write('<script src="wais-route-income-links-v1.js?v=20260816h"></script>');
 // Sidebar priority: Top Picks → Route Intelligence → Watchlist.
 document.write('<script src="wais-nav-order-v1.js?v=20260816h"></script>');
-// Canonical decision state MUST load last so older overlays cannot reintroduce stale market language or rankings.
+// Canonical decision state MUST load after older overlays so stale language/rankings cannot return.
 document.write('<script src="wais-canonical-state-20260820.js?v=20260820a"></script>');
+// Latest evidence-backed radar change loads last.
+document.write('<script src="wais-radar-update-20260820-1150.js?v=20260820b"></script>');
