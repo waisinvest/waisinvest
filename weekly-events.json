@@ -1,6 +1,6 @@
 {
   "lastUpdated": "2026-08-16T19:00:00-04:00",
-  "lastVerifiedMaster": "2026-08-19T19:46:00-04:00",
+  "lastVerifiedMaster": "2026-08-20T19:35:00-04:00",
   "window": {
     "from": "2026-08-20",
     "to": "2026-09-02"
@@ -29,6 +29,14 @@
       "time": "10:00 ET",
       "referenceMonth": "2026年7月",
       "source": "U.S. Census Bureau"
+    },
+    {
+      "dateISO": "2026-08-25",
+      "date": "08月25日",
+      "event": "ZYME · Zanidatamab 1L HER2+ GEA 美國 PDUFA target action date",
+      "time": "TIME DATA GAP",
+      "referenceMonth": "FDA regulatory action",
+      "source": "Zymeworks Investor Relations"
     },
     {
       "dateISO": "2026-08-26",
