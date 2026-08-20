@@ -4,7 +4,7 @@
   const d=window.WAIS_MARKET_DATA||(window.WAIS_MARKET_DATA={});
 
   d.lastUpdated='2026-08-20';
-  d.lastStrategyUpdated='2026-08-20T00:15:00-04:00';
+  d.lastStrategyUpdated='2026-08-20T08:07:00-04:00';
   d.dataAsOf='2026-08-20 canonical decision sync; price fields remain sourced from the existing quote feed and retain their own timestamps';
 
   // Keep risk elevated without presenting the dashboard as blanket DEFENSE.
@@ -13,48 +13,48 @@
   d.marketMode='SELECTIVE RECOVERY WATCH';
   d.defenseStatus='SELECTIVE · NOT FULL DEFENSE';
   d.contentSyncStatus='CURRENT · EARLY RADAR SYNCED · SELECTIVE RECOVERY · READY 1 NONE';
-  d.contentSyncReason='Broad index stress eased while semiconductor breadth stayed mixed. WAIS is not full Risk-On, but the canonical state is now Selective Recovery Watch rather than a stale blanket Defense label. READY 1 remains closed; earlier-stage sponsorship and reclaim quality determine priority.';
+  d.contentSyncReason='Broad index stress eased while semiconductor breadth stayed mixed. WAIS is not full Risk-On, but the canonical state is Selective Recovery Watch rather than blanket Defense. READY 1 remains closed; earlier-stage sponsorship, catalyst quality and reclaim quality determine priority.';
 
   d.readyList=[];
   d.techReadyList=[];
 
   d.earlyRadar={
-    asOf:'2026-08-20',
+    asOf:'2026-08-20 08:07 ET',
     discoverySignal:['KEYS','FN'],
     smartMoneyBuild:['ADI'],
-    preReadyEarly:['MRVL'],
+    preReadyEarly:['MRVL','ZYME'],
     preReady:[],
     ready1:[]
   };
 
   d.opportunityPipeline=d.opportunityPipeline||{};
-  d.opportunityPipeline.asOf='2026-08-20 canonical sync';
+  d.opportunityPipeline.asOf='2026-08-20 08:07 ET canonical sync';
   d.opportunityPipeline.actionNow='SELECTIVE RECOVERY WATCH · NO CHASE · RANK EARLY SPONSORSHIP';
   d.opportunityPipeline.ready1=[];
   d.opportunityPipeline.techReady=[];
   d.opportunityPipeline.preReady=[];
-  d.opportunityPipeline.preReadyEarly=['MRVL'];
+  d.opportunityPipeline.preReadyEarly=['MRVL','ZYME'];
   d.opportunityPipeline.smartMoneyBuild=['ADI'];
   d.opportunityPipeline.discoverySignal=['KEYS','FN'];
-  d.opportunityPipeline.inUniverse=['MRVL','GOOGL','NVDA','MU','GFS','AVGO','TSEM','AXTI','RKLB','COHR','LITE','POET','AEHR','FORM','MXL','NVTS','OSS','AIRO','ALMU','AMBQ','ADI','KEYS','FN'];
+  d.opportunityPipeline.inUniverse=['MRVL','ZYME','GOOGL','NVDA','MU','GFS','AVGO','TSEM','AXTI','RKLB','COHR','LITE','POET','AEHR','FORM','MXL','NVTS','OSS','AIRO','ALMU','AMBQ','ADI','KEYS','FN'];
   d.opportunityPipeline.outOfCore=['BYND','RARE','PRAX'];
   d.opportunityPipeline.phaseOut=['POWL','MOD'];
   d.opportunityPipeline.noSetup=['PLTR'];
-  d.opportunityPipeline.closestToReady=['MRVL','GOOGL','NVDA'];
+  d.opportunityPipeline.closestToReady=['MRVL','ZYME','GOOGL','NVDA'];
   d.opportunityPipeline.statusChanges=[
-    'Canonical market state changed from blanket DEFENSIVE display to SELECTIVE RECOVERY WATCH while Risk Score remains 60 and cash remains 45%.',
-    'MRVL is now PRE-READY EARLY: primary evidence improved, but no chase after the event-driven gap and Aug 27 earnings remains a hard event gate.',
-    'ADI enters SMART-MONEY BUILD research; KEYS and FN enter DISCOVERY SIGNAL research. These are IN the research universe, not READY 1.',
-    'BYND, RARE and PRAX are explicitly OUT OF WAIS CORE for now; they may be researched separately but do not enter the core ranking.',
-    'POWL and MOD remain PHASE OUT; PLTR remains NO SETUP; READY 1 and TECH READY remain NONE.'
+    'Market remains SELECTIVE RECOVERY WATCH with Risk Score 60 and cash 45%; READY 1 and TECH READY remain NONE.',
+    'ZYME enters PRE-READY EARLY: Aug 25 PDUFA for first-line HER2+ GEA can unlock a $250M U.S. milestone; positive Phase 3 data, Priority Review/RTOR and repeated analyst support create Data + Smart Money + Catalyst alignment, but event risk remains binary.',
+    'MRVL remains PRE-READY EARLY: primary evidence improved, but no chase after the event-driven gap and Aug 27 earnings remains a hard event gate.',
+    'ADI remains SMART-MONEY BUILD; KEYS and FN remain DISCOVERY SIGNAL. These are IN the research universe, not READY 1.',
+    'BYND, RARE and PRAX remain OUT OF WAIS CORE; POWL and MOD remain PHASE OUT; PLTR remains NO SETUP.'
   ];
 
   const stocks=Array.isArray(d.focusStocks)?d.focusStocks:(d.focusStocks=[]);
   const find=(t)=>stocks.find(x=>String(x.ticker||'').toUpperCase()===t);
   const patch=(t,fields)=>{const s=find(t); if(s) Object.assign(s,fields);};
-  const addResearch=(ticker,company,stage,note)=>{
-    if(find(ticker)) return patch(ticker,{stance:stage,rating:'Research',researchStage:stage,universeStatus:'IN',currentAction:'RESEARCH ONLY',note});
-    stocks.push({ticker,company,category:'WAIS Early Radar',bucket:'HIDDEN_GEM',risk:'High',rating:'Research',stance:stage,researchStage:stage,evidenceConfidence:'VALIDATING',entry:null,target:null,showInWatchlist:false,universeStatus:'IN',currentAction:'RESEARCH ONLY',note});
+  const addResearch=(ticker,company,stage,note,extra={})=>{
+    if(find(ticker)) return patch(ticker,Object.assign({stance:stage,rating:'Research',researchStage:stage,universeStatus:'IN',currentAction:'RESEARCH ONLY',note},extra));
+    stocks.push(Object.assign({ticker,company,category:'WAIS Early Radar',bucket:'HIDDEN_GEM',risk:'High',rating:'Research',stance:stage,researchStage:stage,evidenceConfidence:'VALIDATING',entry:null,target:null,showInWatchlist:false,universeStatus:'IN',currentAction:'RESEARCH ONLY',note},extra));
   };
 
   patch('MRVL',{stance:'PRE-READY EARLY · EVENT / RETEST WATCH',rating:'Pre-Ready Early',researchStage:'PRE-READY EARLY',universeStatus:'IN',currentAction:'WAIT · DO NOT CHASE',executionStage:'PRE-READY EARLY',executionAction:'WAIT FOR CONTROLLED RETEST / RECLAIM',note:'Primary evidence strengthened materially. Keep in core universe, but the event gap and Aug 27 earnings prevent READY 1; require controlled pullback/reclaim and acceptable volume/breadth.'});
@@ -73,16 +73,18 @@
   patch('MOD',{stance:'PHASE OUT',rating:'Phase Out',universeStatus:'OUT'});
   patch('PLTR',{stance:'NO SETUP',rating:'No Setup',universeStatus:'OUT'});
 
+  addResearch('ZYME','Zymeworks','PRE-READY EARLY · PDUFA EVENT WATCH','Aug 25, 2026 U.S. PDUFA for first-line HER2+ GEA. Positive Phase 3 HERIZON-GEA-01 data, FDA Priority Review/RTOR, existing Ziihera commercial validation, a potential $250M U.S. approval milestone, Perceptive 5.4% disclosed ownership (April 2026; stale by nature), and repeated analyst target support justify PRE-READY EARLY. Current exchange-quality Aug 19/20 quote is DATA GAP, so no live entry trigger is approved.',{rating:'Pre-Ready Early',risk:'Very High',currentAction:'EVENT WATCH · SMALL SIZE ONLY IF PRICE VERIFIED',executionStage:'PRE-READY EARLY',executionAction:'VERIFY CURRENT PRICE / SIZE SMALL / NO BLIND EVENT CHASE',earnings:'PDUFA 2026-08-25',evidenceConfidence:78});
   addResearch('ADI','Analog Devices','SMART-MONEY BUILD','AI data-center power-management demand and guidance improvement justify active build-stage research; not READY and no automatic buy.');
   addResearch('KEYS','Keysight Technologies','DISCOVERY SIGNAL','Recent order/revenue acceleration supports an AI/high-speed-test discovery track; requires valuation, sponsorship and price-structure validation before promotion.');
   addResearch('FN','Fabrinet','DISCOVERY SIGNAL','Data-center optical/CPO exposure keeps FN in discovery; require primary-evidence and price/valuation cross-check before any promotion.');
 
   d.actionPlan=[
     'ACTION NOW：SELECTIVE RECOVERY WATCH。READY 1 = NONE；TECH READY = NONE；Cash 45%。',
-    'IN / CORE：MRVL, GOOGL, NVDA, MU, GFS, AVGO, TSEM, AXTI, RKLB, COHR, LITE plus active research names.',
-    'EARLY RADAR：MRVL = PRE-READY EARLY；ADI = SMART-MONEY BUILD；KEYS/FN = DISCOVERY SIGNAL。',
+    'PRE-READY EARLY：MRVL, ZYME。ZYME係PDUFA binary-event setup，未有可靠Aug 19/20 exchange-price前不可當現價買入指令。',
+    'IN / CORE：MRVL, ZYME, GOOGL, NVDA, MU, GFS, AVGO, TSEM, AXTI, RKLB, COHR, LITE plus active research names.',
+    'EARLY RADAR：ADI = SMART-MONEY BUILD；KEYS/FN = DISCOVERY SIGNAL。',
     'OUT OF CORE：BYND, RARE, PRAX。PHASE OUT：POWL, MOD。NO SETUP：PLTR。',
-    'Do not promote any name because it was mentioned in chat; promotion requires primary evidence + valuation + expectations risk + price/volume + event-risk confirmation.'
+    'Do not promote any name because it was mentioned externally; promotion requires primary evidence + valuation + expectations risk + price/volume + event-risk confirmation.'
   ];
 
   // Dashboard currently derives labels mechanically from Risk Score. Override the visible labels
