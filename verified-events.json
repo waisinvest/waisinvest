@@ -1,5 +1,5 @@
 {
-  "lastVerified": "2026-08-19T19:46:00-04:00",
+  "lastVerified": "2026-08-20T19:35:00-04:00",
   "dataStatus": "WAIS verified event master. Maintained from official central-bank, government-statistics and company-IR sources; automatic source feeds may add/refresh but must never delete unrelated verified events.",
   "events": [
     {"dateISO":"2026-08-17","date":"08月17日","event":"FN · Fabrinet Q4 / FY2026 業績","time":"17:00 ET","referenceMonth":"Fiscal Q4 / FY2026","source":"Fabrinet Investor Relations"},
@@ -8,6 +8,7 @@
     {"dateISO":"2026-08-18","date":"08月18日","event":"美國工業生產／產能利用率","time":"09:15 ET","referenceMonth":"2026年7月","source":"Federal Reserve"},
     {"dateISO":"2026-08-19","date":"08月19日","event":"FOMC 會議紀要（7月28–29日會議）","time":"14:00 ET","referenceMonth":"Federal Reserve","source":"Federal Reserve"},
     {"dateISO":"2026-08-20","date":"08月20日","event":"美國 Advance Services Report","time":"10:00 ET","referenceMonth":"2026年第二季","source":"U.S. Census Bureau"},
+    {"dateISO":"2026-08-25","date":"08月25日","event":"ZYME · Zanidatamab 1L HER2+ GEA 美國 PDUFA target action date","time":"TIME DATA GAP","referenceMonth":"FDA regulatory action","source":"Zymeworks Investor Relations"},
     {"dateISO":"2026-08-25","date":"08月25日","event":"美國新屋銷售","time":"10:00 ET","referenceMonth":"2026年7月","source":"U.S. Census Bureau"},
     {"dateISO":"2026-08-26","date":"08月26日","event":"美國 GDP 第二次估算＋Personal Income and Outlays","time":"08:30 ET","referenceMonth":"2026年第二季／2026年7月","source":"U.S. Bureau of Economic Analysis"},
     {"dateISO":"2026-08-26","date":"08月26日","event":"美國 Advance Durable Goods","time":"08:30 ET","referenceMonth":"2026年7月","source":"U.S. Census Bureau"},
