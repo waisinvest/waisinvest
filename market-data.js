@@ -52,5 +52,6 @@ document.write('<script src="wais-route-income-links-v1.js?v=20260816h"></script
 document.write('<script src="wais-nav-order-v1.js?v=20260816h"></script>');
 // Canonical decision state MUST load after older overlays so stale language/rankings cannot return.
 document.write('<script src="wais-canonical-state-20260820.js?v=20260820a"></script>');
-// Latest evidence-backed radar change loads last.
+// Evidence-backed radar changes load last, oldest to newest.
 document.write('<script src="wais-radar-update-20260820-1150.js?v=20260820b"></script>');
+document.write('<script src="wais-radar-update-20260820-1257.js?v=20260820c"></script>');
