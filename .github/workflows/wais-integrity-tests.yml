@@ -44,3 +44,5 @@ jobs:
           node --check wais-route-selector-safe-v13.js
           node --check wais-route-income-links-v1.js
           node --check wais-nav-order-v1.js
+          node --check wais-canonical-state-20260820.js
+          node --check wais-evening-state-20260820.js
