@@ -52,8 +52,13 @@ document.write('<script src="wais-route-income-links-v1.js?v=20260816h"></script
 document.write('<script src="wais-nav-order-v1.js?v=20260816h"></script>');
 // Canonical decision state MUST load after older overlays so stale language/rankings cannot return.
 document.write('<script src="wais-canonical-state-20260820.js?v=20260820a"></script>');
-// Evidence-backed radar changes load last, oldest to newest.
+// Evidence-backed radar changes load oldest to newest.
 document.write('<script src="wais-radar-update-20260820-1150.js?v=20260820b"></script>');
 document.write('<script src="wais-radar-update-20260820-1257.js?v=20260820c"></script>');
 document.write('<script src="wais-radar-update-20260820-1656.js?v=20260820d"></script>');
 document.write('<script src="wais-radar-update-20260820-1752.js?v=20260820e"></script>');
+// Closing content sync is authoritative for market risk, evidence-of-work and final opportunity stages.
+document.write('<script src="wais-evening-state-20260820.js?v=20260820f"></script>');
+// Rebuild final visible rankings after the closing overlay.
+document.write('<script src="wais-top-picks-normalizer-v1.js?v=20260820f"></script>');
+document.write('<script src="wais-watchlist-order-v1.js?v=20260820f"></script>');
