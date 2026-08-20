@@ -50,3 +50,5 @@ document.write('<script src="wais-route-selector-safe-v13.js?v=20260816h"></scri
 document.write('<script src="wais-route-income-links-v1.js?v=20260816h"></script>');
 // Sidebar priority: Top Picks → Route Intelligence → Watchlist.
 document.write('<script src="wais-nav-order-v1.js?v=20260816h"></script>');
+// Canonical decision state MUST load last so older overlays cannot reintroduce stale market language or rankings.
+document.write('<script src="wais-canonical-state-20260820.js?v=20260820a"></script>');
