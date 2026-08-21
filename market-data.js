@@ -66,3 +66,8 @@ document.write('<script src="wais-watchlist-order-v1.js?v=20260820f"></script>')
 document.write('<script src="wais-radar-update-20260821-0102.js?v=20260821a"></script>');
 // Research-integrity correction must load after the stale RARE pre-PDUFA overlay.
 document.write('<script src="wais-radar-correction-20260821-0600.js?v=20260821b"></script>');
+// Aug 21 closing sync is authoritative for current risk, stages, route/income validation and the week-ahead plan.
+document.write('<script src="wais-evening-state-20260821.js?v=20260821c"></script>');
+// Rebuild final visible rankings after the latest closing overlay.
+document.write('<script src="wais-top-picks-normalizer-v1.js?v=20260821c"></script>');
+document.write('<script src="wais-watchlist-order-v1.js?v=20260821c"></script>');
