@@ -62,3 +62,5 @@ document.write('<script src="wais-evening-state-20260820.js?v=20260820f"></scrip
 // Rebuild final visible rankings after the closing overlay.
 document.write('<script src="wais-top-picks-normalizer-v1.js?v=20260820f"></script>');
 document.write('<script src="wais-watchlist-order-v1.js?v=20260820f"></script>');
+// Latest overnight Early Radar evidence loads last so it cannot be overwritten by the prior evening state.
+document.write('<script src="wais-radar-update-20260821-0102.js?v=20260821a"></script>');
