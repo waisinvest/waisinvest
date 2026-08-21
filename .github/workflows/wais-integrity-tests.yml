@@ -46,3 +46,4 @@ jobs:
           node --check wais-nav-order-v1.js
           node --check wais-canonical-state-20260820.js
           node --check wais-evening-state-20260820.js
+          node --check wais-evening-state-20260821.js
