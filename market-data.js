@@ -64,3 +64,5 @@ document.write('<script src="wais-top-picks-normalizer-v1.js?v=20260820f"></scri
 document.write('<script src="wais-watchlist-order-v1.js?v=20260820f"></script>');
 // Latest overnight Early Radar evidence loads last so it cannot be overwritten by the prior evening state.
 document.write('<script src="wais-radar-update-20260821-0102.js?v=20260821a"></script>');
+// Research-integrity correction must load after the stale RARE pre-PDUFA overlay.
+document.write('<script src="wais-radar-correction-20260821-0600.js?v=20260821b"></script>');
