@@ -1,5 +1,5 @@
 {
-  "lastVerified": "2026-08-20T19:35:00-04:00",
+  "lastVerified": "2026-08-21T19:15:00-04:00",
   "dataStatus": "WAIS verified event master. Maintained from official central-bank, government-statistics and company-IR sources; automatic source feeds may add/refresh but must never delete unrelated verified events.",
   "events": [
     {"dateISO":"2026-08-17","date":"08月17日","event":"FN · Fabrinet Q4 / FY2026 業績","time":"17:00 ET","referenceMonth":"Fiscal Q4 / FY2026","source":"Fabrinet Investor Relations"},
@@ -14,6 +14,13 @@
     {"dateISO":"2026-08-26","date":"08月26日","event":"美國 Advance Durable Goods","time":"08:30 ET","referenceMonth":"2026年7月","source":"U.S. Census Bureau"},
     {"dateISO":"2026-08-26","date":"08月26日","event":"NVDA Q2 FY2027 業績","time":"17:00 ET","referenceMonth":"Fiscal Q2 2027","source":"NVIDIA Investor Relations"},
     {"dateISO":"2026-08-27","date":"08月27日","event":"美國 Advance Economic Indicators","time":"08:30 ET","referenceMonth":"2026年7月","source":"U.S. Census Bureau"},
-    {"dateISO":"2026-08-27","date":"08月27日","event":"MRVL Q2 FY2027 業績","time":"16:45 ET","referenceMonth":"Fiscal Q2 2027","source":"Marvell Investor Relations"}
+    {"dateISO":"2026-08-27","date":"08月27日","event":"MRVL Q2 FY2027 業績","time":"16:45 ET","referenceMonth":"Fiscal Q2 2027","source":"Marvell Investor Relations"},
+    {"dateISO":"2026-08-27","date":"08月27日","event":"Jackson Hole Economic Policy Symposium 開始","time":"PROGRAM TIME DATA GAP","referenceMonth":"Aug 27–29, 2026 · Financial Innovation: Implications for Payments and Policy","source":"Federal Reserve Bank of Kansas City"},
+    {"dateISO":"2026-08-28","date":"08月28日","event":"美國 CES Preliminary Benchmark Revision","time":"10:00 ET","referenceMonth":"March 2026 benchmark","source":"U.S. Bureau of Labor Statistics"},
+    {"dateISO":"2026-09-01","date":"09月01日","event":"美國 JOLTS","time":"10:00 ET","referenceMonth":"2026年7月","source":"U.S. Bureau of Labor Statistics"},
+    {"dateISO":"2026-09-01","date":"09月01日","event":"美國 Construction Spending","time":"10:00 ET","referenceMonth":"2026年7月","source":"U.S. Census Bureau"},
+    {"dateISO":"2026-09-02","date":"09月02日","event":"美國 Manufacturers' Shipments, Inventories and Orders","time":"10:00 ET","referenceMonth":"2026年7月","source":"U.S. Census Bureau"},
+    {"dateISO":"2026-09-03","date":"09月03日","event":"美國 Productivity and Costs（修訂）","time":"08:30 ET","referenceMonth":"2026年第二季","source":"U.S. Bureau of Labor Statistics"},
+    {"dateISO":"2026-09-03","date":"09月03日","event":"美國 International Trade in Goods and Services","time":"08:30 ET","referenceMonth":"2026年7月","source":"U.S. Bureau of Economic Analysis / U.S. Census Bureau"}
   ]
 }
