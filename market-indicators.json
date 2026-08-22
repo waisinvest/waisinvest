@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-22T03:11:27.341769+00:00",
+  "lastUpdated": "2026-08-22T04:59:51.739297+00:00",
   "marketDates": {
     "US": "2026-08-21",
     "HK": "2026-08-21"
@@ -24,7 +24,7 @@
       "symbol": "^IXIC",
       "value": 26180.455,
       "previousClose": 26067.1699,
-      "regularClose": 26180.4551,
+      "regularClose": 26180.4609,
       "regularCloseDate": "2026-08-21",
       "change": 113.2851,
       "changePercent": 0.4346,
@@ -48,7 +48,7 @@
       "symbol": "^DJI",
       "value": 53277.01,
       "previousClose": 52759.2109,
-      "regularClose": 53277.0,
+      "regularClose": 53277.0117,
       "regularCloseDate": "2026-08-21",
       "change": 517.7991,
       "changePercent": 0.9814,
@@ -60,7 +60,7 @@
       "symbol": "^SOX",
       "value": 11740.374,
       "previousClose": 11800.0195,
-      "regularClose": 11740.374,
+      "regularClose": 11740.3701,
       "regularCloseDate": "2026-08-21",
       "change": -59.6455,
       "changePercent": -0.5055,
@@ -130,7 +130,7 @@
       "sourceUrl": "https://www.etnet.com.hk/www/eng/futures/index.php?month=202608&subtype=HSI",
       "session": "After-Trade",
       "freshness": "MARKET_CLOSED",
-      "ageMinutes": 491,
+      "ageMinutes": 599,
       "marketOpen": false,
       "freshnessReason": "Market closed; last verified source session preserved",
       "expiryDate": "28/08/2026",
