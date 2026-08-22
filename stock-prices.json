@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-22T15:54:49.949358+00:00",
+  "lastUpdated": "2026-08-22T16:59:57.926121+00:00",
   "marketStatus": "updated",
   "dataStatus": "Latest available intraday/extended-hours snapshot when available; regular close retained separately; NOT guaranteed real-time",
   "incomeMetricsVersion": "WAIS INCOME v1.1 normalized percentages",
@@ -2368,7 +2368,7 @@
       "trackingErrorMeanAbs60dPct": 0.2757
     }
   },
-  "relatedRoutesLastUpdated": "2026-08-22T15:55:06.529700+00:00",
+  "relatedRoutesLastUpdated": "2026-08-22T17:00:12.458293+00:00",
   "relatedRoutesDataStatus": "Verified-route activity / tracking / income research metrics, including bearish/inverse routes; public data may be delayed; not exchange real-time; route approval remains separate.",
   "relatedRoutesFailedSymbols": [],
   "relatedRouteStockMetricFailures": []
