@@ -2,8 +2,8 @@
   "lastUpdated": "2026-08-16T19:00:00-04:00",
   "lastVerifiedMaster": "2026-08-21T19:15:00-04:00",
   "window": {
-    "from": "2026-08-21",
-    "to": "2026-09-03"
+    "from": "2026-08-22",
+    "to": "2026-09-04"
   },
   "dataStatus": "Rolling 14-day verified calendar. Official auto feeds merge with the WAIS verified-event master; narrower or failed feeds cannot delete unrelated verified events.",
   "sourceHealth": {
