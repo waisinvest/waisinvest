@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-22T03:10:02.783366+00:00",
+  "lastUpdated": "2026-08-22T03:11:27.341769+00:00",
   "marketDates": {
     "US": "2026-08-21",
     "HK": "2026-08-21"
@@ -48,7 +48,7 @@
       "symbol": "^DJI",
       "value": 53277.01,
       "previousClose": 52759.2109,
-      "regularClose": 53277.0117,
+      "regularClose": 53277.0,
       "regularCloseDate": "2026-08-21",
       "change": 517.7991,
       "changePercent": 0.9814,
@@ -130,7 +130,7 @@
       "sourceUrl": "https://www.etnet.com.hk/www/eng/futures/index.php?month=202608&subtype=HSI",
       "session": "After-Trade",
       "freshness": "MARKET_CLOSED",
-      "ageMinutes": 490,
+      "ageMinutes": 491,
       "marketOpen": false,
       "freshnessReason": "Market closed; last verified source session preserved",
       "expiryDate": "28/08/2026",
